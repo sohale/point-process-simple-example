@@ -87,6 +87,10 @@ for k,t,I_k in simulate_input(K):
     lambda_arr[k] = lambda_k
 
 
+plt.subplot(2, 1, 1)
+# fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
+
+plt.subplot(2, 1, 2)
 #plt.plot(x_arr, Nc_arr, 'o-')
 plt.plot(t_arr, Nc_arr, 'o-', label='N_c')
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
