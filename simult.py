@@ -16,7 +16,7 @@ def simulate_input(_K):
     K = _K
     #Delta = T / float(K)
 
-    Delta = 100 * MSEC
+    Delta = 1 * MSEC
     T = K * Delta
 
     last_every_second = -1000.0
@@ -49,7 +49,7 @@ for i in range(NEURONS):
 
 
 
-K = 300
+K = 3000
 x_arr = np.zeros((K,))
 Nc_arr = np.zeros((K,))
 t_arr = np.zeros((K,))
@@ -59,7 +59,7 @@ lambda_arr  = np.zeros((K,))
 last_x_k = 0.0
 Nc = 0
 for k,t,I_k in simulate_input(K):
-    print t,k,I_k
+    #print t,k,I_k
 
     n = na[0]
 
@@ -68,12 +68,11 @@ for k,t,I_k in simulate_input(K):
     x_k = n['rho'] * last_x_k  + n['alpha'] * I_k + eps_k
     last_x_k = x_k
 
-
     lambda_k = math.exp(n['mu'] + n['beta'] * x_k)
     fire_probability = lambda_k * Delta
     fire = fire_probability > np.random.rand()
 
-    print "n['mu'] + n['beta'] * x_k, lambda_k * Delta", n['mu'],n['beta'],x_k, lambda_k, Delta
+    #print "n['mu'] + n['beta'] * x_k, lambda_k * Delta", n['mu'],n['beta'],x_k, lambda_k, Delta
 
     #output = (x_k * Delta) > np.random.rand()
     #Nc += output
@@ -90,7 +89,9 @@ for k,t,I_k in simulate_input(K):
 
 #plt.plot(x_arr, Nc_arr, 'o-')
 plt.plot(t_arr, Nc_arr, 'o-', label='N_c')
-#plt.plot(t_arr, lambda_arr, 'r-', label='\lambda')
+#plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
+#plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
+plt.plot(t_arr, fire_probability_arr, 'r', label='Log(Pr)')
 plt.plot(t_arr, x_arr, 'k-', label='x_k')
 plt.xlabel('Time (Sec)')
 #legend = plt.legend(loc='upper center', shadow=True)
