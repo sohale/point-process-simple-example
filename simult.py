@@ -49,9 +49,13 @@ for i in range(NEURONS):
 
 
 
-K = 100
+K = 300
 x_arr = np.zeros((K,))
 Nc_arr = np.zeros((K,))
+t_arr = np.zeros((K,))
+fire_probability_arr  = np.zeros((K,))
+lambda_arr  = np.zeros((K,))
+
 last_x_k = 0.0
 Nc = 0
 for k,t,I_k in simulate_input(K):
@@ -59,19 +63,36 @@ for k,t,I_k in simulate_input(K):
 
     n = na[0]
 
+    # x_k is the State
     eps_k = n['sigma_eps'] * np.random.randn()
     x_k = n['rho'] * last_x_k  + n['alpha'] * I_k + eps_k
     last_x_k = x_k
 
 
-    output = x_k * Delta > np.random.rand()
-    Nc += output
+    lambda_k = math.exp(n['mu'] + n['beta'] * x_k)
+    fire_probability = lambda_k * Delta
+    fire = fire_probability > np.random.rand()
+
+    print "n['mu'] + n['beta'] * x_k, lambda_k * Delta", n['mu'],n['beta'],x_k, lambda_k, Delta
+
+    #output = (x_k * Delta) > np.random.rand()
+    #Nc += output
+
+    Nc += fire
 
     x_arr[k] = x_k
     Nc_arr[k] = Nc
+    t_arr[k] = t
 
-print x_arr
+    fire_probability_arr[k] = fire_probability
+    lambda_arr[k] = lambda_k
 
-plt.plot(x_arr, Nc_arr, 'o-')
-plt.ylabel('some numbers')
+
+#plt.plot(x_arr, Nc_arr, 'o-')
+plt.plot(t_arr, Nc_arr, 'o-', label='N_c')
+#plt.plot(t_arr, lambda_arr, 'r-', label='\lambda')
+plt.plot(t_arr, x_arr, 'k-', label='x_k')
+plt.xlabel('Time (Sec)')
+#legend = plt.legend(loc='upper center', shadow=True)
+plt.legend()
 plt.show()
