@@ -54,7 +54,8 @@ x_arr = np.zeros((K,))
 Nc_arr = np.zeros((K,))
 t_arr = np.zeros((K,))
 fire_probability_arr  = np.zeros((K,))
-lambda_arr  = np.zeros((K,))
+lambda_arr = np.zeros((K,))
+I_arr = np.zeros((K,))
 
 last_x_k = 0.0
 Nc = 0
@@ -82,13 +83,15 @@ for k,t,I_k in simulate_input(K):
     x_arr[k] = x_k
     Nc_arr[k] = Nc
     t_arr[k] = t
+    I_arr[k] = I_k
 
     fire_probability_arr[k] = fire_probability
     lambda_arr[k] = lambda_k
 
-
-plt.subplot(3, 1, 1)
 # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
+
+#http://matplotlib.org/1.3.0/examples/subplots_axes_and_figures/subplot_demo.html
+plt.subplot(3, 1, 1)
 plt.plot(t_arr, x_arr, 'k-', label='$x_k$')
 plt.ylabel('$x_k$ State')
 plt.legend()
@@ -101,8 +104,11 @@ plt.legend()
 
 plt.subplot(3, 1, 3)
 #plt.plot(x_arr, Nc_arr, 'o-')
+plt.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
 plt.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
+
 plt.xlabel('Time (Sec)')
+
 #legend = plt.legend(loc='upper center', shadow=True)
 plt.legend()
 plt.show()
