@@ -49,7 +49,7 @@ for i in range(NEURONS):
 
 
 
-K = 3000
+K = 30000
 x_arr = np.zeros((K,))
 Nc_arr = np.zeros((K,))
 t_arr = np.zeros((K,))
@@ -87,16 +87,21 @@ for k,t,I_k in simulate_input(K):
     lambda_arr[k] = lambda_k
 
 
-plt.subplot(2, 1, 1)
+plt.subplot(3, 1, 1)
 # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
+plt.plot(t_arr, x_arr, 'k-', label='$x_k$')
+plt.ylabel('$x_k$ State')
+plt.legend()
 
-plt.subplot(2, 1, 2)
-#plt.plot(x_arr, Nc_arr, 'o-')
-plt.plot(t_arr, Nc_arr, 'o-', label='N_c')
+plt.subplot(3, 1, 2)
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
 #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
-plt.plot(t_arr, fire_probability_arr, 'r', label='Log(Pr)')
-plt.plot(t_arr, x_arr, 'k-', label='x_k')
+plt.plot(t_arr, fire_probability_arr, 'r', label='Probability')
+plt.legend()
+
+plt.subplot(3, 1, 3)
+#plt.plot(x_arr, Nc_arr, 'o-')
+plt.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
 plt.xlabel('Time (Sec)')
 #legend = plt.legend(loc='upper center', shadow=True)
 plt.legend()
