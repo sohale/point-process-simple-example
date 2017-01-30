@@ -41,7 +41,7 @@ na = []
 for i in range(NEURONS):
     n = n0.copy()
     d = BETA_RANGE[1] - BETA_RANGE[0]
-    n['beta'] = (np.random.rand() * d) + BETA_RANGE[0]
+    n['beta'] = 1.1 # (np.random.rand() * d) + BETA_RANGE[0]
     na.append(n)
 
 #for n in na:eps_k
@@ -70,7 +70,7 @@ for k,t,I_k in simulate_input(K):
     last_x_k = x_k
 
     lambda_k = math.exp(n['mu'] + n['beta'] * x_k)
-    fire_probability = lambda_k * Delta
+    fire_probability = lambda_k * Delta  # * 100
     fire = fire_probability > np.random.rand()
 
     #print "n['mu'] + n['beta'] * x_k, lambda_k * Delta", n['mu'],n['beta'],x_k, lambda_k, Delta
