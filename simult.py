@@ -44,7 +44,7 @@ n0 = {
     # Latent process model
     'rho': 0.99,
     'alpha': 3.0,
-    'sigma_eps':math.sqrt(0.001) * 0, # noisiness
+    'sigma_eps':math.sqrt(0.001), # noisiness
 #plt.plot(t_arr, xlogpr_arr, 'k-', label='$\\mu + \\beta x_k$'); plt.ylabel('$L(x_k)$ State ($\log \Pr$)')
 
     # Latent-to-observable (gain), or, state-to-Lprobability
