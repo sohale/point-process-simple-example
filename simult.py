@@ -31,11 +31,21 @@ def simulate_input(_K):
         last_every_second = every_second
         yield k,t,I_k
 
+def report_neuron(n, Delta):
+    tau = get_tau(n, Delta)
+    print 'Tau=', tau * 1000.0, ' (msec)'
+    print 'Noisiness:  sigma_eps = ', n['sigma_eps'] * 1000.0, ' (milli Volts per sample)'
+
+def get_tau(n, Delta):
+    tau = - Delta / math.log(n['rho'])
+    return tau
+
 n0 = {
     # Latent process model
     'rho': 0.99,
     'alpha': 3.0,
-    'sigma_eps':math.sqrt(0.001),
+    'sigma_eps':math.sqrt(0.001) * 0, # noisiness
+#plt.plot(t_arr, xlogpr_arr, 'k-', label='$\\mu + \\beta x_k$'); plt.ylabel('$L(x_k)$ State ($\log \Pr$)')
 
     # Latent-to-observable (gain), or, state-to-Lprobability
     'mu': -4.9,
@@ -44,7 +54,7 @@ n0 = {
 descriptions = {
     'rho': ["", ""],
     'alpha': ["input gain", "volts per amps"],
-    'sigma_eps': ["noise amplitude", ""],
+    'sigma_eps': ["noisiness: noise amplitude", ""],
 
     'mu': ["", ""],
     'beta': ["", ""]
@@ -63,9 +73,7 @@ for i in range(NEURONS):
 #for n in na:eps_k
 #    print n['beta']
 
-
-
-K = 30000
+K = 300000/100
 x_arr = np.zeros((K,))
 xlogpr_arr = np.zeros((K,))
 Nc_arr = np.zeros((K,))
@@ -108,18 +116,42 @@ for k,t,I_k in simulate_input(K):
     fire_probability_arr[k] = fire_probability
     lambda_arr[k] = lambda_k
 
-print "T=", T, " spikes/sec=", float(Nc)/T
+    if k == 0:
+        report_neuron(n, Delta)
+
+def fix_ylim(ax, arr):
+    mn, mx = np.min(arr), np.max(arr)
+    m = (mx-mn) * 0.1
+    ax.set_ylim([mn - m, mx + m])
+
+print "Simulation time = T =", T, ". Mean rate = ", float(Nc)/T, "(spikes/sec)"
 # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
 
 #http://matplotlib.org/1.3.0/examples/subplots_axes_and_figures/subplot_demo.html
 axes = plt.subplot(3, 1, 1)
 tcolor = 'b'
-plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$');
+pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$');
 #plt.ylabel('$x_k$ State')
+fix_ylim(axes, x_arr)
 axes.set_ylabel('$x_k$ State', color=tcolor)
-#plt.plot(t_arr, xlogpr_arr, 'k-', label='$\\mu + \\beta x_k$'); plt.ylabel('$L(x_k)$ State ($\log \Pr$)')
 axes.tick_params('y', colors=tcolor)
-plt.legend()
+
+def LIM(narr, a, b=float('inf')):
+    rnarr = narr.copy()
+    rnarr[rnarr < a] = a
+    rnarr[rnarr > b] = b
+    return rnarr
+
+def v(n):
+    #ht = LIM(t_arr, -float('inf'), 0)
+    ht = LIM(t_arr - 1.0, 0, float('inf'))
+    tau = get_tau(n, Delta)
+    expa = np.exp(- ht / tau) * n['alpha']
+    pl = plt.plot(t_arr, expa, 'r', label='$exp(-t/\\tau)$', alpha=0.2, linewidth=5);
+    return pl
+
+pl2 = v(na[0])
+#plt.legend()
 
 #  q,qq = plt.subplot(4, 1, 2)  # TypeError: 'AxesSubplot' object is not iterable
 
@@ -127,12 +159,17 @@ ax2 = axes.twinx()  # http://matplotlib.org/examples/api/two_scales.html
 #plt.subplot(4, 1, 2)
 tcolor = 'k'
 #plt.plot(t_arr, x_arr, 'k-', label='$x_k$'); plt.ylabel('$x_k$ State')
-ax2.plot(t_arr, xlogpr_arr, tcolor + '-', alpha=1.0, label='$\\mu + \\beta x_k$');
+pl3 = ax2.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='$\\mu + \\beta x_k$')
 ylabel = '$L(x_k)$ State ($\log \Pr$)'
-plt.ylabel(ylabel)
+#ax2.ylabel(ylabel)
+fix_ylim(ax2, xlogpr_arr)
 ax2.set_ylabel(ylabel, color=tcolor)
 ax2.tick_params('y', colors=tcolor)
-plt.legend()
+
+lns = pl1+pl2+pl3
+labs = [l.get_label() for l in lns]
+plt.legend(lns, labs, loc=0)
+#plt.legend()
 
 
 plt.subplot(3, 1, 2)
