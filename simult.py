@@ -24,10 +24,16 @@ def simulate_input(_K):
     for k in range(K):
         t = k * Delta
         every_second = ( t ) % 1.0
-        if every_second < last_every_second:
+        fire = every_second < last_every_second
+        #duration = 0.01
+        #fire = every_second < duration
+        if fire:
             I_k = 1.0
         else:
             I_k = 0.0
+
+        # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
+
         last_every_second = every_second
         yield k,t,I_k
 
@@ -45,7 +51,6 @@ n0 = {
     'rho': 0.99,
     'alpha': 3.0,
     'sigma_eps':math.sqrt(0.001), # noisiness
-#plt.plot(t_arr, xlogpr_arr, 'k-', label='$\\mu + \\beta x_k$'); plt.ylabel('$L(x_k)$ State ($\log \Pr$)')
 
     # Latent-to-observable (gain), or, state-to-Lprobability
     'mu': -4.9,
@@ -73,7 +78,7 @@ for i in range(NEURONS):
 #for n in na:eps_k
 #    print n['beta']
 
-K = 300000/100
+K = 3000
 x_arr = np.zeros((K,))
 xlogpr_arr = np.zeros((K,))
 Nc_arr = np.zeros((K,))
@@ -91,7 +96,14 @@ for k,t,I_k in simulate_input(K):
 
     # x_k is the State
     eps_k = n['sigma_eps'] * np.random.randn()
-    x_k = n['rho'] * last_x_k  + n['alpha'] * I_k + eps_k
+
+    #dirac_factor = 3.0
+    #dirac_factor = 7.0  # terrible. Why no refactory period?
+    dirac_factor = 1.0
+
+    #dirac_factor = 1.0 / Delta
+    #print "dirac_factor,",dirac_factor
+    x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k
     last_x_k = x_k
 
     xlp = n['mu'] + n['beta'] * x_k
@@ -183,11 +195,8 @@ plt.subplot(3, 1, 3)
 #plt.plot(x_arr, Nc_arr, 'o-')
 plt.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
 plt.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
-
 plt.xlabel('Time (Sec)')
-
-#legend = plt.legend(loc='upper center', shadow=True)
-plt.legend()
+plt.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 
 plt.tight_layout()
 
