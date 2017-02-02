@@ -137,10 +137,20 @@ def fix_ylim(ax, arr):
     ax.set_ylim([mn - m, mx + m])
 
 print "Simulation time = T =", T, ". Mean rate = ", float(Nc)/T, "(spikes/sec)"
+
+
+# **********************************************************************************
+# *                                  plotting
+# **********************************************************************************
+
+PANELS = 3
+panel_id = 0
+
 # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
 
 #http://matplotlib.org/1.3.0/examples/subplots_axes_and_figures/subplot_demo.html
-axes = plt.subplot(3, 1, 1)
+panel_id += 1
+axes = plt.subplot(PANELS, 1, panel_id)
 tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$');
 #plt.ylabel('$x_k$ State')
@@ -183,15 +193,15 @@ labs = [l.get_label() for l in lns]
 plt.legend(lns, labs, loc=0)
 #plt.legend()
 
-
-plt.subplot(3, 1, 2)
+panel_id += 1
+plt.subplot(PANELS, 1, panel_id)
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
 #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
 plt.plot(t_arr, fire_probability_arr, 'r', label='Probability')
 plt.legend()
 
-
-plt.subplot(3, 1, 3)
+panel_id += 1
+plt.subplot(PANELS, 1, panel_id)
 #plt.plot(x_arr, Nc_arr, 'o-')
 plt.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
 plt.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
@@ -201,3 +211,5 @@ plt.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 plt.tight_layout()
 
 plt.show()
+
+assert panel_id == PANELS
