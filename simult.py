@@ -2,6 +2,61 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+
+def visualise_analytical_relaxation(n, Delta, t_arr, plt):
+    """ For a given neuron, based on its alpha, rho  """
+    ht = clamp_numpyarr(t_arr - 1.0, 0, float('inf'))
+    tau = get_neuron_tau(n, Delta)
+    expa = np.exp(- ht / tau) * n['alpha']
+    pl = plt.plot(t_arr, expa, 'r', label='$exp(-t/\\tau)$', alpha=0.2, linewidth=5);
+    return pl
+
+def clamp_numpyarr(narr, a, b=float('inf')):
+    """ clamps (limits) a numpy array between a,b """
+    rnarr = narr.copy()
+    rnarr[rnarr < a] = a
+    rnarr[rnarr > b] = b
+    return rnarr
+
+# **********************************************************************************
+# *                                  neuron model
+# **********************************************************************************
+
+"""" A neurons is characterised by equations 2.2 and 2.6, as in example 1. """
+
+def report_neuron(n, Delta):
+    tau = get_neuron_tau(n, Delta)
+    print 'Tau=', tau * 1000.0, ' (msec)'
+    print 'Noisiness:  sigma_eps = ', n['sigma_eps'] * 1000.0, ' (milli Volts per sample)'
+
+def get_neuron_tau(n, Delta):
+    tau = - Delta / math.log(n['rho'])
+    return tau
+
+n0 = {
+    # Latent process model
+    'rho': 0.99,
+    'alpha': 3.0,
+    'sigma_eps':math.sqrt(0.001), # noisiness
+
+    # Latent-to-observable (gain), or, state-to-Lprobability
+    'mu': -4.9,
+    'beta': 0.0
+}
+descriptions = {
+    'rho': ["", ""],
+    'alpha': ["input gain", "volts per amps"],
+    'sigma_eps': ["noisiness: noise amplitude", ""],
+
+    'mu': ["", ""],
+    'beta': ["", ""]
+}
+
+# **********************************************************************************
+# *                                  simulation
+# **********************************************************************************
+
 global Delta
 global K
 global T
@@ -37,35 +92,7 @@ def simulate_input(_K):
         last_every_second = every_second
         yield k,t,I_k
 
-"""" A neurons is characterised by equations 2.2 and 2.6, as in example 1. """
 
-def report_neuron(n, Delta):
-    tau = get_neuron_tau(n, Delta)
-    print 'Tau=', tau * 1000.0, ' (msec)'
-    print 'Noisiness:  sigma_eps = ', n['sigma_eps'] * 1000.0, ' (milli Volts per sample)'
-
-def get_neuron_tau(n, Delta):
-    tau = - Delta / math.log(n['rho'])
-    return tau
-
-n0 = {
-    # Latent process model
-    'rho': 0.99,
-    'alpha': 3.0,
-    'sigma_eps':math.sqrt(0.001), # noisiness
-
-    # Latent-to-observable (gain), or, state-to-Lprobability
-    'mu': -4.9,
-    'beta': 0.0
-}
-descriptions = {
-    'rho': ["", ""],
-    'alpha': ["input gain", "volts per amps"],
-    'sigma_eps': ["noisiness: noise amplitude", ""],
-
-    'mu': ["", ""],
-    'beta': ["", ""]
-}
 BETA_RANGE = [0.9, 1.1]
 NEURONS = 20
 MSEC = 1./ 1000.
@@ -161,22 +188,7 @@ fix_ylim(axes, x_arr)
 axes.set_ylabel('$x_k$ State', color=tcolor)
 axes.tick_params('y', colors=tcolor)
 
-def clamp_numpyarr(narr, a, b=float('inf')):
-    """ clamps (limits) a numpy array between a,b """
-    rnarr = narr.copy()
-    rnarr[rnarr < a] = a
-    rnarr[rnarr > b] = b
-    return rnarr
-
-def visualise_analytical_relaxation(n, Delta):
-    """ For a given neuron, based on its alpha, rho  """
-    ht = clamp_numpyarr(t_arr - 1.0, 0, float('inf'))
-    tau = get_neuron_tau(n, Delta)
-    expa = np.exp(- ht / tau) * n['alpha']
-    pl = plt.plot(t_arr, expa, 'r', label='$exp(-t/\\tau)$', alpha=0.2, linewidth=5);
-    return pl
-
-pl2 = visualise_analytical_relaxation(na[0], Delta)
+pl2 = visualise_analytical_relaxation(na[0], Delta, t_arr, plt)
 #plt.legend()
 
 #  q,qq = plt.subplot(4, 1, 2)  # TypeError: 'AxesSubplot' object is not iterable
