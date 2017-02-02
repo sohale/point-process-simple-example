@@ -287,9 +287,10 @@ class Panels(object):
         #    plt.ylim(self.ylim[0], self.ylim[1])
 
 
+# ##########################
 
 panels = Panels( 4 )
-panels.xlim = [1.00 - 0.01, 1.00 + 0.01]
+#panels.xlim = [1.00 - 0.01, 1.00 + 0.01]
 # ##########################
 panels.next_panel()
 
@@ -324,9 +325,20 @@ ISI_arr = 1.0 / lambda_arr
 plt2 = panels.cax.plot(t_arr, ISI_arr, tcolor+'-', alpha=0.6, label='ISI')
 panels.fix_ylim(ISI_arr, 0.1)
 panels.ylabels_double('ISI (sec.)', tcolor)
-panels.multi_legend(plt1 + plt2)
+#panels.multi_legend(plt1 + plt2)
 panels.xylims()
-panels.cax.set_ylim(-0.1, 15.0)
+#panels.cax.set_ylim(-0.1, 15.0)
+
+# third axis
+panels.second_y_axis()
+tcolor = 'k'
+cumintegr_arr = np.cumsum(lambda_arr)*simargs.Delta
+plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-', alpha=0.6, label='$\\int\\lambda dt$')
+panels.fix_ylim(cumintegr_arr, 0.1)
+panels.ylabels_double('Integral $\\lambda$', tcolor)
+panels.xylims()
+
+panels.multi_legend(plt1 + plt2 + plt3)
 
 # ##########################
 panels.next_panel()
@@ -349,7 +361,7 @@ plt.tight_layout()
 plt.title("Delta = %1.4f (msec)"%(simargs.Delta/MSEC))
 plt.show()
 
-assert panels.panel_id == panels.PANELS
+assert panels.panel_id == panels.PANELS, str(panels.panel_id) + "==" + str(panels.PANELS)
 
 
 
