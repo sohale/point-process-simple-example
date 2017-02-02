@@ -7,11 +7,13 @@ import matplotlib.pyplot as plt
     [1]. Smith and Brown 2003. "Estimating a State-Space Model from Point Process Observations".
 """
 
+MSEC = 1./ 1000.
+
 # some utility functions
-def visualise_analytical_relaxation(n, Delta, t_arr, plt):
+def visualise_analytical_relaxation(n, Delta0, t_arr, plt):
     """ For a given neuron, based on its alpha, rho  """
     ht = clamp_numpyarr(t_arr - 1.0, 0, float('inf'))
-    tau = get_neuron_tau(n, Delta)
+    tau = get_neuron_tau(n, Delta0)
     expa = np.exp(- ht / tau) * n['alpha']
     pl = plt.plot(t_arr, expa, 'r', label='$exp(-t/\\tau)$', alpha=0.2, linewidth=5)
     return pl
@@ -42,6 +44,10 @@ def get_neuron_tau(n, Delta):
     tau = - Delta / math.log(n['rho'])
     return tau
 
+def get_neuron_rho(tau, Delta):
+    rho = math.exp( - Delta / tau )
+    return rho
+
 n0 = {
     # Latent process model
     'rho': 0.99,
@@ -61,14 +67,18 @@ descriptions = {
     'beta': ["", ""]
 }
 
+DELTA0 = 1.0 * MSEC
+
 # **********************************************************************************
 # *                                  simulation
 # **********************************************************************************
 
+#global simargs  # simulation args
+
 global Delta
 global K
 global T
-def simulate_input(_K):
+def simulate_input(_K=None, duration=None):
     """ """
 
     global Delta
@@ -76,11 +86,22 @@ def simulate_input(_K):
     global T
     # Simulation Time Length (Intervals)
     # T =
-    K = _K
-    #Delta = T / float(K)
+    if _K is not None:
+        K = _K
+        #Delta = T / float(K)
+        Delta = 1 * MSEC
+        T = K * Delta
 
-    Delta = 1 * MSEC
-    T = K * Delta
+    elif duration is not None:
+        # K = 3000
+        #T = 3.0; Delta =  # sec
+        T = duration
+        Delta = 1 * MSEC  * 0.01
+        K = int(T / Delta + 1 - 0.00001)
+        print "K=", K
+
+    else:
+        raise "Error"
 
     last_every_second = -float('inf')
 
@@ -103,7 +124,6 @@ def simulate_input(_K):
 
 BETA_RANGE = [0.9, 1.1]
 NEURONS = 20
-MSEC = 1./ 1000.
 
 na = []
 for i in range(NEURONS):
@@ -118,19 +138,34 @@ for i in range(NEURONS):
 # print
 
 # simulator.K
-K = 3000
+# K = 3000
+#T = 3.0; Delta =  # sec
+#K = int(T / Delta + 1)
 
-x_arr = np.zeros((K,))
-xlogpr_arr = np.zeros((K,))
-Nc_arr = np.zeros((K,))
-t_arr = np.zeros((K,))
-fire_probability_arr  = np.zeros((K,))
-lambda_arr = np.zeros((K,))
-I_arr = np.zeros((K,))
+#assert K
+#assert Delta
+#assert T
+
 
 last_x_k = 0.0
 Nc = 0
-for k,t,I_k in simulate_input(K):
+for k,t,I_k in simulate_input(duration=3.0):
+    if k == 0:
+        x_arr = np.zeros((K,))
+        xlogpr_arr = np.zeros((K,))
+        Nc_arr = np.zeros((K,))
+        t_arr = np.zeros((K,))
+        fire_probability_arr  = np.zeros((K,))
+        lambda_arr = np.zeros((K,))
+        I_arr = np.zeros((K,))
+
+        _tau = get_neuron_tau(na[0], 1.0 * MSEC)
+        _rho_corrected = get_neuron_rho(_tau, Delta)
+        _sigma_eps_corrected = na[0]['sigma_eps'] * math.sqrt(Delta/DELTA0)
+        print "_rho_corrected = ", _rho_corrected, "rho=",na[0]['rho']
+        print "_sigma_eps_corrected = ", _sigma_eps_corrected, "sigma_eps=",na[0]['sigma_eps']
+
+
     #print t,k,I_k
 
     n = na[0]
@@ -138,17 +173,23 @@ for k,t,I_k in simulate_input(K):
     # *************************
     # *  Neuron model
     # *************************
+    if False:
+        # x_k is the State
+        eps_k = n['sigma_eps'] * np.random.randn()
 
-    # x_k is the State
-    eps_k = n['sigma_eps'] * np.random.randn()
+        #dirac_factor = 3.0
+        #dirac_factor = 7.0  # terrible. Why no refactory period?
+        dirac_factor = 1.0
 
-    #dirac_factor = 3.0
-    #dirac_factor = 7.0  # terrible. Why no refactory period?
-    dirac_factor = 1.0
+        #dirac_factor = 1.0 / Delta
+        #print "dirac_factor,",dirac_factor
+        x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
 
-    #dirac_factor = 1.0 / Delta
-    #print "dirac_factor,",dirac_factor
-    x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
+    if True:
+        eps_k = _sigma_eps_corrected * np.random.randn()
+        x_k = _rho_corrected * last_x_k  + n['alpha'] * I_k + eps_k  #Eq.1
+
+
     last_x_k = x_k
 
     xlp = n['mu'] + n['beta'] * x_k
@@ -183,7 +224,7 @@ for k,t,I_k in simulate_input(K):
         report_neuron(n, Delta)
 
 print "Simulation time = T =", T, ". Mean rate = ", float(Nc)/T, "(spikes/sec)"
-
+print "Integral of lambda = ", np.sum(lambda_arr) * Delta
 
 # **********************************************************************************
 # *                                  plotting
@@ -229,7 +270,7 @@ class Panels(object):
         plt.legend(added_plts, labs, loc=0)
 
 
-panels = Panels(3)
+panels = Panels( 4 )
 
 panels.next_panel()
 
@@ -238,7 +279,7 @@ pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$')
 panels.fix_ylim(x_arr)
 panels.ylabels_double('$x_k$ State', tcolor)
 
-pl2 = visualise_analytical_relaxation(na[0], Delta, t_arr, plt)
+pl2 = visualise_analytical_relaxation(na[0], DELTA0, t_arr, plt)
 
 panels.second_y_axis()
 tcolor = 'k'
@@ -249,21 +290,25 @@ panels.ylabels_double('$L(x_k)$ State ($\\log \\Pr$)', tcolor)
 
 panels.multi_legend(pl1 + pl2 + pl3)
 
+panels.next_panel()
+panels.cax.plot(t_arr, lambda_arr, 'r.', label='$\\lambda$')
+panels.cax.legend()
+
 
 panels.next_panel()
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
 #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
-panels.cax.plot(t_arr, fire_probability_arr, 'r', label='Probability')
+panels.cax.plot(t_arr, fire_probability_arr, 'r', label='$\\Pr$ / bin')
 panels.cax.legend()
 
 panels.next_panel()
 panels.cax.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
 panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
 panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
-# 'xlabel' versus 'set_xlabel': for plt (current panel/plot) and axis (subpanel) respectively
 plt.xlabel('Time (Sec)')
 
 plt.tight_layout()
+plt.title("Delta = %1.4f (msec)"%(Delta/MSEC))
 plt.show()
 
 assert panels.panel_id == panels.PANELS
@@ -274,3 +319,5 @@ assert panels.panel_id == panels.PANELS
 #  q,qq = plt.subplot(4, 1, 2)  # TypeError: 'AxesSubplot' object is not iterable
 
 #legend/plot label versus panel label:       plt.ylabel(..) versus  ..plot(..,label=...)
+
+# 'xlabel' versus 'set_xlabel': for plt (current panel/plot) and axis (subpanel) respectively. # plt.xlabel('Time (Sec)')
