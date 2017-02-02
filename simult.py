@@ -204,14 +204,14 @@ class Panels(object):
         self.ax2 = panels.ax1.twinx()  # http://matplotlib.org/examples/api/two_scales.html
         self.currentax = self.ax2
 
+    def fix_ylim(self, arr):
+        mn, mx = np.min(arr), np.max(arr)
+        m = (mx-mn) * 0.1
+        self.currentax.set_ylim([mn - m, mx + m])
 
 
 panels = Panels(3)
 
-def fix_ylim(ax, arr):
-    mn, mx = np.min(arr), np.max(arr)
-    m = (mx-mn) * 0.1
-    ax.set_ylim([mn - m, mx + m])
 
 # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
 
@@ -222,7 +222,7 @@ panels.next_panel()
 tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$');
 #plt.ylabel('$x_k$ State')
-fix_ylim(panels.currentax, x_arr)
+panels.fix_ylim(x_arr)
 panels.currentax.set_ylabel('$x_k$ State', color=tcolor)
 panels.currentax.tick_params('y', colors=tcolor)
 
@@ -232,39 +232,30 @@ pl2 = visualise_analytical_relaxation(na[0], Delta, t_arr, plt)
 #  q,qq = plt.subplot(4, 1, 2)  # TypeError: 'AxesSubplot' object is not iterable
 
 panels.second_y_axis()
-#ax2 = panels.ax1.twinx()  # http://matplotlib.org/examples/api/two_scales.html
-#plt.subplot(4, 1, 2)
 tcolor = 'k'
 #plt.plot(t_arr, x_arr, 'k-', label='$x_k$'); plt.ylabel('$x_k$ State')
 pl3 = panels.currentax.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='$\\mu + \\beta x_k$')
 ylabel = '$L(x_k)$ State ($\log \Pr$)'
 #ax2.ylabel(ylabel)
-fix_ylim(panels.currentax, xlogpr_arr)
+panels.fix_ylim(xlogpr_arr)
 panels.currentax.set_ylabel(ylabel, color=tcolor)
 panels.currentax.tick_params('y', colors=tcolor)
 
 lns = pl1+pl2+pl3
 labs = [l.get_label() for l in lns]
 plt.legend(lns, labs, loc=0)
-#plt.legend()
 
-#panels.panel_id += 1
-#plt.subplot(panels.PANELS, 1, panels.panel_id)
 panels.next_panel()
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
 #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
 panels.currentax.plot(t_arr, fire_probability_arr, 'r', label='Probability')
 panels.currentax.legend()
 
-#panels.panel_id += 1
-#plt.subplot(panels.PANELS, 1, panels.panel_id)
 panels.next_panel()
-#plt.plot(x_arr, Nc_arr, 'o-')
 panels.currentax.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
 panels.currentax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
 panels.currentax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
-#plt.xlabel('Time (Sec)')
-#panels.currentax.set_xlabel('Time (Sec) ----')
+# 'xlabel' versus 'set_xlabel': for plt (current panel/plot) and axis (subpanel) respectively
 plt.xlabel('Time (Sec)')
 
 plt.tight_layout()
