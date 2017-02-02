@@ -73,7 +73,7 @@ DELTA0 = 1.0 * MSEC
 # *                                  simulation
 # **********************************************************************************
 
-class sim_args(object):
+class simulator_args(object):
 
     def __init__(self, _K=None, duration=None):
         #self.Delta = 0.000
@@ -108,7 +108,7 @@ def simulate_input(_K=None, duration=None):
     global simargs
     # Simulation Time Length (Intervals)
     # simargs.T =
-    simargs = sim_args(_K, duration)
+    simargs = simulator_args(_K, duration)
 
     last_every_second = -float('inf')
 
