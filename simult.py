@@ -242,8 +242,12 @@ class Panels(object):
         self.PANELS = panels
         self.panel_id = 0
         self.cax = None  # current ax
+        #self.axi = []
         self.ax1 = None
         self.ax2 = None
+
+        self.xlim = None
+        #self.ylim = None
 
     def next_panel(self):
         self.panel_id += 1
@@ -257,9 +261,9 @@ class Panels(object):
         self.ax2 = panels.ax1.twinx()  # http://matplotlib.org/examples/api/two_scales.html
         self.cax = self.ax2
 
-    def fix_ylim(self, arr):
+    def fix_ylim(self, arr, magin_ratio=0.1):
         mn, mx = np.min(arr), np.max(arr)
-        m = (mx-mn) * 0.1
+        m = (mx-mn) * magin_ratio
         self.cax.set_ylim([mn - m, mx + m])
 
     def ylabels_double(self, ylabel, tcolor):
@@ -276,14 +280,22 @@ class Panels(object):
         labs = [l.get_label() for l in added_plts]
         plt.legend(added_plts, labs, loc=0)
 
+    def xylims(self):
+        if self.xlim:
+            plt.xlim(self.xlim[0], self.xlim[1])
+        #if self.ylim:
+        #    plt.ylim(self.ylim[0], self.ylim[1])
+
+
 
 panels = Panels( 4 )
-
+panels.xlim = [1.00 - 0.01, 1.00 + 0.01]
+# ##########################
 panels.next_panel()
 
 tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$')
-panels.fix_ylim(x_arr)
+panels.fix_ylim(x_arr, 0.1)
 panels.ylabels_double('$x_k$ State', tcolor)
 
 pl2 = visualise_analytical_relaxation(na[0], DELTA0, t_arr, plt)
@@ -292,27 +304,46 @@ panels.second_y_axis()
 tcolor = 'k'
 pl3 = panels.cax.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='$\\mu + \\beta x_k$')
 
-panels.fix_ylim(xlogpr_arr)
+panels.fix_ylim(xlogpr_arr, 0.1)
 panels.ylabels_double('$L(x_k)$ State ($\\log \\Pr$)', tcolor)
 
 panels.multi_legend(pl1 + pl2 + pl3)
+panels.xylims()
 
+# ##########################
 panels.next_panel()
-panels.cax.plot(t_arr, lambda_arr, 'r.', label='$\\lambda$')
-panels.cax.legend()
+tcolor = 'r'
+plt1 = panels.cax.plot(t_arr, lambda_arr, tcolor+'.', label='$\\lambda$')
+#panels.cax.legend()
+panels.fix_ylim(lambda_arr, 0.1)
+panels.ylabels_double('$\\lambda$ (sec.$^-1$)', tcolor)
 
+panels.second_y_axis()
+tcolor = 'b'
+ISI_arr = 1.0 / lambda_arr
+plt2 = panels.cax.plot(t_arr, ISI_arr, tcolor+'-', alpha=0.6, label='ISI')
+panels.fix_ylim(ISI_arr, 0.1)
+panels.ylabels_double('ISI (sec.)', tcolor)
+panels.multi_legend(plt1 + plt2)
+panels.xylims()
+panels.cax.set_ylim(-0.1, 15.0)
 
+# ##########################
 panels.next_panel()
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
 #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
 panels.cax.plot(t_arr, fire_probability_arr, 'r', label='$\\Pr$ / bin')
 panels.cax.legend()
+panels.xylims()
 
+# ##########################
 panels.next_panel()
 panels.cax.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
 panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
 panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 plt.xlabel('Time (Sec)')
+panels.xylims()
+
 
 plt.tight_layout()
 plt.title("Delta = %1.4f (msec)"%(simargs.Delta/MSEC))
@@ -328,3 +359,6 @@ assert panels.panel_id == panels.PANELS
 #legend/plot label versus panel label:       plt.ylabel(..) versus  ..plot(..,label=...)
 
 # 'xlabel' versus 'set_xlabel': for plt (current panel/plot) and axis (subpanel) respectively. # plt.xlabel('Time (Sec)')
+
+
+#     Variance-stabilizing transformation !
