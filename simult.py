@@ -2,8 +2,12 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
+"""
+    Simulates the example 1 of [1].
+    [1]. Smith and Brown 2003. "Estimating a State-Space Model from Point Process Observations".
+"""
 
-
+# some utility functions
 def visualise_analytical_relaxation(n, Delta, t_arr, plt):
     """ For a given neuron, based on its alpha, rho  """
     ht = clamp_numpyarr(t_arr - 1.0, 0, float('inf'))
@@ -23,8 +27,9 @@ def clamp_numpyarr(narr, a, b=float('inf')):
 # *                                  neuron model
 # **********************************************************************************
 
-"""" A neurons is characterised by equations 2.2 and 2.6, as in example 1.
-Equations #Eq.1 and #Eq.2
+"""
+A neurons is characterised by equations 2.2 and 2.6, as in example 1 of [1].
+Ref. equations #Eq.1 and #Eq.2
 """
 
 def report_neuron(n, Delta):
@@ -33,6 +38,7 @@ def report_neuron(n, Delta):
     print 'Noisiness:  sigma_eps = ', n['sigma_eps'] * 1000.0, ' (milli Volts per sample)'
 
 def get_neuron_tau(n, Delta):
+    # todo: def get_ER_tau(n, Delta, rho)  # ER: Exponential Relaxation
     tau = - Delta / math.log(n['rho'])
     return tau
 
@@ -106,11 +112,14 @@ for i in range(NEURONS):
     n['beta'] = 1.1 # (np.random.rand() * d) + BETA_RANGE[0]
     na.append(n)
 
+#print "Beta: ",
 #for n in na:eps_k
-#    print n['beta']
+#    print n['beta'],
+# print
 
 # simulator.K
 K = 3000
+
 x_arr = np.zeros((K,))
 xlogpr_arr = np.zeros((K,))
 Nc_arr = np.zeros((K,))
