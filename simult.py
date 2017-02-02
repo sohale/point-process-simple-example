@@ -209,6 +209,11 @@ class Panels(object):
         m = (mx-mn) * 0.1
         self.currentax.set_ylim([mn - m, mx + m])
 
+    def ylabels_double(self, ylabel, tcolor):
+        # for double y
+        self.currentax.set_ylabel(ylabel, color=tcolor)
+        self.currentax.tick_params('y', colors=tcolor)
+
 
 panels = Panels(3)
 
@@ -223,8 +228,9 @@ tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$');
 #plt.ylabel('$x_k$ State')
 panels.fix_ylim(x_arr)
-panels.currentax.set_ylabel('$x_k$ State', color=tcolor)
-panels.currentax.tick_params('y', colors=tcolor)
+panels.ylabels_double('$x_k$ State', tcolor)
+#panels.currentax.set_ylabel('$x_k$ State', color=tcolor)
+#panels.currentax.tick_params('y', colors=tcolor)
 
 pl2 = visualise_analytical_relaxation(na[0], Delta, t_arr, plt)
 #plt.legend()
@@ -238,8 +244,9 @@ pl3 = panels.currentax.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='
 ylabel = '$L(x_k)$ State ($\log \Pr$)'
 #ax2.ylabel(ylabel)
 panels.fix_ylim(xlogpr_arr)
-panels.currentax.set_ylabel(ylabel, color=tcolor)
-panels.currentax.tick_params('y', colors=tcolor)
+#panels.currentax.set_ylabel(ylabel, color=tcolor)
+#panels.currentax.tick_params('y', colors=tcolor)
+panels.ylabels_double(ylabel, tcolor)
 
 lns = pl1+pl2+pl3
 labs = [l.get_label() for l in lns]
