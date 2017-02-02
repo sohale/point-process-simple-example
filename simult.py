@@ -67,6 +67,7 @@ descriptions = {
     'beta': ["", ""]
 }
 
+# Part of the problem spects, not the Delta used in the simulation.
 DELTA0 = 1.0 * MSEC
 
 # **********************************************************************************
@@ -165,7 +166,7 @@ for k,t,I_k in simulate_input(duration=3.0):
         lambda_arr = np.zeros((simargs.K,))
         I_arr = np.zeros((simargs.K,))
 
-        _tau = get_neuron_tau(na[0], 1.0 * MSEC)
+        _tau = get_neuron_tau(na[0], DELTA0)
         _rho_corrected = get_neuron_rho(_tau, simargs.Delta)
         _sigma_eps_corrected = na[0]['sigma_eps'] * math.sqrt(simargs.Delta/DELTA0)
         print "_rho_corrected = ", _rho_corrected, "rho=",na[0]['rho']
