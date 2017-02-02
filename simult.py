@@ -37,12 +37,14 @@ def simulate_input(_K):
         last_every_second = every_second
         yield k,t,I_k
 
+"""" A neurons is characterised by equations 2.2 and 2.6, as in example 1. """
+
 def report_neuron(n, Delta):
-    tau = get_tau(n, Delta)
+    tau = get_neuron_tau(n, Delta)
     print 'Tau=', tau * 1000.0, ' (msec)'
     print 'Noisiness:  sigma_eps = ', n['sigma_eps'] * 1000.0, ' (milli Volts per sample)'
 
-def get_tau(n, Delta):
+def get_neuron_tau(n, Delta):
     tau = - Delta / math.log(n['rho'])
     return tau
 
@@ -78,6 +80,7 @@ for i in range(NEURONS):
 #for n in na:eps_k
 #    print n['beta']
 
+# simulator.K
 K = 3000
 x_arr = np.zeros((K,))
 xlogpr_arr = np.zeros((K,))
@@ -158,21 +161,22 @@ fix_ylim(axes, x_arr)
 axes.set_ylabel('$x_k$ State', color=tcolor)
 axes.tick_params('y', colors=tcolor)
 
-def LIM(narr, a, b=float('inf')):
+def clamp_numpyarr(narr, a, b=float('inf')):
+    """ clamps (limits) a numpy array between a,b """
     rnarr = narr.copy()
     rnarr[rnarr < a] = a
     rnarr[rnarr > b] = b
     return rnarr
 
-def v(n):
-    #ht = LIM(t_arr, -float('inf'), 0)
-    ht = LIM(t_arr - 1.0, 0, float('inf'))
-    tau = get_tau(n, Delta)
+def visualise_analytical_relaxation(n, Delta):
+    """ For a given neuron, based on its alpha, rho  """
+    ht = clamp_numpyarr(t_arr - 1.0, 0, float('inf'))
+    tau = get_neuron_tau(n, Delta)
     expa = np.exp(- ht / tau) * n['alpha']
     pl = plt.plot(t_arr, expa, 'r', label='$exp(-t/\\tau)$', alpha=0.2, linewidth=5);
     return pl
 
-pl2 = v(na[0])
+pl2 = visualise_analytical_relaxation(na[0], Delta)
 #plt.legend()
 
 #  q,qq = plt.subplot(4, 1, 2)  # TypeError: 'AxesSubplot' object is not iterable
