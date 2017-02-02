@@ -73,40 +73,47 @@ DELTA0 = 1.0 * MSEC
 # *                                  simulation
 # **********************************************************************************
 
-#global simargs  # simulation args
+class sim_args(object):
 
-global Delta
-global K
-global T
+    def __init__(self, _K=None, duration=None):
+        #self.Delta = 0.000
+        #self.K = -1
+        #self.T = 0.0000
+
+        if _K is not None:
+            self.K = _K
+            #self.Delta = self.T / float(self.K)
+            self.Delta = 1 * MSEC
+            self.T = self.K * self.Delta
+
+        elif duration is not None:
+            # self.K = 3000
+            # self.T = 3.0; self.Delta =  # sec
+            self.T = duration
+            self.Delta = 1 * MSEC  * 0.01
+            self.K = int(self.T / self.Delta + 1 - 0.00001)
+            print "K=", self.K
+
+        else:
+            raise "Error"
+
+
+global simargs  # simulation args
+simargs = None
+# simulator.K
+
 def simulate_input(_K=None, duration=None):
     """ """
 
-    global Delta
-    global K
-    global T
+    global simargs
     # Simulation Time Length (Intervals)
-    # T =
-    if _K is not None:
-        K = _K
-        #Delta = T / float(K)
-        Delta = 1 * MSEC
-        T = K * Delta
-
-    elif duration is not None:
-        # K = 3000
-        #T = 3.0; Delta =  # sec
-        T = duration
-        Delta = 1 * MSEC  * 0.01
-        K = int(T / Delta + 1 - 0.00001)
-        print "K=", K
-
-    else:
-        raise "Error"
+    # simargs.T =
+    simargs = sim_args(_K, duration)
 
     last_every_second = -float('inf')
 
-    for k in range(K):
-        t = k * Delta
+    for k in range(simargs.K):
+        t = k * simargs.Delta
         every_second = ( t ) % 1.0
         fire = every_second < last_every_second
         #duration = 0.01
@@ -137,31 +144,30 @@ for i in range(NEURONS):
 #    print n['beta'],
 # print
 
-# simulator.K
-# K = 3000
-#T = 3.0; Delta =  # sec
-#K = int(T / Delta + 1)
+# simargs.K = 3000
+# simargs.T = 3.0; simargs.Delta =  # sec
+# simargs.K = int(simargs.T / simargs.Delta + 1)
 
-#assert K
-#assert Delta
-#assert T
+#assert simargs.K
+#assert simargs.Delta
+#assert simargs.T
 
 
 last_x_k = 0.0
 Nc = 0
 for k,t,I_k in simulate_input(duration=3.0):
     if k == 0:
-        x_arr = np.zeros((K,))
-        xlogpr_arr = np.zeros((K,))
-        Nc_arr = np.zeros((K,))
-        t_arr = np.zeros((K,))
-        fire_probability_arr  = np.zeros((K,))
-        lambda_arr = np.zeros((K,))
-        I_arr = np.zeros((K,))
+        x_arr = np.zeros((simargs.K,))
+        xlogpr_arr = np.zeros((simargs.K,))
+        Nc_arr = np.zeros((simargs.K,))
+        t_arr = np.zeros((simargs.K,))
+        fire_probability_arr  = np.zeros((simargs.K,))
+        lambda_arr = np.zeros((simargs.K,))
+        I_arr = np.zeros((simargs.K,))
 
         _tau = get_neuron_tau(na[0], 1.0 * MSEC)
-        _rho_corrected = get_neuron_rho(_tau, Delta)
-        _sigma_eps_corrected = na[0]['sigma_eps'] * math.sqrt(Delta/DELTA0)
+        _rho_corrected = get_neuron_rho(_tau, simargs.Delta)
+        _sigma_eps_corrected = na[0]['sigma_eps'] * math.sqrt(simargs.Delta/DELTA0)
         print "_rho_corrected = ", _rho_corrected, "rho=",na[0]['rho']
         print "_sigma_eps_corrected = ", _sigma_eps_corrected, "sigma_eps=",na[0]['sigma_eps']
 
@@ -181,7 +187,7 @@ for k,t,I_k in simulate_input(duration=3.0):
         #dirac_factor = 7.0  # terrible. Why no refactory period?
         dirac_factor = 1.0
 
-        #dirac_factor = 1.0 / Delta
+        #dirac_factor = 1.0 / simargs.Delta
         #print "dirac_factor,",dirac_factor
         x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
 
@@ -202,10 +208,10 @@ for k,t,I_k in simulate_input(duration=3.0):
     # * Point process simulation
     # *****************************
 
-    fire_probability = lambda_k * Delta  # * 100
+    fire_probability = lambda_k * simargs.Delta  # * 100
     fire = fire_probability > np.random.rand()
 
-    #output = (x_k * Delta) > np.random.rand()
+    #output = (x_k * simargs.Delta) > np.random.rand()
     #Nc += output
 
     Nc += fire
@@ -221,10 +227,10 @@ for k,t,I_k in simulate_input(duration=3.0):
     lambda_arr[k] = lambda_k
 
     if k == 0:
-        report_neuron(n, Delta)
+        report_neuron(n, simargs.Delta)
 
-print "Simulation time = T =", T, ". Mean rate = ", float(Nc)/T, "(spikes/sec)"
-print "Integral of lambda = ", np.sum(lambda_arr) * Delta
+print "Simulation time = T =", simargs.T, ". Mean rate = ", float(Nc)/simargs.T, "(spikes/sec)"
+print "Integral of lambda = ", np.sum(lambda_arr) * simargs.Delta
 
 # **********************************************************************************
 # *                                  plotting
@@ -308,7 +314,7 @@ panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 plt.xlabel('Time (Sec)')
 
 plt.tight_layout()
-plt.title("Delta = %1.4f (msec)"%(Delta/MSEC))
+plt.title("Delta = %1.4f (msec)"%(simargs.Delta/MSEC))
 plt.show()
 
 assert panels.panel_id == panels.PANELS
