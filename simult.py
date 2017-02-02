@@ -219,14 +219,22 @@ class Panels(object):
         self.cax.set_ylabel(ylabel, color=tcolor)
         self.cax.tick_params('y', colors=tcolor)
 
+    def multi_legend(self, added_plts):
+        """
+            Legend for multiple plots, withe superimposed or double-y-axis.
+            Usage: panels.multi_legend(pl1 + pl2 + pl3)
+        """
+        #added_plts = pl1+pl2+pl3
+        labs = [l.get_label() for l in added_plts]
+        plt.legend(added_plts, labs, loc=0)
+
 
 panels = Panels(3)
 
 panels.next_panel()
 
 tcolor = 'b'
-pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$');
-#plt.ylabel('$x_k$ State')
+pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$')
 panels.fix_ylim(x_arr)
 panels.ylabels_double('$x_k$ State', tcolor)
 
@@ -234,14 +242,13 @@ pl2 = visualise_analytical_relaxation(na[0], Delta, t_arr, plt)
 
 panels.second_y_axis()
 tcolor = 'k'
-#plt.plot(t_arr, x_arr, 'k-', label='$x_k$'); plt.ylabel('$x_k$ State')
 pl3 = panels.cax.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='$\\mu + \\beta x_k$')
+
 panels.fix_ylim(xlogpr_arr)
 panels.ylabels_double('$L(x_k)$ State ($\\log \\Pr$)', tcolor)
 
-lns = pl1+pl2+pl3
-labs = [l.get_label() for l in lns]
-plt.legend(lns, labs, loc=0)
+panels.multi_legend(pl1 + pl2 + pl3)
+
 
 panels.next_panel()
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
@@ -257,7 +264,6 @@ panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 plt.xlabel('Time (Sec)')
 
 plt.tight_layout()
-
 plt.show()
 
 assert panels.panel_id == panels.PANELS
@@ -266,3 +272,5 @@ assert panels.panel_id == panels.PANELS
 
 # Misc notes:
 #  q,qq = plt.subplot(4, 1, 2)  # TypeError: 'AxesSubplot' object is not iterable
+
+#legend/plot label versus panel label:       plt.ylabel(..) versus  ..plot(..,label=...)
