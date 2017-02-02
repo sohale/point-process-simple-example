@@ -23,7 +23,9 @@ def clamp_numpyarr(narr, a, b=float('inf')):
 # *                                  neuron model
 # **********************************************************************************
 
-"""" A neurons is characterised by equations 2.2 and 2.6, as in example 1. """
+"""" A neurons is characterised by equations 2.2 and 2.6, as in example 1.
+Equations #Eq.1 and #Eq.2
+"""
 
 def report_neuron(n, Delta):
     tau = get_neuron_tau(n, Delta)
@@ -124,6 +126,10 @@ for k,t,I_k in simulate_input(K):
 
     n = na[0]
 
+    # *************************
+    # *  Neuron model
+    # *************************
+
     # x_k is the State
     eps_k = n['sigma_eps'] * np.random.randn()
 
@@ -133,13 +139,19 @@ for k,t,I_k in simulate_input(K):
 
     #dirac_factor = 1.0 / Delta
     #print "dirac_factor,",dirac_factor
-    x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k
+    x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
     last_x_k = x_k
 
     xlp = n['mu'] + n['beta'] * x_k
-    lambda_k = math.exp(xlp)
+    lambda_k = math.exp(xlp)   #Eq.2
     # What will guarantee that xlp < 0 ? i.e. probability < 1
     # Where is x reset?
+
+
+    # *****************************
+    # * Point process simulation
+    # *****************************
+
     fire_probability = lambda_k * Delta  # * 100
     fire = fire_probability > np.random.rand()
 
@@ -161,11 +173,6 @@ for k,t,I_k in simulate_input(K):
     if k == 0:
         report_neuron(n, Delta)
 
-def fix_ylim(ax, arr):
-    mn, mx = np.min(arr), np.max(arr)
-    m = (mx-mn) * 0.1
-    ax.set_ylim([mn - m, mx + m])
-
 print "Simulation time = T =", T, ". Mean rate = ", float(Nc)/T, "(spikes/sec)"
 
 
@@ -175,6 +182,11 @@ print "Simulation time = T =", T, ". Mean rate = ", float(Nc)/T, "(spikes/sec)"
 
 PANELS = 3
 panel_id = 0
+
+def fix_ylim(ax, arr):
+    mn, mx = np.min(arr), np.max(arr)
+    m = (mx-mn) * 0.1
+    ax.set_ylim([mn - m, mx + m])
 
 # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
 
