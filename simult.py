@@ -189,8 +189,24 @@ print "Simulation time = T =", T, ". Mean rate = ", float(Nc)/T, "(spikes/sec)"
 # *                                  plotting
 # **********************************************************************************
 
-PANELS = 3
-panel_id = 0
+class Panels(object):
+    def __init__(self, panels):
+        self.PANELS = panels
+        self.panel_id = 0
+
+    def next_panel(self):
+        self.panel_id += 1
+        self.ax1 = plt.subplot(self.PANELS, 1, self.panel_id)
+        self.currentax = self.ax1  # also equal to plt
+        self.ax2 = None
+
+    def second_y_axis(self):
+        self.ax2 = panels.ax1.twinx()  # http://matplotlib.org/examples/api/two_scales.html
+        self.currentax = self.ax2
+
+
+
+panels = Panels(3)
 
 def fix_ylim(ax, arr):
     mn, mx = np.min(arr), np.max(arr)
@@ -200,53 +216,59 @@ def fix_ylim(ax, arr):
 # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
 
 #http://matplotlib.org/1.3.0/examples/subplots_axes_and_figures/subplot_demo.html
-panel_id += 1
-axes = plt.subplot(PANELS, 1, panel_id)
+#panels.panel_id += 1
+#panels.ax1 = plt.subplot(panels.PANELS, 1, panels.panel_id)
+panels.next_panel()
 tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$');
 #plt.ylabel('$x_k$ State')
-fix_ylim(axes, x_arr)
-axes.set_ylabel('$x_k$ State', color=tcolor)
-axes.tick_params('y', colors=tcolor)
+fix_ylim(panels.currentax, x_arr)
+panels.currentax.set_ylabel('$x_k$ State', color=tcolor)
+panels.currentax.tick_params('y', colors=tcolor)
 
 pl2 = visualise_analytical_relaxation(na[0], Delta, t_arr, plt)
 #plt.legend()
 
 #  q,qq = plt.subplot(4, 1, 2)  # TypeError: 'AxesSubplot' object is not iterable
 
-ax2 = axes.twinx()  # http://matplotlib.org/examples/api/two_scales.html
+panels.second_y_axis()
+#ax2 = panels.ax1.twinx()  # http://matplotlib.org/examples/api/two_scales.html
 #plt.subplot(4, 1, 2)
 tcolor = 'k'
 #plt.plot(t_arr, x_arr, 'k-', label='$x_k$'); plt.ylabel('$x_k$ State')
-pl3 = ax2.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='$\\mu + \\beta x_k$')
+pl3 = panels.currentax.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='$\\mu + \\beta x_k$')
 ylabel = '$L(x_k)$ State ($\log \Pr$)'
 #ax2.ylabel(ylabel)
-fix_ylim(ax2, xlogpr_arr)
-ax2.set_ylabel(ylabel, color=tcolor)
-ax2.tick_params('y', colors=tcolor)
+fix_ylim(panels.currentax, xlogpr_arr)
+panels.currentax.set_ylabel(ylabel, color=tcolor)
+panels.currentax.tick_params('y', colors=tcolor)
 
 lns = pl1+pl2+pl3
 labs = [l.get_label() for l in lns]
 plt.legend(lns, labs, loc=0)
 #plt.legend()
 
-panel_id += 1
-plt.subplot(PANELS, 1, panel_id)
+#panels.panel_id += 1
+#plt.subplot(panels.PANELS, 1, panels.panel_id)
+panels.next_panel()
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
 #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
-plt.plot(t_arr, fire_probability_arr, 'r', label='Probability')
-plt.legend()
+panels.currentax.plot(t_arr, fire_probability_arr, 'r', label='Probability')
+panels.currentax.legend()
 
-panel_id += 1
-plt.subplot(PANELS, 1, panel_id)
+#panels.panel_id += 1
+#plt.subplot(panels.PANELS, 1, panels.panel_id)
+panels.next_panel()
 #plt.plot(x_arr, Nc_arr, 'o-')
-plt.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
-plt.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
+panels.currentax.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
+panels.currentax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
+panels.currentax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
+#plt.xlabel('Time (Sec)')
+#panels.currentax.set_xlabel('Time (Sec) ----')
 plt.xlabel('Time (Sec)')
-plt.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 
 plt.tight_layout()
 
 plt.show()
 
-assert panel_id == PANELS
+assert panels.panel_id == panels.PANELS
