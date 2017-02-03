@@ -88,11 +88,18 @@ class simulator_args(object):
             self.Delta = 1 * MSEC
             self.T = self.K * self.Delta
 
+            """
+            elif duration is not None:
+                # self.K = 3000
+                # self.T = 3.0; self.Delta =  # sec
+                self.T = duration
+                self.Delta = 1 * MSEC  * 0.01
+                self.K = int(self.T / self.Delta + 1 - 0.00001)
+                print "K=", self.K
+            """
         elif duration is not None:
-            # self.K = 3000
-            # self.T = 3.0; self.Delta =  # sec
             self.T = duration
-            self.Delta = 1 * MSEC  * 0.01
+            self.Delta = 1 * MSEC  * 0.2
             self.K = int(self.T / self.Delta + 1 - 0.00001)
             print "K=", self.K
 
@@ -157,7 +164,7 @@ for i in range(NEURONS):
 
 last_x_k = 0.0
 Nc = 0
-for k,t,I_k in simulate_input(duration=3.0):
+for k,t,I_k in simulate_input(duration=30.0):
     if k == 0:
         x_arr = np.zeros((simargs.K,))
         xlogpr_arr = np.zeros((simargs.K,))
@@ -234,6 +241,7 @@ for k,t,I_k in simulate_input(duration=3.0):
 
 print "Simulation time = T =", simargs.T, ". Mean rate = ", float(Nc)/simargs.T, "(spikes/sec)"
 print "Integral of lambda = ", np.sum(lambda_arr) * simargs.Delta
+print "Mean lambda = ", np.sum(lambda_arr) * simargs.Delta / simargs.T
 
 def cumsum0(x, cutlast=True):
     """ generates a cumsum starting with 0.0, of the same size as x, i.e. removes the last element, and returning it separately. """
@@ -382,10 +390,24 @@ panels.cax.legend()
 panels.xylims()
 
 # ##########################
+def nc_to_spk(t_arr, nc_arr, shift=+1):
+    """
+    shift=+1 (default) => post-spike Nc
+    shift=0  => pre-spikes Nc
+    """
+    tarr = np.nonzero(np.diff(nc_arr)>0)[0] + shift
+    return t_arr[tarr], nc_arr[tarr]
+
+spkt, nc = nc_to_spk(t_arr, Nc_arr)
+# ##########################
 panels.next_panel()
 panels.cax.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
 panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
-panels.cax.plot(spike_times, spike_times*0+0.1, 'k.', label='Spikes')
+random_shift_sz = Nc_arr[-1]
+randy = 0  # np.random.rand(spike_times.shape[0]) * random_shift_sz
+panels.cax.plot(spike_times, spike_times*0+0.1+randy*0.9, 'k.')
+#panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
+panels.cax.plot(spkt,nc, 'k.', label='Spikes', alpha=0.9)
 
 panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 plt.xlabel('Time (Sec)')
