@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
 
 """
     Simulates the example 1 of [1].
@@ -193,8 +194,9 @@ for k,t,I_k in simulate_input(duration=3.0):
         x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
 
     if True:
+        dirac_factor = 3.0
         eps_k = _sigma_eps_corrected * np.random.randn()
-        x_k = _rho_corrected * last_x_k  + n['alpha'] * I_k + eps_k  #Eq.1
+        x_k = _rho_corrected * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
 
 
     last_x_k = x_k
@@ -232,6 +234,34 @@ for k,t,I_k in simulate_input(duration=3.0):
 
 print "Simulation time = T =", simargs.T, ". Mean rate = ", float(Nc)/simargs.T, "(spikes/sec)"
 print "Integral of lambda = ", np.sum(lambda_arr) * simargs.Delta
+
+def cumsum0(x, cutlast=True):
+    """ generates a cumsum starting with 0.0, of the same size as x, i.e. removes the last element, and returning it separately. """
+    c = np.cumsum(x)
+    maxval = c[-1]
+    c = np.concatenate((np.array([0.0]),c))
+    if cutlast:
+        c = c[:-1]
+
+    #return c, maxval
+    return c
+
+#t_arr
+#cumintegr_arr, maxv = cumsum0(lambda_arr, cutlast=False)*simargs.Delta
+#t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs.Delta]))
+cumintegr_arr = cumsum0(lambda_arr, cutlast=True)*simargs.Delta
+maxv = np.max(cumintegr_arr)
+
+interp_func = interp1d(cumintegr_arr, t_arr, kind='linear')
+# Time-rescaled quantiles:
+quantiles01 = np.arange(0,maxv,maxv/10.0)
+
+assert np.max(cumintegr_arr) >= np.max(quantiles01)
+assert np.min(cumintegr_arr) <= np.min(quantiles01)
+
+spike_times = interp_func(quantiles01)
+#based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
+# spikes = (spike_times, quantiles01)  # spikes and their accumulated lambda
 
 # **********************************************************************************
 # *                                  plotting
@@ -334,6 +364,9 @@ panels.second_y_axis()
 tcolor = 'k'
 cumintegr_arr = np.cumsum(lambda_arr)*simargs.Delta
 plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-', alpha=0.6, label='$\\int\\lambda dt$')
+plt4= panels.cax.plot(spike_times, quantiles01, 'k.', alpha=1.0, label='spikes')
+
+
 panels.fix_ylim(cumintegr_arr, 0.1)
 panels.ylabels_double('Integral $\\lambda$', tcolor)
 panels.xylims()
@@ -352,6 +385,8 @@ panels.xylims()
 panels.next_panel()
 panels.cax.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
 panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
+panels.cax.plot(spike_times, spike_times*0+0.1, 'k.', label='Spikes')
+
 panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 plt.xlabel('Time (Sec)')
 panels.xylims()
@@ -362,7 +397,6 @@ plt.title("Delta = %1.4f (msec)"%(simargs.Delta/MSEC))
 plt.show()
 
 assert panels.panel_id == panels.PANELS, str(panels.panel_id) + "==" + str(panels.PANELS)
-
 
 
 # Misc notes:
