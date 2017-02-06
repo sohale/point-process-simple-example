@@ -49,6 +49,8 @@ def get_neuron_rho(tau, Delta):
     rho = math.exp( - Delta / tau )
     return rho
 
+CORRECT_IT = 1.0
+
 n0 = {
     # Latent process model
     'rho': 0.99,
@@ -56,9 +58,11 @@ n0 = {
     'sigma_eps':math.sqrt(0.001), # noisiness
 
     # Latent-to-observable (gain), or, state-to-Lprobability
-    'mu': -4.9,
+    'mu': -4.9 + CORRECT_IT*math.log(1000),
     'beta': 0.0
 }
+print repr(n0)
+
 descriptions = {
     'rho': ["", ""],
     'alpha': ["input gain", "volts per amps"],
@@ -164,7 +168,7 @@ for i in range(NEURONS):
 
 last_x_k = 0.0
 Nc = 0
-for k,t,I_k in simulate_input(duration=30.0):
+for k,t,I_k in simulate_input(duration=3.0):
     if k == 0:
         x_arr = np.zeros((simargs.K,))
         xlogpr_arr = np.zeros((simargs.K,))
@@ -192,7 +196,6 @@ for k,t,I_k in simulate_input(duration=30.0):
         # x_k is the State
         eps_k = n['sigma_eps'] * np.random.randn()
 
-        #dirac_factor = 3.0
         #dirac_factor = 7.0  # terrible. Why no refactory period?
         dirac_factor = 1.0
 
@@ -201,7 +204,7 @@ for k,t,I_k in simulate_input(duration=30.0):
         x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
 
     if True:
-        dirac_factor = 3.0
+        dirac_factor = 1.0
         eps_k = _sigma_eps_corrected * np.random.randn()
         x_k = _rho_corrected * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
 
@@ -254,6 +257,22 @@ def cumsum0(x, cutlast=True):
     #return c, maxval
     return c
 
+def generate_unit_isi(total_rate):
+    #print "ISI(%g):"%(total_rate),
+    st = 0.0
+    l = []
+    while st < total_rate:
+        if st > 0.0:
+            l.append(st)
+        isi = -math.log(np.random.rand())
+        #print isi,l,
+        #l.append(isi)
+        st += isi
+        #if st > total_rate:
+        #    break
+    #print
+    return np.array(l)
+
 #t_arr
 #cumintegr_arr, maxv = cumsum0(lambda_arr, cutlast=False)*simargs.Delta
 #t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs.Delta]))
@@ -262,12 +281,18 @@ maxv = np.max(cumintegr_arr)
 
 interp_func = interp1d(cumintegr_arr, t_arr, kind='linear')
 # Time-rescaled quantiles:
-quantiles01 = np.arange(0,maxv,maxv/10.0)
+#quantiles01 = np.arange(0,maxv,maxv/10.0 * 10000)
+quantiles01 = generate_unit_isi(maxv)
+#print quantiles01
 
-assert np.max(cumintegr_arr) >= np.max(quantiles01)
-assert np.min(cumintegr_arr) <= np.min(quantiles01)
+
+assert quantiles01.shape[0] == 0 or np.max(cumintegr_arr) >= np.max(quantiles01)
+assert quantiles01.shape[0] == 0 or np.min(cumintegr_arr) <= np.min(quantiles01)
+if quantiles01.shape == (0,):
+    print "Warning: empty spike train. *****"
 
 spike_times = interp_func(quantiles01)
+
 #based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
 # spikes = (spike_times, quantiles01)  # spikes and their accumulated lambda
 
