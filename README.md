@@ -10,6 +10,7 @@ Parameter Estimation of the Kalman filter is implemented using Em Algorithm.
 Assessment of the results includes ML and use of Time-Rescaling Theorem.
 
 ## Reference:
+[1]
 Anne C **Smith**, Emery N **Brown**.
 "*Estimating a State-Space Model from Point Process Observations*".
 Neural Computation.
