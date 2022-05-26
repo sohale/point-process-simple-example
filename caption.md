@@ -84,6 +84,6 @@ In fact,
 
 
 Courtesy:
-[1](https://clubmate.fi/using-pseudographics-in-blogposts-drawing-ascii-diagrams-and-boxes)
-[2](https://stackoverflow.com/questions/11256433/how-to-show-math-equations-in-general-githubs-markdownnot-githubs-blog)
-[3](https://yuml.me/diagram/scruffy/class/samples)
+[1](https://clubmate.fi/using-pseudographics-in-blogposts-drawing-ascii-diagrams-and-boxes),
+[yuml](https://stackoverflow.com/questions/11256433/how-to-show-math-equations-in-general-githubs-markdownnot-githubs-blog),
+[3](https://yuml.me/diagram/scruffy/class/samples).
