@@ -66,4 +66,6 @@ Misc:
 * $\log λ = βx + μ$
 * λ ∝ $\Pr$(spike) / dt
 
+*  $\Pr(?) ∝ \int λ dt $
+
 .
