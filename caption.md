@@ -13,6 +13,7 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 * `λ = exp(βx + μ)`
 
 ### Model Diagram (in progress)
+It is cmoprised of a state space model (x=state) and a Point Process (λ=CIF)
 ```txt
 ┌───┐   ┌───┐    ┌──────────────────────────────..─┐
 │ x │ → │ λ │ →  │ │ │║ │║│  │ │    │║║     │   .. │
