@@ -43,7 +43,7 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 
 
 LaTex:
-* $x_{t+δt} = A x_t + αI + ε$
+* $x_{t+δt} = A^{δt} x_t + αI + ε$
 * $λ = \exp(βx + μ)$
 
 Coloured:
