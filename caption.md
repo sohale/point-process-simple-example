@@ -46,8 +46,7 @@ LaTex:
 * $x_{t+δt} = A^{δt} x_t + αI + ε$
 * $λ = \exp(βx + μ)$
 
-Coloured:
-Latex $\color{red}{\lambda}$
+Coloured: $\color{red}{\lambda}$ Characterises a Point Process.
 ```
 `
 ```
