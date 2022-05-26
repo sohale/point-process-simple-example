@@ -69,7 +69,7 @@ Misc:
 ```
 In fact,
 
-*  Pr(?) ∝ ∫ λ dt
+*  Pr(spike|) ∝ ∫ λ dt
 <!-- *  $\Pr(?) ∝ \int λ dt $ -->
 
 .
