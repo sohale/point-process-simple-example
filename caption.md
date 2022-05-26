@@ -3,7 +3,7 @@ r { color: Red }
 o { color: Orange }
 g { color: Green }
 </style>
-$\color{color-code}{your-text-here}$
+
 
 ### Screenshot
 Statistical modelling of Spike Trains as Point Processes
@@ -48,6 +48,7 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 
 
 Coloured:
+$\color{red}{red\lambda}$
 ```txt
          ┌───┐          ┌───┐     ┌──────────────────────────────..
          │ x │ ───────→ │ λ │───→ │ │ │║ │║│  │ │    │║║     │   ..
