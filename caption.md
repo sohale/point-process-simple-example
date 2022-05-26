@@ -1,8 +1,4 @@
-<style>
-r { color: Red }
-o { color: Orange }
-g { color: Green }
-</style>
+
 
 
 ### Screenshot
@@ -49,7 +45,7 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 
 Coloured:
 $\color{red}{red\lambda}$
-```txt
+
          ┌───┐          ┌───┐     ┌──────────────────────────────..
          │ x │ ───────→ │ λ │───→ │ <span style="color: red; opacity: 0.80;">│ │║ │║│  │ │    │║║     │   </span>.. 
          └╥──┘══>╗      └───┘     └──────────────────────────────..
@@ -57,5 +53,5 @@ $\color{red}{red\lambda}$
  I ─→*α──→╢      ╟*A
           ╚═+══<═╝
             +ε
-```
+
 
