@@ -76,6 +76,8 @@ In fact,
 
 ### Using [yuml](https://yuml.me/diagram/scruffy/class/samples) diagrams
 
-![d]("http://yuml.me/diagram/scruffy/class/[HttpContext]uses -.->[Spikes {bg:orange}]")
+<img src="http://yuml.me/diagram/scruffy/class/[Input]EPSP -.->[State]λ -.->[Spikes {bg:orange}]" />
+
+![d]("http://yuml.me/diagram/scruffy/class/[State]uses -.->[Spikes {bg:orange}]")
 
 ![d](https://avatars.githubusercontent.com/u/145215?s=96&v=4)
