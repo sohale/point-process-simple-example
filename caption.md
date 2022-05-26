@@ -1,6 +1,5 @@
 
 
-
 ### Screenshot
 Statistical modelling of Spike Trains as Point Processes
 ![Spike Trains as Point Processes](https://repository-images.githubusercontent.com/80567584/04691a80-5aa6-11eb-863e-9f2bab06be1b "Statisticall modelling of Spike Trains as Point Processes")
@@ -44,7 +43,7 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 
 
 Coloured:
-$\color{red}{red\lambda}$
+Latex $\color{red}{red\lambda}$
 ```
 `
 ```
