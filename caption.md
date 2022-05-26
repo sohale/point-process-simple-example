@@ -3,6 +3,7 @@ r { color: Red }
 o { color: Orange }
 g { color: Green }
 </style>
+$\color{color-code}{your-text-here}$
 
 ### Screenshot
 Statistical modelling of Spike Trains as Point Processes
