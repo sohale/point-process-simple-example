@@ -45,6 +45,7 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 
 Coloured:
 $\color{red}{red\lambda}$
+``
 
 │         ┌───┐          ┌───┐     ┌──────────────────────────────..
 │         │ x │ ───────→ │ λ │───→ │ <span style="color: red; opacity: 0.80;">│ │║ │║│  │ │    │║║     │   </span>.. 
