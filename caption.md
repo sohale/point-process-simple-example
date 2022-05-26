@@ -62,3 +62,6 @@ Coloured: $\color{red}{\lambda}$ Characterises a Point Process.
 │            +ε
 │
 
+Misc:
+* $\log λ = βx + μ$
+* λ ∝ $\Pr$(spike)
