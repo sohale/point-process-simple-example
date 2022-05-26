@@ -47,7 +47,7 @@ LaTex:
 * $λ = \exp(βx + μ)$
 
 Coloured:
-Latex $\color{red}{red\lambda}$
+Latex $\color{red}{\lambda}$
 ```
 `
 ```
