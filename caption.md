@@ -66,6 +66,7 @@ Misc:
 * $\log λ = βx + μ$
 * λ ∝ $\Pr$(spike) / dt
 ```
+.
 ```
 In fact,
 
