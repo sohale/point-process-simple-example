@@ -42,6 +42,10 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 ```
 
 
+Latex $\color{red}{red\lambda}$
+* $x(t+δt) = A x(t) + αI + ε$
+* $λ = exp(βx + μ)$
+
 Coloured:
 Latex $\color{red}{red\lambda}$
 ```
