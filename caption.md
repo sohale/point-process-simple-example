@@ -41,3 +41,19 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
             +ε
 ```
 
+<style>
+r { color: Red }
+o { color: Orange }
+g { color: Green }
+</style>
+Coloured:
+```txt
+         ┌───┐          ┌───┐     ┌──────────────────────────────..
+         │ x │ ───────→ │ λ │───→ │ │ │║ │║│  │ │    │║║     │   ..
+         └╥──┘══>╗      └───┘     └──────────────────────────────..
+          ║      ║
+ I ─→*α──→╢      ╟*A
+          ╚═+══<═╝
+            +ε
+```
+
