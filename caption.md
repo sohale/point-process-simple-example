@@ -69,6 +69,7 @@ Misc:
 
 In fact,
 
+*  Pr(?) ∝ ∫ λ dt
 *  $\Pr(?) ∝ \int λ dt $
 
 .
