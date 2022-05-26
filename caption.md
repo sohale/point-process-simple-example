@@ -32,7 +32,7 @@ A State-State model is a Dynamical System, i.e. a system with a feelback loop.
    +ε
 ```
 
-_I_ is the input and ε is additive noise, both are injected into the loop.
+_I_ is the input (driving stimulus) and ε is additive noise, both are injected into the loop.
 ```txt
          ┌───┐          ┌───┐     ┌──────────────────────────────···
          │ x │ ───────→ │ λ │───→ │ │ │║ │║│  │ │    │║║     │   ···
