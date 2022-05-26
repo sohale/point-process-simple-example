@@ -53,15 +53,9 @@ Coloured: $\color{red}{\lambda}$ Characterises a Point Process.
 `
 ```
 
-│         ┌───┐          ┌───┐     ┌──────────────────────────────..
-│         │ x │ ───────→ │ λ │───→ │ <span style="color: red; opacity: 0.80;">│ │║ │║│  │ │    │║║     │   </span>.. 
-│         └╥──┘══>╗      └───┘     └──────────────────────────────..
-│          ║      ║
-│ I ─→*α──→╢      ╟*A
-│          ╚═+══<═╝
-│            +ε
-│
-
+c<span style="color: red; opacity: 0.30;">olor test </span>.
+c<span style="color: red;">olor test </span>.
+ 
 Misc:
 * $\log λ = βx + μ$
 * λ ∝ $\Pr$(spike) / dt
