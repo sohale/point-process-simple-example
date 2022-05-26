@@ -31,6 +31,6 @@ EM Algorithm, Kalman filter, Estimation, Maximum Likelihood, Point Processes, Ti
 ### Screenshot
 Statistical modelling of Spike Trains as Point Processes
 ![Spike Trains as Point Processes](https://repository-images.githubusercontent.com/80567584/04691a80-5aa6-11eb-863e-9f2bab06be1b "Statisticall modelling of Spike Trains as Point Processes")
-Note Λ(t) = ∫ λ(t) dt is the times-rescaling function. x[k] is the input (state). In physiologicla terms, the input signal is the EPSP/IPSP.
+Note Λ(t) = ∫ λ(t) dt is the times-rescaling function. x[k] is the input (i.e. the "state"). In physiological terms, the input signal is the EPSP/IPSP.
 
-As spiek rate estimator: The derived statistical model (with parameters) can also be seen as a rigorous method of calculating the "spiking rates" based on observed spike trains. The estimated moodel generates λ(t), which is an estimation of the probability of spikes (also can be seen as spiking rate). It's a quantity that is difficult to estimate, or would be incorrect if estimated in the naïve way simply by averaging (over bins) or smoothing of spike trains.
+As spike rate estimator: The derived statistical model (with parameters) can also be seen as a rigorous method of calculating the "spiking rates" based on observed spike trains. The estimated moodel generates λ(t), which is an estimation of the probability of spikes (also can be seen as spiking rate). It's a quantity that is difficult to estimate, or would be incorrect if estimated in the naïve way simply by averaging (over bins) or smoothing of spike trains.
