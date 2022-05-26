@@ -64,7 +64,8 @@ Misc:
 ```
 In fact,
 
-*  Pr(spike|) ∝ ∫ λ dt
+*  Pr(spike) ∝ ∫ λ dt
+*  Pr(spike|no spike before)=Pr(ISI) ∝ ∫ λ dt
 <!-- *  $\Pr(?) ∝ \int λ dt $ -->
 
 .
