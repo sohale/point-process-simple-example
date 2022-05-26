@@ -29,6 +29,6 @@ My code has implementations the following concepts:
 EM Algorithm, Kalman filter, Estimation, Maximum Likelihood, Point Processes, Time-Rescaling Theorem.
 
 ### Screenshot
-Statisticall modelling of Spike Trains as Point Processes
+Statisticall modelling of Spike Trains as Point Processes. Note Λ(t) = ∫ λ(t) dt is the times-rescaling function.
 ![Spike Trains as Point Processes](https://repository-images.githubusercontent.com/80567584/04691a80-5aa6-11eb-863e-9f2bab06be1b "Statisticall modelling of Spike Trains as Point Processes")
 
