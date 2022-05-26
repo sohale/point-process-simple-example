@@ -13,7 +13,7 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 * `λ = exp(βx + μ)`
 
 ### Model Diagram (in progress)
-It is cmoprised of a state space model (x=state) and a Point Process (λ=CIF)
+It is comprised of a state space model (x=state) and a Point Process (λ=CIF)
 ```txt
 ┌───┐   ┌───┐    ┌──────────────────────────────..─┐
 │ x │ → │ λ │ →  │ │ │║ │║│  │ │    │║║     │   .. │
@@ -21,7 +21,7 @@ It is cmoprised of a state space model (x=state) and a Point Process (λ=CIF)
 ```
 
 
-
+A state-state model is a Dynamical System, i.e. a system with a feelback loop.
 ```txt
 ┌───┐      ┌───┐     ┌──────────────────────────────··─┐
 │ x │ ───→ │ λ │───→ │ │ │║ │║│  │ │    │║║     │   ·· │
@@ -32,6 +32,7 @@ It is cmoprised of a state space model (x=state) and a Point Process (λ=CIF)
    +ε
 ```
 
+I is the input and ε is additive noise.
 ```txt
          ┌───┐          ┌───┐     ┌──────────────────────────────···
          │ x │ ───────→ │ λ │───→ │ │ │║ │║│  │ │    │║║     │   ···
