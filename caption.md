@@ -74,7 +74,7 @@ In fact,
 
 <img src="http://yuml.me/diagram/scruffy/class/[Input]EPSP -.->[State]λ -.-^[Spikes {bg:orange}]" />
 
-![d]("http://yuml.me/diagram/scruffy/class/[State]uses -.->[Spikes {bg:orange}]")
+Didn't work: `![d]("http://yuml.me/diagram/scruffy/class/[State]uses -.->[Spikes {bg:orange}]")`
 
 
 
