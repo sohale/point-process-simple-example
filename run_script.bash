@@ -95,9 +95,10 @@ source ./p3-for-me/bin/activate
 
 python --version
 
-python simult_sym2.py
+python simult2_sym.py
 
 echo '
 source ./p3-for-me/bin/activate
-python simult_sym2.py
+python simult1_py3.py
+python simult2_sym.py
 '
