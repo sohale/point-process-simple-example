@@ -37,8 +37,8 @@ Ref. equations #Eq.1 and #Eq.2
 
 def report_neuron(n, Delta):
     tau = get_neuron_tau(n, Delta)
-    print 'Tau=', tau * 1000.0, ' (msec)'
-    print 'Noisiness:  sigma_eps = ', n['sigma_eps'] * 1000.0, ' (milli Volts per sample)'
+    print('Tau=', tau * 1000.0, ' (msec)')
+    print('Noisiness:  sigma_eps = ', n['sigma_eps'] * 1000.0, ' (milli Volts per sample)')
 
 def get_neuron_tau(n, Delta):
     # todo: def get_ER_tau(n, Delta, rho)  # ER: Exponential Relaxation
@@ -61,7 +61,7 @@ n0 = {
     'mu': -4.9 + CORRECT_IT*math.log(1000),
     'beta': 0.0
 }
-print repr(n0)
+print( repr(n0) )
 
 descriptions = {
     'rho': ["", ""],
@@ -99,13 +99,13 @@ class simulator_args(object):
                 self.T = duration
                 self.Delta = 1 * MSEC  * 0.01
                 self.K = int(self.T / self.Delta + 1 - 0.00001)
-                print "K=", self.K
+                print( "K=", self.K )
             """
         elif duration is not None:
             self.T = duration
             self.Delta = 1 * MSEC  * 0.2
             self.K = int(self.T / self.Delta + 1 - 0.00001)
-            print "K=", self.K
+            print( "K=", self.K )
 
         else:
             raise "Error"
@@ -152,10 +152,10 @@ for i in range(NEURONS):
     n['beta'] = 1.1 # (np.random.rand() * d) + BETA_RANGE[0]
     na.append(n)
 
-#print "Beta: ",
+# print( "Beta: ", end = '')
 #for n in na:eps_k
-#    print n['beta'],
-# print
+#    print( n['beta'], end = '')
+# print()
 
 # simargs.K = 3000
 # simargs.T = 3.0; simargs.Delta =  # sec
@@ -181,11 +181,11 @@ for k,t,I_k in simulate_input(duration=3.0):
         _tau = get_neuron_tau(na[0], DELTA0)
         _rho_corrected = get_neuron_rho(_tau, simargs.Delta)
         _sigma_eps_corrected = na[0]['sigma_eps'] * math.sqrt(simargs.Delta/DELTA0)
-        print "_rho_corrected = ", _rho_corrected, "rho=",na[0]['rho']
-        print "_sigma_eps_corrected = ", _sigma_eps_corrected, "sigma_eps=",na[0]['sigma_eps']
+        print( "_rho_corrected = ", _rho_corrected, "rho=",na[0]['rho'] )
+        print( "_sigma_eps_corrected = ", _sigma_eps_corrected, "sigma_eps=",na[0]['sigma_eps'] )
 
 
-    #print t,k,I_k
+    # print( t, k, I_k )
 
     n = na[0]
 
@@ -200,7 +200,7 @@ for k,t,I_k in simulate_input(duration=3.0):
         dirac_factor = 1.0
 
         #dirac_factor = 1.0 / simargs.Delta
-        #print "dirac_factor,",dirac_factor
+        # print( "dirac_factor,",dirac_factor )
         x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
 
     if True:
@@ -242,9 +242,9 @@ for k,t,I_k in simulate_input(duration=3.0):
     if k == 0:
         report_neuron(n, simargs.Delta)
 
-print "Simulation time = T =", simargs.T, ". Mean rate = ", float(Nc)/simargs.T, "(spikes/sec)"
-print "Integral of lambda = ", np.sum(lambda_arr) * simargs.Delta
-print "Mean lambda = ", np.sum(lambda_arr) * simargs.Delta / simargs.T
+print( "Simulation time = T =", simargs.T, ". Mean rate = ", float(Nc)/simargs.T, "(spikes/sec)" )
+print( "Integral of lambda = ", np.sum(lambda_arr) * simargs.Delta )
+print( "Mean lambda = ", np.sum(lambda_arr) * simargs.Delta / simargs.T )
 
 def cumsum0(x, cutlast=True):
     """ generates a cumsum starting with 0.0, of the same size as x, i.e. removes the last element, and returning it separately. """
@@ -258,19 +258,19 @@ def cumsum0(x, cutlast=True):
     return c
 
 def generate_unit_isi(total_rate):
-    #print "ISI(%g):"%(total_rate),
+    # print( "ISI(%g):"%(total_rate), end='')
     st = 0.0
     l = []
     while st < total_rate:
         if st > 0.0:
             l.append(st)
         isi = -math.log(np.random.rand())
-        #print isi,l,
+        # print( isi,l, end='')
         #l.append(isi)
         st += isi
         #if st > total_rate:
         #    break
-    #print
+    # print()
     return np.array(l)
 
 #t_arr
@@ -283,13 +283,13 @@ interp_func = interp1d(cumintegr_arr, t_arr, kind='linear')
 # Time-rescaled quantiles:
 #quantiles01 = np.arange(0,maxv,maxv/10.0 * 10000)
 quantiles01 = generate_unit_isi(maxv)
-#print quantiles01
+# print( quantiles01 )
 
 
 assert quantiles01.shape[0] == 0 or np.max(cumintegr_arr) >= np.max(quantiles01)
 assert quantiles01.shape[0] == 0 or np.min(cumintegr_arr) <= np.min(quantiles01)
 if quantiles01.shape == (0,):
-    print "Warning: empty spike train. *****"
+    print( "Warning: empty spike train. *****" )
 
 spike_times = interp_func(quantiles01)
 
