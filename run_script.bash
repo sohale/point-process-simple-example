@@ -95,9 +95,9 @@ source ./p3-for-me/bin/activate
 
 python --version
 
-python simult.py
+python simult_sym2.py
 
-<<< ' | cat
+echo '
 source ./p3-for-me/bin/activate
-python fitzhugh-nagumo-model-3.py
+python simult_sym2.py
 '
