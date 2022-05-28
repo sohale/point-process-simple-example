@@ -17,8 +17,9 @@ def visualise_analytical_relaxation(n, Delta0, t_arr, plt):
     """ For a given neuron, based on its alpha, rho  """
     ht = clamp_numpyarr(t_arr - 1.0, 0, float('inf'))
     tau = get_neuron_tau(n, Delta0)
-    expa = np.exp(- ht / tau) * n['alpha']
-    pl = plt.plot(t_arr, expa, 'r', label='$exp(-t/\\tau)$',
+    expa = np.exp(- ht / tau) * n['alpha'] * \
+       np.heaviside(t_arr - 1.0, 1.0)
+    pl = plt.plot(t_arr, expa, 'r', label='$\exp(-t/\\tau)$',
                   alpha=0.2, linewidth=5)
     return pl
 
@@ -360,7 +361,7 @@ class Panels(object):
         """
         #added_plts = pl1+pl2+pl3
         labs = [l.get_label() for l in added_plts]
-        plt.legend(added_plts, labs, loc=loc, shadow=True)
+        plt.legend(added_plts, labs, loc=loc, shadow=True, fontsize=7)
 
     # set common xlim
     def set_common_xlims(self, x0, x1):
@@ -376,7 +377,7 @@ class Panels(object):
 panels = Panels(4)
 #panels.set_common_xlims(1.00 - 0.01, 1.00 + 0.01)
 # ##########################
-panels.next_panel()
+panels.next_panel() # 1
 
 tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$')
@@ -398,7 +399,7 @@ panels.multi_legend(pl1 + pl2 + pl3)
 panels.apply_common_xlims()
 
 # ##########################
-panels.next_panel()
+panels.next_panel() # 2
 tcolor = 'r'
 plt1 = panels.cax.plot(t_arr, lambda_arr, tcolor+'.', label='$\\lambda$')
 # panels.cax.legend()
@@ -420,7 +421,8 @@ panels.add_second_y_axis()
 tcolor = 'k'
 cumintegr_arr = np.cumsum(lambda_arr)*simargs.Delta
 plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-',
-                       alpha=0.6, label='$\\int\\lambda dt$')
+                       alpha=0.6, label='a\n$\\int\\lambda dt$')
+panels.cax.spines['right'].set_position(('data', np.max(t_arr)))
 plt4 = panels.cax.plot(spike_times, quantiles01, 'k.',
                        alpha=1.0, label='spikes')
 
@@ -432,7 +434,7 @@ panels.apply_common_xlims()
 panels.multi_legend(plt1 + plt2 + plt3)
 
 # ##########################
-panels.next_panel()
+panels.next_panel() # 3
 #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
 #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
 panels.cax.plot(t_arr, fire_probability_arr, 'r', label='$\\Pr$ / bin')
@@ -453,7 +455,7 @@ def nc_to_spk(t_arr, nc_arr, shift=+1):
 
 spkt, nc = nc_to_spk(t_arr, Nc_arr)
 # ##########################
-panels.next_panel()
+panels.next_panel() # 4
 plt1_N =\
     panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
 random_shift_sz = Nc_arr[-1]
