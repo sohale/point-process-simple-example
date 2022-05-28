@@ -310,7 +310,6 @@ class Panels(object):
         self.ax2 = None
 
         self.xlim = None
-        #self.ylim = None
 
     def next_panel(self):
         self.panel_id += 1
@@ -320,89 +319,92 @@ class Panels(object):
         # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
         #http://matplotlib.org/1.3.0/examples/subplots_axes_and_figures/subplot_demo.html
 
-    def second_y_axis(self):
+    def add_second_y_axis(self):
         self.ax2 = panels.ax1.twinx()  # http://matplotlib.org/examples/api/two_scales.html
         self.cax = self.ax2
 
-    def fix_ylim(self, arr, magin_ratio=0.1):
+    def fix_currenty_ylim(self, arr, margin_ratio=0.1):
         mn, mx = np.min(arr), np.max(arr)
-        m = (mx-mn) * magin_ratio
+        m = (mx-mn) * margin_ratio
         self.cax.set_ylim([mn - m, mx + m])
 
-    def ylabels_double(self, ylabel, tcolor):
+    def set_currenty_ylabel(self, ylabel, tcolor):
         # for double y
         self.cax.set_ylabel(ylabel, color=tcolor)
         self.cax.tick_params('y', colors=tcolor)
 
-    def multi_legend(self, added_plts):
+    def multi_legend(self, added_plts, loc='best'):
         """
             Legend for multiple plots, withe superimposed or double-y-axis.
             Usage: panels.multi_legend(pl1 + pl2 + pl3)
         """
         #added_plts = pl1+pl2+pl3
         labs = [l.get_label() for l in added_plts]
-        plt.legend(added_plts, labs, loc=0)
+        plt.legend(added_plts, labs, loc=loc, shadow=True)
 
-    def xylims(self):
+    # set common xlim
+    def set_common_xlims(self, x0, x1):
+        self.xlim = [x0, x1]
+
+    def apply_common_xlims(self):
         if self.xlim:
             plt.xlim(self.xlim[0], self.xlim[1])
-        #if self.ylim:
-        #    plt.ylim(self.ylim[0], self.ylim[1])
 
 
 # ##########################
 
 panels = Panels( 4 )
-#panels.xlim = [1.00 - 0.01, 1.00 + 0.01]
+#panels.set_common_xlims(1.00 - 0.01, 1.00 + 0.01)
 # ##########################
 panels.next_panel()
 
 tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$')
-panels.fix_ylim(x_arr, 0.1)
-panels.ylabels_double('$x_k$ State', tcolor)
+panels.fix_currenty_ylim(x_arr, 0.1)
+panels.set_currenty_ylabel('$x_k$ State', tcolor)
 
 pl2 = visualise_analytical_relaxation(na[0], DELTA0, t_arr, plt)
 
-panels.second_y_axis()
+
+panels.add_second_y_axis()
 tcolor = 'k'
 pl3 = panels.cax.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='$\\mu + \\beta x_k$')
 
-panels.fix_ylim(xlogpr_arr, 0.1)
-panels.ylabels_double('$L(x_k)$ State ($\\log \\Pr$)', tcolor)
+panels.fix_currenty_ylim(xlogpr_arr, 0.1)
+panels.set_currenty_ylabel('$L(x_k)$ State ($\\log \\Pr$)', tcolor)
 
 panels.multi_legend(pl1 + pl2 + pl3)
-panels.xylims()
+panels.apply_common_xlims()
 
 # ##########################
 panels.next_panel()
 tcolor = 'r'
 plt1 = panels.cax.plot(t_arr, lambda_arr, tcolor+'.', label='$\\lambda$')
 #panels.cax.legend()
-panels.fix_ylim(lambda_arr, 0.1)
-panels.ylabels_double('$\\lambda$ (sec.$^-1$)', tcolor)
+panels.fix_currenty_ylim(lambda_arr, 0.1)
+panels.set_currenty_ylabel('$\\lambda$ (sec.$^-1$)', tcolor)
 
-panels.second_y_axis()
+panels.add_second_y_axis()
 tcolor = 'b'
 ISI_arr = 1.0 / lambda_arr
 plt2 = panels.cax.plot(t_arr, ISI_arr, tcolor+'-', alpha=0.6, label='ISI')
-panels.fix_ylim(ISI_arr, 0.1)
-panels.ylabels_double('ISI (sec.)', tcolor)
+panels.fix_currenty_ylim(ISI_arr, 0.1)
+panels.set_currenty_ylabel('ISI (sec.)', tcolor)
 #panels.multi_legend(plt1 + plt2)
-panels.xylims()
+panels.apply_common_xlims()
 #panels.cax.set_ylim(-0.1, 15.0)
 
 # third axis
-panels.second_y_axis()
+panels.add_second_y_axis()
 tcolor = 'k'
 cumintegr_arr = np.cumsum(lambda_arr)*simargs.Delta
 plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-', alpha=0.6, label='$\\int\\lambda dt$')
 plt4= panels.cax.plot(spike_times, quantiles01, 'k.', alpha=1.0, label='spikes')
 
 
-panels.fix_ylim(cumintegr_arr, 0.1)
-panels.ylabels_double('Integral $\\lambda$', tcolor)
-panels.xylims()
+panels.fix_currenty_ylim(cumintegr_arr, 0.1)
+panels.set_currenty_ylabel('Integral $\\lambda$', tcolor)
+panels.apply_common_xlims()
 
 panels.multi_legend(plt1 + plt2 + plt3)
 
@@ -412,7 +414,7 @@ panels.next_panel()
 #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
 panels.cax.plot(t_arr, fire_probability_arr, 'r', label='$\\Pr$ / bin')
 panels.cax.legend()
-panels.xylims()
+panels.apply_common_xlims()
 
 # ##########################
 def nc_to_spk(t_arr, nc_arr, shift=+1):
@@ -426,18 +428,26 @@ def nc_to_spk(t_arr, nc_arr, shift=+1):
 spkt, nc = nc_to_spk(t_arr, Nc_arr)
 # ##########################
 panels.next_panel()
-panels.cax.plot(t_arr, I_arr, 'k', label='$I_k$ (input)', alpha=0.1)
+plt1_N=\
 panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
 random_shift_sz = Nc_arr[-1]
 randy = 0  # np.random.rand(spike_times.shape[0]) * random_shift_sz
+
+# plt2_s1=\   no legend
 panels.cax.plot(spike_times, spike_times*0+0.1+randy*0.9, 'k.')
 #panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
+plt3_s2=\
 panels.cax.plot(spkt,nc, 'k.', label='Spikes', alpha=0.9)
 
-panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
+#panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
 plt.xlabel('Time (Sec)')
-panels.xylims()
 
+panels.add_second_y_axis()
+plt4_I=\
+panels.cax.plot(t_arr, I_arr, 'darkgreen', label='$I_k$ (input)', alpha=0.4)
+panels.set_currenty_ylabel('$I_k$', tcolor)
+panels.multi_legend(plt1_N + plt3_s2 + plt4_I, 'upper left')
+panels.apply_common_xlims()
 
 plt.tight_layout()
 plt.title("Delta = %1.4f (msec)"%(simargs.Delta/MSEC))
