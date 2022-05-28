@@ -371,6 +371,8 @@ class Panels(object):
         if self.xlim:
             plt.xlim(self.xlim[0], self.xlim[1])
 
+    def no_xticks(self):
+        self.cax.set_xticklabels([])
 
 # ##########################
 
@@ -378,6 +380,8 @@ panels = Panels(4)
 #panels.set_common_xlims(1.00 - 0.01, 1.00 + 0.01)
 # ##########################
 panels.next_panel() # 1
+
+plt.title("Delta = %1.4f (msec)" % (simargs.Delta/MSEC))
 
 tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$')
@@ -397,11 +401,12 @@ panels.set_currenty_ylabel('$L(x_k)$ State ($\\log \\Pr$)', tcolor)
 
 panels.multi_legend(pl1 + pl2 + pl3)
 panels.apply_common_xlims()
+panels.no_xticks()
 
 # ##########################
 panels.next_panel() # 2
 tcolor = 'r'
-plt1 = panels.cax.plot(t_arr, lambda_arr, tcolor+'.', label='$\\lambda$')
+plt1 = panels.cax.plot(t_arr, lambda_arr, tcolor+'-', alpha=0.5, label='$\\lambda$')
 # panels.cax.legend()
 panels.fix_currenty_ylim(lambda_arr, 0.1)
 panels.set_currenty_ylabel('$\\lambda$ (sec.$^-1$)', tcolor)
@@ -430,6 +435,7 @@ plt4 = panels.cax.plot(spike_times, quantiles01, 'k.',
 panels.fix_currenty_ylim(cumintegr_arr, 0.1)
 panels.set_currenty_ylabel('Integral $\\lambda$', tcolor)
 panels.apply_common_xlims()
+panels.no_xticks()
 
 panels.multi_legend(plt1 + plt2 + plt3)
 
@@ -440,6 +446,7 @@ panels.next_panel() # 3
 panels.cax.plot(t_arr, fire_probability_arr, 'r', label='$\\Pr$ / bin')
 panels.cax.legend()
 panels.apply_common_xlims()
+panels.no_xticks()
 
 # ##########################
 
@@ -476,7 +483,7 @@ panels.multi_legend(plt1_N + plt3_s2 + plt4_I, 'upper left')
 panels.apply_common_xlims()
 
 plt.tight_layout()
-plt.title("Delta = %1.4f (msec)" % (simargs.Delta/MSEC))
+plt.subplots_adjust(hspace=0) # 0.04
 plt.show()
 
 assert panels.panel_id == panels.PANELS, str(
