@@ -89,6 +89,51 @@ MAKE_HAPPEN "$VENV_PACKAGES/graphviz/__init__.py" || {
   pip install $PIPFLAGS graphviz
 }
 
+
+#brew install pkg-config
+#brew link pkg-config
+#brew install pygtk
+#brew install freetype
+#brew install libpng
+
+true || MAKE_HAPPEN "$VENV_PACKAGES/mplcairo/__init__.py" || {
+    # brew install llvm
+    brew info llvm # keg-only
+
+    export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+    export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+    export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+
+    # https://github.com/matplotlib/mplcairo#macos
+    # pip install mplcairo  # from PyPI
+    # The wheel package is not available.
+
+    # pip install git+https://github.com/matplotlib/mplcairo
+
+echo '
+==> llvm
+To use the bundled libc++ please add the following LDFLAGS:
+  LDFLAGS="-L/opt/homebrew/opt/llvm/lib -Wl,-rpath,/opt/homebrew/opt/llvm/lib"
+
+llvm is keg-only, which means it was not symlinked into /opt/homebrew,
+because macOS already provides this software and installing another version in
+parallel can cause all kinds of trouble.
+
+If you need to have llvm first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find llvm you may need to set:
+  export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+'
+
+}
+
+# for llvm (failed attempt)
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+
 echo "Main script"
 
 source ./p3-for-me/bin/activate
