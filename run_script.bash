@@ -48,40 +48,44 @@ function chk_venv(){
             $PIPFLAGS \
             --upgrade pip
 
-    #python -m \
-        pip install \
-            $PIPFLAGS \
-            numpy
-
-        pip install \
-            $PIPFLAGS \
-            matplotlib
-
 }
 
 MAKE_HAPPEN "./p3-for-me/bin/activate" || {
-chk_venv
+    chk_venv
 }
 
 source ./p3-for-me/bin/activate
+# export PYTHON_VER="python3.9"
+export PYTHON_VER="$(ls -1t ./p3-for-me/lib/|grep -i "python"|head -n 1)"
 
+export VENV_PACKAGES="./p3-for-me/lib/$PYTHON_VER/site-packages"
 
-MAKE_HAPPEN "./p3-for-me/lib/python3.9/site-packages/scipy/LICENSE.txt" || {
+MAKE_HAPPEN "$VENV_PACKAGES/numpy/LICENSE.txt" || {
+    pip install \
+        $PIPFLAGS \
+        numpy
+
+    pip install \
+        $PIPFLAGS \
+        matplotlib
+}
+
+MAKE_HAPPEN "$VENV_PACKAGES/scipy/LICENSE.txt" || {
   pip install $PIPFLAGS scipy
 }
-MAKE_HAPPEN "./p3-for-me/lib/python3.9/site-packages/sympy/__init__.py" || {
+MAKE_HAPPEN "$VENV_PACKAGES/sympy/__init__.py" || {
   pip install $PIPFLAGS sympy
 }
-MAKE_HAPPEN "./p3-for-me/lib/python3.9/site-packages/yaml/__init__.py" || {
+MAKE_HAPPEN "$VENV_PACKAGES/yaml/__init__.py" || {
   pip install $PIPFLAGS PyYAML
 }
-#MAKE_HAPPEN "./p3-for-me/lib/python3.9/site-packages/pdb/__init__.py" || {
+#MAKE_HAPPEN "$VENV_PACKAGES/pdb/__init__.py" || {
 #  pip install $PIPFLAGS pdb
 #}
 
 # python -m pip install -U autopep8
 
-MAKE_HAPPEN "./p3-for-me/lib/python3.9/site-packages/graphviz/__init__.py" || {
+MAKE_HAPPEN "$VENV_PACKAGES/graphviz/__init__.py" || {
   pip install $PIPFLAGS graphviz
 }
 
@@ -93,7 +97,7 @@ python --version
 
 python simult.py
 
-<<< '
+<<< ' | cat
 source ./p3-for-me/bin/activate
 python fitzhugh-nagumo-model-3.py
 '
