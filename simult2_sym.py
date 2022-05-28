@@ -1,7 +1,22 @@
 import math
 import numpy as np
+
+# import matplotlib
+#matplotlib.use('qtagg')
+#matplotlib.use('macosx')
+#matplotlib.use("Qt5Agg")
+# matplotlib.use("MACOSX")
+# matplotlib.use("TkAgg") # black
+#
+# Failed attempt to change font
+# from matplotlib import rcParams
+# rcParams['font.family'] = 'Tahoma'
+# rcParams['font.family'] = 'Arial'
+
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
+
+# https://matplotlib.org/3.4.0/thirdpartypackages/index.html
 
 """
     Simulates the example 1 of [1].
@@ -73,6 +88,32 @@ n0 = {
     'beta': 0.0
 }
 print(repr(n0))
+
+def describe_model_latex(neuron_array):
+    def cut_sigbits(x):
+        """ shortest representation using 2 signifiacnt digits """
+        import math
+        s1 = "%g" % x
+        s2 = "%.2f" % x
+        s3 = "%g" % round(x, 2)
+        print('sss>', s1, s2, s3)
+        s23 = s2 if len(s2) < len(s3) else s3
+        s123 = s1 if len(s1) < len(s23) else s23
+        return s123
+    def latex_sem_number(param_name):
+        values = [n[param_name] for n in neuron_array]
+        std = np.std(values)
+        ε = 0.000000001
+        pm_suffix = "\\pm%s" % (cut_sigbits(std),) if std > ε else ""
+        return "%s%s" % ( \
+            cut_sigbits(np.mean(values)), \
+            pm_suffix, \
+        )
+    return " $(\\rho=%s, \\alpha=%s, \\sigma_\\epsilon=%s)$ " %(
+        latex_sem_number('rho'),
+        latex_sem_number('alpha'),
+        latex_sem_number('sigma_eps'),
+    )
 
 descriptions = {
     'rho': ["", ""],
@@ -381,7 +422,8 @@ panels = Panels(4)
 # ##########################
 panels.next_panel() # 1
 
-plt.title("Delta = %1.4f (msec)" % (simargs.Delta/MSEC))
+
+plt.title("Delta = %1.4f (msec), %s" % (simargs.Delta/MSEC, describe_model_latex(na)))
 
 tcolor = 'b'
 pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$')
@@ -426,7 +468,7 @@ panels.add_second_y_axis()
 tcolor = 'k'
 cumintegr_arr = np.cumsum(lambda_arr)*simargs.Delta
 plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-',
-                       alpha=0.6, label='a\n$\\int\\lambda dt$')
+                       alpha=0.6, label='$\\int\\lambda dt$') # a\n $\\int...
 panels.cax.spines['right'].set_position(('data', np.max(t_arr)))
 plt4 = panels.cax.plot(spike_times, quantiles01, 'k.',
                        alpha=1.0, label='spikes')
