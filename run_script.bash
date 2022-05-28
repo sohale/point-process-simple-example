@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
-
-# forked from https://github.com/sosi-org/primsoup/blob/master/actn/run-actn.bash
+# Forked from https://github.com/sosi-org/scientific-code/blob/main/timescales-state/run-script.bash
+# which was in turn forked from https://github.com/sosi-org/primsoup/blob/master/actn/run-actn.bash
 
 set -xu
 
-mkdir temp
+mkdir -p temp
 source ./temp/my-bash-utils.sh || curl -k \
     https://raw.githubusercontent.com/sohale/implisolid/revival-sohale/scripts/bash-utils.sh \
     >./temp/my-bash-utils.sh
 
 source ./temp/my-bash-utils.sh
-
-#source ~/cs/implisolid/scripts/bash-utils.sh
 
 set -e
 
@@ -43,22 +41,6 @@ function chk_venv(){
     python --version
     # Python 3.9.12
 
-    #pip install numpy
-    #pip install matplotlib
-
-    # python -m pip install \
-    #    --trusted-host files.pythonhosted.org \
-    #    --trusted-host pypi.org \
-    #    --trusted-host pypi.python.org \
-    #    [--proxy ...] [--user] <packagename>
-    #
-    #python -m pip install
-    #   --trusted-host files.pythonhosted.org \
-    #   --trusted-host pypi.org \
-    #   --trusted-host pypi.python.org --user \
-    #      numpy
-
-
     # For trusted sources: see  https://stackoverflow.com/questions/49324802/pip-always-fails-ssl-verification
 
     python -m \
@@ -78,7 +60,6 @@ function chk_venv(){
 }
 
 MAKE_HAPPEN "./p3-for-me/bin/activate" || {
-# chk_virtualenv
 chk_venv
 }
 
@@ -106,12 +87,11 @@ MAKE_HAPPEN "./p3-for-me/lib/python3.9/site-packages/graphviz/__init__.py" || {
 
 echo "Main script"
 
+source ./p3-for-me/bin/activate
+
 python --version
 
-
-# python fitzhugh-nagumo-model-1.py
-# python fitzhugh-nagumo-model-2.py
-python fitzhugh-nagumo-model-3.py
+python simult.py
 
 <<< '
 source ./p3-for-me/bin/activate
