@@ -8,16 +8,20 @@ from scipy.interpolate import interp1d
     [1]. Smith and Brown 2003. "Estimating a State-Space Model from Point Process Observations".
 """
 
-MSEC = 1./ 1000.
+MSEC = 1. / 1000.
 
 # some utility functions
+
+
 def visualise_analytical_relaxation(n, Delta0, t_arr, plt):
     """ For a given neuron, based on its alpha, rho  """
     ht = clamp_numpyarr(t_arr - 1.0, 0, float('inf'))
     tau = get_neuron_tau(n, Delta0)
     expa = np.exp(- ht / tau) * n['alpha']
-    pl = plt.plot(t_arr, expa, 'r', label='$exp(-t/\\tau)$', alpha=0.2, linewidth=5)
+    pl = plt.plot(t_arr, expa, 'r', label='$exp(-t/\\tau)$',
+                  alpha=0.2, linewidth=5)
     return pl
+
 
 def clamp_numpyarr(narr, a, b=float('inf')):
     """ clamps (limits) a numpy array between a,b """
@@ -30,24 +34,30 @@ def clamp_numpyarr(narr, a, b=float('inf')):
 # *                                  neuron model
 # **********************************************************************************
 
+
 """
 A neurons is characterised by equations 2.2 and 2.6, as in example 1 of [1].
 Ref. equations #Eq.1 and #Eq.2
 """
 
+
 def report_neuron(n, Delta):
     tau = get_neuron_tau(n, Delta)
     print('Tau=', tau * 1000.0, ' (msec)')
-    print('Noisiness:  sigma_eps = ', n['sigma_eps'] * 1000.0, ' (milli Volts per sample)')
+    print('Noisiness:  sigma_eps = ',
+          n['sigma_eps'] * 1000.0, ' (milli Volts per sample)')
+
 
 def get_neuron_tau(n, Delta):
     # todo: def get_ER_tau(n, Delta, rho)  # ER: Exponential Relaxation
     tau = - Delta / math.log(n['rho'])
     return tau
 
+
 def get_neuron_rho(tau, Delta):
-    rho = math.exp( - Delta / tau )
+    rho = math.exp(- Delta / tau)
     return rho
+
 
 CORRECT_IT = 1.0
 
@@ -55,13 +65,13 @@ n0 = {
     # Latent process model
     'rho': 0.99,
     'alpha': 3.0,
-    'sigma_eps':math.sqrt(0.001), # noisiness
+    'sigma_eps': math.sqrt(0.001),  # noisiness
 
     # Latent-to-observable (gain), or, state-to-Lprobability
     'mu': -4.9 + CORRECT_IT*math.log(1000),
     'beta': 0.0
 }
-print( repr(n0) )
+print(repr(n0))
 
 descriptions = {
     'rho': ["", ""],
@@ -78,6 +88,7 @@ DELTA0 = 1.0 * MSEC
 # **********************************************************************************
 # *                                  simulation
 # **********************************************************************************
+
 
 class simulator_args(object):
 
@@ -103,9 +114,9 @@ class simulator_args(object):
             """
         elif duration is not None:
             self.T = duration
-            self.Delta = 1 * MSEC  * 0.2
+            self.Delta = 1 * MSEC * 0.2
             self.K = int(self.T / self.Delta + 1 - 0.00001)
-            print( "K=", self.K )
+            print("K=", self.K)
 
         else:
             raise "Error"
@@ -114,6 +125,7 @@ class simulator_args(object):
 global simargs  # simulation args
 simargs = None
 # simulator.K
+
 
 def simulate_input(_K=None, duration=None):
     """ """
@@ -127,7 +139,7 @@ def simulate_input(_K=None, duration=None):
 
     for k in range(simargs.K):
         t = k * simargs.Delta
-        every_second = ( t ) % 1.0
+        every_second = (t) % 1.0
         fire = every_second < last_every_second
         #duration = 0.01
         #fire = every_second < duration
@@ -139,7 +151,7 @@ def simulate_input(_K=None, duration=None):
         # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
 
         last_every_second = every_second
-        yield k,t,I_k
+        yield k, t, I_k
 
 
 BETA_RANGE = [0.9, 1.1]
@@ -149,7 +161,7 @@ na = []
 for i in range(NEURONS):
     n = n0.copy()
     d = BETA_RANGE[1] - BETA_RANGE[0]
-    n['beta'] = 1.1 # (np.random.rand() * d) + BETA_RANGE[0]
+    n['beta'] = 1.1  # (np.random.rand() * d) + BETA_RANGE[0]
     na.append(n)
 
 # print( "Beta: ", end = '')
@@ -168,22 +180,23 @@ for i in range(NEURONS):
 
 last_x_k = 0.0
 Nc = 0
-for k,t,I_k in simulate_input(duration=3.0):
+for k, t, I_k in simulate_input(duration=3.0):
     if k == 0:
         x_arr = np.zeros((simargs.K,))
         xlogpr_arr = np.zeros((simargs.K,))
         Nc_arr = np.zeros((simargs.K,))
         t_arr = np.zeros((simargs.K,))
-        fire_probability_arr  = np.zeros((simargs.K,))
+        fire_probability_arr = np.zeros((simargs.K,))
         lambda_arr = np.zeros((simargs.K,))
         I_arr = np.zeros((simargs.K,))
 
         _tau = get_neuron_tau(na[0], DELTA0)
         _rho_corrected = get_neuron_rho(_tau, simargs.Delta)
-        _sigma_eps_corrected = na[0]['sigma_eps'] * math.sqrt(simargs.Delta/DELTA0)
-        print( "_rho_corrected = ", _rho_corrected, "rho=",na[0]['rho'] )
-        print( "_sigma_eps_corrected = ", _sigma_eps_corrected, "sigma_eps=",na[0]['sigma_eps'] )
-
+        _sigma_eps_corrected = na[0]['sigma_eps'] * \
+            math.sqrt(simargs.Delta/DELTA0)
+        print("_rho_corrected = ", _rho_corrected, "rho=", na[0]['rho'])
+        print("_sigma_eps_corrected = ", _sigma_eps_corrected,
+              "sigma_eps=", na[0]['sigma_eps'])
 
     # print( t, k, I_k )
 
@@ -196,26 +209,26 @@ for k,t,I_k in simulate_input(duration=3.0):
         # x_k is the State
         eps_k = n['sigma_eps'] * np.random.randn()
 
-        #dirac_factor = 7.0  # terrible. Why no refactory period?
+        # dirac_factor = 7.0  # terrible. Why no refactory period?
         dirac_factor = 1.0
 
         #dirac_factor = 1.0 / simargs.Delta
         # print( "dirac_factor,",dirac_factor )
-        x_k = n['rho'] * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
+        x_k = n['rho'] * last_x_k + n['alpha'] * \
+            I_k * dirac_factor + eps_k  # Eq.1
 
     if True:
         dirac_factor = 1.0
         eps_k = _sigma_eps_corrected * np.random.randn()
-        x_k = _rho_corrected * last_x_k  + n['alpha'] * I_k * dirac_factor + eps_k  #Eq.1
-
+        x_k = _rho_corrected * last_x_k + \
+            n['alpha'] * I_k * dirac_factor + eps_k  # Eq.1
 
     last_x_k = x_k
 
     xlp = n['mu'] + n['beta'] * x_k
-    lambda_k = math.exp(xlp)   #Eq.2
+    lambda_k = math.exp(xlp)  # Eq.2
     # What will guarantee that xlp < 0 ? i.e. probability < 1
     # Where is x reset?
-
 
     # *****************************
     # * Point process simulation
@@ -242,20 +255,23 @@ for k,t,I_k in simulate_input(duration=3.0):
     if k == 0:
         report_neuron(n, simargs.Delta)
 
-print( "Simulation time = T =", simargs.T, ". Mean rate = ", float(Nc)/simargs.T, "(spikes/sec)" )
-print( "Integral of lambda = ", np.sum(lambda_arr) * simargs.Delta )
-print( "Mean lambda = ", np.sum(lambda_arr) * simargs.Delta / simargs.T )
+print("Simulation time = T =", simargs.T, ". Mean rate = ",
+      float(Nc)/simargs.T, "(spikes/sec)")
+print("Integral of lambda = ", np.sum(lambda_arr) * simargs.Delta)
+print("Mean lambda = ", np.sum(lambda_arr) * simargs.Delta / simargs.T)
+
 
 def cumsum0(x, cutlast=True):
     """ generates a cumsum starting with 0.0, of the same size as x, i.e. removes the last element, and returning it separately. """
     c = np.cumsum(x)
     maxval = c[-1]
-    c = np.concatenate((np.array([0.0]),c))
+    c = np.concatenate((np.array([0.0]), c))
     if cutlast:
         c = c[:-1]
 
-    #return c, maxval
+    # return c, maxval
     return c
+
 
 def generate_unit_isi(total_rate):
     # print( "ISI(%g):"%(total_rate), end='')
@@ -266,14 +282,15 @@ def generate_unit_isi(total_rate):
             l.append(st)
         isi = -math.log(np.random.rand())
         # print( isi,l, end='')
-        #l.append(isi)
+        # l.append(isi)
         st += isi
-        #if st > total_rate:
+        # if st > total_rate:
         #    break
     # print()
     return np.array(l)
 
-#t_arr
+
+# t_arr
 #cumintegr_arr, maxv = cumsum0(lambda_arr, cutlast=False)*simargs.Delta
 #t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs.Delta]))
 cumintegr_arr = cumsum0(lambda_arr, cutlast=True)*simargs.Delta
@@ -286,19 +303,22 @@ quantiles01 = generate_unit_isi(maxv)
 # print( quantiles01 )
 
 
-assert quantiles01.shape[0] == 0 or np.max(cumintegr_arr) >= np.max(quantiles01)
-assert quantiles01.shape[0] == 0 or np.min(cumintegr_arr) <= np.min(quantiles01)
+assert quantiles01.shape[0] == 0 or np.max(
+    cumintegr_arr) >= np.max(quantiles01)
+assert quantiles01.shape[0] == 0 or np.min(
+    cumintegr_arr) <= np.min(quantiles01)
 if quantiles01.shape == (0,):
-    print( "Warning: empty spike train. *****" )
+    print("Warning: empty spike train. *****")
 
 spike_times = interp_func(quantiles01)
 
-#based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
+# based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
 # spikes = (spike_times, quantiles01)  # spikes and their accumulated lambda
 
 # **********************************************************************************
 # *                                  plotting
 # **********************************************************************************
+
 
 class Panels(object):
     def __init__(self, panels):
@@ -317,7 +337,7 @@ class Panels(object):
         self.cax = self.ax1  # also equal to plt
         self.ax2 = None
         # fig, ax = plt.subplots() # http://matplotlib.org/1.3.0/examples/pylab_examples/legend_demo.html
-        #http://matplotlib.org/1.3.0/examples/subplots_axes_and_figures/subplot_demo.html
+        # http://matplotlib.org/1.3.0/examples/subplots_axes_and_figures/subplot_demo.html
 
     def add_second_y_axis(self):
         self.ax2 = panels.ax1.twinx()  # http://matplotlib.org/examples/api/two_scales.html
@@ -333,7 +353,7 @@ class Panels(object):
         self.cax.set_ylabel(ylabel, color=tcolor)
         self.cax.tick_params('y', colors=tcolor)
 
-    def multi_legend(self, added_plts, loc='best'):
+    def multi_legend(self, added_plts, loc='upper left'):
         """
             Legend for multiple plots, withe superimposed or double-y-axis.
             Usage: panels.multi_legend(pl1 + pl2 + pl3)
@@ -353,7 +373,7 @@ class Panels(object):
 
 # ##########################
 
-panels = Panels( 4 )
+panels = Panels(4)
 #panels.set_common_xlims(1.00 - 0.01, 1.00 + 0.01)
 # ##########################
 panels.next_panel()
@@ -368,7 +388,8 @@ pl2 = visualise_analytical_relaxation(na[0], DELTA0, t_arr, plt)
 
 panels.add_second_y_axis()
 tcolor = 'k'
-pl3 = panels.cax.plot(t_arr, xlogpr_arr, tcolor + '--', alpha=1.0, label='$\\mu + \\beta x_k$')
+pl3 = panels.cax.plot(t_arr, xlogpr_arr, tcolor + '--',
+                      alpha=1.0, label='$\\mu + \\beta x_k$')
 
 panels.fix_currenty_ylim(xlogpr_arr, 0.1)
 panels.set_currenty_ylabel('$L(x_k)$ State ($\\log \\Pr$)', tcolor)
@@ -380,7 +401,7 @@ panels.apply_common_xlims()
 panels.next_panel()
 tcolor = 'r'
 plt1 = panels.cax.plot(t_arr, lambda_arr, tcolor+'.', label='$\\lambda$')
-#panels.cax.legend()
+# panels.cax.legend()
 panels.fix_currenty_ylim(lambda_arr, 0.1)
 panels.set_currenty_ylabel('$\\lambda$ (sec.$^-1$)', tcolor)
 
@@ -398,8 +419,10 @@ panels.apply_common_xlims()
 panels.add_second_y_axis()
 tcolor = 'k'
 cumintegr_arr = np.cumsum(lambda_arr)*simargs.Delta
-plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-', alpha=0.6, label='$\\int\\lambda dt$')
-plt4= panels.cax.plot(spike_times, quantiles01, 'k.', alpha=1.0, label='spikes')
+plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-',
+                       alpha=0.6, label='$\\int\\lambda dt$')
+plt4 = panels.cax.plot(spike_times, quantiles01, 'k.',
+                       alpha=1.0, label='spikes')
 
 
 panels.fix_currenty_ylim(cumintegr_arr, 0.1)
@@ -417,49 +440,51 @@ panels.cax.legend()
 panels.apply_common_xlims()
 
 # ##########################
+
+
 def nc_to_spk(t_arr, nc_arr, shift=+1):
     """
     shift=+1 (default) => post-spike Nc
     shift=0  => pre-spikes Nc
     """
-    tarr = np.nonzero(np.diff(nc_arr)>0)[0] + shift
+    tarr = np.nonzero(np.diff(nc_arr) > 0)[0] + shift
     return t_arr[tarr], nc_arr[tarr]
+
 
 spkt, nc = nc_to_spk(t_arr, Nc_arr)
 # ##########################
 panels.next_panel()
-plt1_N=\
-panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
+plt1_N =\
+    panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
 random_shift_sz = Nc_arr[-1]
 randy = 0  # np.random.rand(spike_times.shape[0]) * random_shift_sz
 
-# plt2_s1=\   no legend
 panels.cax.plot(spike_times, spike_times*0+0.1+randy*0.9, 'k.')
 #panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
-plt3_s2=\
-panels.cax.plot(spkt,nc, 'k.', label='Spikes', alpha=0.9)
-
-#panels.cax.legend()  # legend = plt.legend(loc='upper center', shadow=True)
+plt3_s2 =\
+    panels.cax.plot(spkt, nc, 'k.', label='Spikes', alpha=0.9)
 plt.xlabel('Time (Sec)')
 
 panels.add_second_y_axis()
-plt4_I=\
-panels.cax.plot(t_arr, I_arr, 'darkgreen', label='$I_k$ (input)', alpha=0.4)
+plt4_I =\
+    panels.cax.plot(t_arr, I_arr, 'darkgreen',
+                    label='$I_k$ (input)', alpha=0.4)
 panels.set_currenty_ylabel('$I_k$', tcolor)
 panels.multi_legend(plt1_N + plt3_s2 + plt4_I, 'upper left')
 panels.apply_common_xlims()
 
 plt.tight_layout()
-plt.title("Delta = %1.4f (msec)"%(simargs.Delta/MSEC))
+plt.title("Delta = %1.4f (msec)" % (simargs.Delta/MSEC))
 plt.show()
 
-assert panels.panel_id == panels.PANELS, str(panels.panel_id) + "==" + str(panels.PANELS)
+assert panels.panel_id == panels.PANELS, str(
+    panels.panel_id) + "==" + str(panels.PANELS)
 
 
 # Misc notes:
 #  q,qq = plt.subplot(4, 1, 2)  # TypeError: 'AxesSubplot' object is not iterable
 
-#legend/plot label versus panel label:       plt.ylabel(..) versus  ..plot(..,label=...)
+# legend/plot label versus panel label:       plt.ylabel(..) versus  ..plot(..,label=...)
 
 # 'xlabel' versus 'set_xlabel': for plt (current panel/plot) and axis (subpanel) respectively. # plt.xlabel('Time (Sec)')
 
