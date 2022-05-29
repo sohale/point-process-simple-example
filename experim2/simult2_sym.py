@@ -557,21 +557,29 @@ def generate_isi_samples_unit_exp1(total_rate):
 
     Σ ∘ (Δ := (∫dt) ∘ (λ?∘(·)))
 
+    Now the meaning of / correct name of this function is clear
+    instead of ISI, we should say, Λ
+    Λ_quantiles = generate_Λ_samples_unit_exp1(maxΛ)
+    was: Λ_quantiles = generate_isi_samples_unit_exp1(maxΛ)
+    was: time_quantiles = generate_isi_samples_unit_exp1(maxΛ)
+    was: quantiles01 = generate_unit_isi(maxv)
+
+    simply from a mythtake:! st += isi
     """
     # print( "ISI(%g):"%(total_rate), end='')
     st = 0.0
-    l = []
+    Λa = []
     while st < total_rate:
         if st > 0.0:
-            l.append(st)
+            Λa.append(st)
         isi = -math.log(np.random.rand())
-        # print( isi,l, end='')
-        # l.append(isi)
+        # print( isi, Λa, end='')
+        # Λa.append(isi)
         st += isi
         # if st > total_rate:
         #    break
     # print()
-    return np.array(l)
+    return np.array(Λa)
 
 
 
