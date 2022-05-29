@@ -125,7 +125,7 @@ MSEC = 1. / 1000.
 
 def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
-    (t_arr, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2) = \
+    (t_arr, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_ΞΞ, I_arr_A2) = \
         simulation_result
 
     neuron_id = 0
@@ -137,7 +137,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     spike_times = spike_times_Al[neuron_id]
     Λ_at_spikes = Λ_at_spikes_Al[neuron_id]
     fire_probability_arr = fire_probability_arr_A[neuron_id]
-    Nc_arr = Nc_arr_A[neuron_id]
+    Nc_Ξ = Nc_ΞΞ[neuron_id]
     I_arr = I_arr_A2[input_id]
 
     # ##########################
@@ -227,16 +227,16 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
         return t_arr[tarr], nc_arr[tarr]
 
 
-    spkt, nc = nc_to_spk(t_arr, Nc_arr)
+    spkt, nc = nc_to_spk(t_arr, Nc_Ξ)
     # ##########################
     panels.next_panel() # 4
     plt1_N =\
-        panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
-    random_shift_sz = Nc_arr[-1]
+        panels.cax.plot(t_arr, Nc_Ξ, 'b-', label='$N_c$')
+    random_shift_sz = Nc_Ξ[-1]
     randy = 0  # np.random.rand(spike_times.shape[0]) * random_shift_sz
 
     panels.cax.plot(spike_times, spike_times*0+0.1+randy*0.9, 'k.')
-    #panels.cax.plot(t_arr, Nc_arr, 'b-', label='$N_c$')
+    #panels.cax.plot(t_arr, Nc_Ξ, 'b-', label='$N_c$')
     plt3_s2 =\
         panels.cax.plot(spkt, nc, 'k.', label='Spikes', alpha=0.9)
     plt.xlabel('Time (Sec)')

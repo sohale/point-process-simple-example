@@ -278,7 +278,7 @@ if True:
 
     x_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan)
     xlogpr_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan)
-    Nc_arr_A = np.full((NEURONS_NUM, simargs1.K,), 99999, dtype=int)
+    Nc_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), 99999, dtype=int)
     fire_probabilityΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan)
     λ_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan, dtype=float)
     I_arr_A2 = np.full((NEURONS_NUM, simargs1.K,), np.nan)
@@ -290,8 +290,8 @@ if True:
     Λ_at_spikes_ξ = [None] * NEURONS_NUM
 
     # local loop-updating variable(s)
-    Nc_A = np.zeros((NEURONS_NUM,))
-    last_x_k_A = np.zeros((NEURONS_NUM,))
+    Nc_ξ = np.zeros((NEURONS_NUM,))
+    last_xk_ξ = np.zeros((NEURONS_NUM,))
     # last_x_k = 0.0
     # Nc = 0
 
@@ -300,9 +300,9 @@ if True:
     neur_instance = [Neuron()]
     neur_instance[neuron_id].init_slow_cache(full_model.na[neuron_id])
 
-for k, t, I_k_A2 in InputDriver_static.simulate_input_and_drive_next_step(simargs1):
+for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simargs1):
 
-    # print( t, k, I_k_A2 )
+    # print( t, k, Iₖ_Ξ )
 
     neuron_id = 0
     n = full_model.na[neuron_id]
@@ -324,19 +324,19 @@ for k, t, I_k_A2 in InputDriver_static.simulate_input_and_drive_next_step(simarg
 
         #dirac_factor = 1.0 / simargs1.Delta
         # print( "dirac_factor,",dirac_factor )
-        x_k = n['rho'] * last_x_k_A[neuron_id] + n['alpha'] * \
-            I_k_A2[inp_id] * dirac_factor + eps_k  # Eq.1
+        x_k = n['rho'] * last_xk_ξ[neuron_id] + n['alpha'] * \
+            Iₖ_Ξ[inp_id] * dirac_factor + eps_k  # Eq.1
 
     inp_id = 0
     if True:
         dirac_factor = 1.0
         eps_k = neur_instance[neuron_id]._sigma_eps_corrected * np.random.randn()
-        x_k = neur_instance[neuron_id]._rho_corrected * last_x_k_A[neuron_id] + \
-            n['alpha'] * I_k_A2[inp_id] * dirac_factor + eps_k  # Eq.1
+        x_k = neur_instance[neuron_id]._rho_corrected * last_xk_ξ[neuron_id] + \
+            n['alpha'] * Iₖ_Ξ[inp_id] * dirac_factor + eps_k  # Eq.1
 
-    # last_x_k_A should be outside a loop function
+    # last_xk_ξ should be outside a loop function
     # last_x_k = x_k
-    last_x_k_A[neuron_id] = x_k
+    last_xk_ξ[neuron_id] = x_k
 
     # xlp is x at ?
     xlp = n['mu'] + n['beta'] * x_k
@@ -355,7 +355,7 @@ for k, t, I_k_A2 in InputDriver_static.simulate_input_and_drive_next_step(simarg
     #Nc += output
 
     # total count
-    Nc_A[neuron_id] += fire
+    Nc_ξ[neuron_id] += fire
 
     # set all (x_k, Nc, xlp),
     # not: ?( t, I_k)
@@ -363,8 +363,9 @@ for k, t, I_k_A2 in InputDriver_static.simulate_input_and_drive_next_step(simarg
     tΞ[k] = t
 
     x_ΞΞ[neuron_id][k] = x_k
-    Nc_arr_A[neuron_id][k] = Nc_A[neuron_id]
-    I_arr_A2[inp_id][k] = I_k_A2[inp_id]
+    Nc_ΞΞ[neuron_id][k] = Nc_ξ[neuron_id]
+    I_arr_A2[inp_id][k] = Iₖ_Ξ[inp_id]
+    del x_k, Iₖ_Ξ
 
     xlogpr_ΞΞ[neuron_id][k] = xlp
     del xlp
@@ -376,10 +377,10 @@ for k, t, I_k_A2 in InputDriver_static.simulate_input_and_drive_next_step(simarg
         Neuron_static.report_neuron(n, simargs1.Delta)
 
     # del x_arr,     xlogpr_arr,    Nc_arr,    fire_probability_arr,    λ_arr,    I_arr,
-    del lambda_k, fire_probability, t, x_k, fire
+    del lambda_k, fire_probability, t, fire
 
 print("Simulation time = T =", simargs1.T, ". Mean rate = ",
-      Nc_arr_A[:][-1].astype(float)/simargs1.T, "(spikes/sec)")
+      Nc_ΞΞ[:][-1].astype(float)/simargs1.T, "(spikes/sec)")
 
 for neuron_id in range(1):
     print("Integral of λ = ", np.sum(λ_ΞΞ[neuron_id]) * simargs1.Delta)
@@ -692,7 +693,7 @@ print( ϟ_times_ξ[0].shape , Λ_at_spikes_ξ[0].shape )
 assert ϟ_times_ξ[0].shape == Λ_at_spikes_ξ[0].shape
 
 simulation_result = \
-    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_times_ξ, Λ_at_spikes_ξ, fire_probabilityΞΞ, Nc_arr_A, I_arr_A2)
+    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_times_ξ, Λ_at_spikes_ξ, fire_probabilityΞΞ, Nc_ΞΞ, I_arr_A2)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')
