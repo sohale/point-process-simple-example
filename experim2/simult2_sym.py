@@ -1,6 +1,6 @@
 import math
+from operator import xor
 import numpy as np
-
 from scipy.interpolate import interp1d
 
 
@@ -96,16 +96,28 @@ DELTA0 = 1.0 * MSEC
 
 
 class simulator_args(object):
+    """
+       `.T` Simulation Time Length (all units in seconds)
+    """
+    # old comment: Simulation Time Length (Intervals)
 
-    def __init__(self, _K=None, duration=None):
+    def __init__(self, _K=None, duration=None, _deltaT=None):
+        """
+            Either based on `_K` or `duration`
+            They specify the duration of simulation.
+            duration ~= K * Delta
+        """
         #self.Delta = 0.000
         #self.K = -1
         #self.T = 0.0000
+        assert _deltaT is not None, '_deltaT: time-step (bin) size in seconds'
 
         if _K is not None:
+            assert duration is None
             self.K = _K
             #self.Delta = self.T / float(self.K)
-            self.Delta = 1 * MSEC
+            #self.Delta = 1 * MSEC
+            self.Delta = _deltaT
             self.T = self.K * self.Delta
 
             """
@@ -118,13 +130,16 @@ class simulator_args(object):
                 print( "K=", self.K )
             """
         elif duration is not None:
+            assert _K is None
             self.T = duration
-            self.Delta = 1 * MSEC * 0.2
+            #self.Delta = 1 * MSEC * 0.2
+            self.Delta = _deltaT
             self.K = int(self.T / self.Delta + 1 - 0.00001)
-            print("K=", self.K)
 
         else:
-            raise "Error"
+            assert False, "Either `_K` or `duration` needs be specified"
+
+        print("Simulation time-steps: K=%g" % self.K)
 
 
 global simargs  # simulation args
@@ -132,13 +147,17 @@ simargs = None
 # simulator.K
 
 
-def simulate_input(_K=None, duration=None):
-    """ """
+def simulate_input(_K=None, duration=None, deltaT=None):
 
+    assert xor(_K is None, duration is None), \
+        """ Simulation duration is either based on `_K` or `duration`.
+            duration ~= K * Delta
+        """
     global simargs
     # Simulation Time Length (Intervals)
     # simargs.T =
-    simargs = simulator_args(_K, duration)
+    assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
+    simargs = simulator_args(_K=_K, duration=duration, _deltaT=deltaT)
 
     last_every_second = -float('inf')
 
@@ -185,7 +204,10 @@ for i in range(NEURONS):
 
 last_x_k = 0.0
 Nc = 0
-for k, t, I_k in simulate_input(duration=3.0):
+# `deltaT` was:
+#     1 * MSEC * 0.2 (when duration is specified)
+#     1 * MSEC (when K is specified)
+for k, t, I_k in simulate_input(duration=3.0, deltaT=1 * MSEC * 0.2):
     if k == 0:
         x_arr = np.zeros((simargs.K,))
         xlogpr_arr = np.zeros((simargs.K,))
