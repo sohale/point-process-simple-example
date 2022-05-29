@@ -595,13 +595,14 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     # Time-Rescaling: Quantile ~ (physical) time (of spikes)
     # todo: rename time_quantiles
     # time_quantiles is ...
-    interp_func = interp1d(cumintegrλ_arr, t_arr, kind='linear')
+    time_rescaling_interp_func = interp1d(cumintegrλ_arr, t_arr, kind='linear')
     # (x,y, ...)  y = F(x).  t_arr = F(cumintegrλ_arr)
-    # interp_func: Λ -> t
+    # time_rescaling_interp_func: Λ -> t
     # Hence, the opposiute of Λ(t)
     # t(Λ)  tΛ
-    # => `interp_func` IS the Time-Rescaling transformation function
+    # => `time_rescaling_interp_func` IS the Time-Rescaling transformation function
     # It is a continuous function
+    # It is in fact better called Λ_rescaling
 
     # Time-rescaled quantiles:
     #time_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
@@ -617,9 +618,9 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     if no_spikes:
         print("Warning: empty spike train. *****")
 
-    spike_times = interp_func(time_quantiles)
+    spike_times = time_rescaling_interp_func(time_quantiles)
     # why changed to this?
-    #spike_times = interp_func(cumintegrλ_arr)
+    #spike_times = time_rescaling_interp_func(cumintegrλ_arr)
 
     del maxΛ, cumintegrλ_arr
     # del spike_times, time_quantiles
