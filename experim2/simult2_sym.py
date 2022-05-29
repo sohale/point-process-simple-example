@@ -278,7 +278,7 @@ if True:
 
     x_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan)
     xlogpr_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan)
-    Nc_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), 99999, dtype=int)
+    Nᶜ_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), 99999, dtype=int)
     fire_probabilityΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan)
     λ_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan, dtype=float)
     I_arr_A2 = np.full((NEURONS_NUM, simargs1.K,), np.nan)
@@ -290,7 +290,7 @@ if True:
     Λ_at_spikes_ξ = [None] * NEURONS_NUM
 
     # local loop-updating variable(s)
-    Nc_ξ = np.zeros((NEURONS_NUM,))
+    Nᶜ_ξ = np.zeros((NEURONS_NUM,))
     last_xₖ_ξ = np.zeros((NEURONS_NUM,))
     # last_xₖ = 0.0
     # Nc = 0
@@ -355,7 +355,7 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
     #Nc += output
 
     # total count
-    Nc_ξ[neuron_id] += fire
+    Nᶜ_ξ[neuron_id] += fire
 
     # set all (xₖ, Nc, xlp),
     # not: ?( t, Iₖ)
@@ -363,7 +363,7 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
     tΞ[k] = t
 
     x_ΞΞ[neuron_id][k] = xₖ
-    Nc_ΞΞ[neuron_id][k] = Nc_ξ[neuron_id]
+    Nᶜ_ΞΞ[neuron_id][k] = Nᶜ_ξ[neuron_id]
     I_arr_A2[inp_id][k] = Iₖ_Ξ[inp_id]
     del xₖ, Iₖ_Ξ
 
@@ -380,7 +380,7 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
     del λₖ, fire_probability, t, fire
 
 print("Simulation time = T =", simargs1.T, ". Mean rate = ",
-      Nc_ΞΞ[:][-1].astype(float)/simargs1.T, "(spikes/sec)")
+      Nᶜ_ΞΞ[:][-1].astype(float)/simargs1.T, "(spikes/sec)")
 
 for neuron_id in range(1):
     print("Integral of λ = ", np.sum(λ_ΞΞ[neuron_id]) * simargs1.Delta)
@@ -615,16 +615,16 @@ def generate_Λ_samples_unit_exp1(total_rate):
 
 def generates_time_points(λ_Ξ, ΔT, tΞ):
     # tΞ
-    #Λcumintegrλ_arr, maxΛ = cumsum0(λ_ΞΞ[neuron_id], cutlast=False)*simargs1.Delta
+    #Λcumintegrλ_Ξ, maxΛ = cumsum0(λ_ΞΞ[neuron_id], cutlast=False)*simargs1.Delta
     #t_arr_aug = np.concatenate(tΞ, np.array([tΞ[-1]+simargs1.Delta]))
-    #Λcumintegrλ_arr, _ = cumsum0(λ_ΞΞ[neuron_id], cutlast=True)*simargs1.Delta
+    #Λcumintegrλ_Ξ, _ = cumsum0(λ_ΞΞ[neuron_id], cutlast=True)*simargs1.Delta
     cumintegrλ_arr0, _ignore_max = cumsum0(λ_Ξ, cutlast=True)
-    Λcumintegrλ_arr = cumintegrλ_arr0 * ΔT
-    # Λcumintegrλ_arr = Λ(t) = Λt   Λt_arr
+    Λcumintegrλ_Ξ = cumintegrλ_arr0 * ΔT
+    # Λcumintegrλ_Ξ = Λ(t) = Λt   Λt_arr
     # todo: find a unicode substitute for `_arr` suffix.
 
-    maxΛ = Λcumintegrλ_arr[-1]
-    assert Λcumintegrλ_arr[-1] == np.max(Λcumintegrλ_arr), "monotonically increaseing"
+    maxΛ = Λcumintegrλ_Ξ[-1]
+    assert Λcumintegrλ_Ξ[-1] == np.max(Λcumintegrλ_Ξ), "monotonically increaseing"
 
     # time_reversal_transform
 
@@ -632,8 +632,8 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     # todo: rename Λ_quantiles
     # Λ_quantiles is ...
     # Converts Λ -> time. time(Λ)
-    time_rescaling_interp_func = interp1d(Λcumintegrλ_arr, tΞ, kind='linear')
-    # (x,y, ...)  y = F(x).  tΞ = F(Λcumintegrλ_arr)
+    time_rescaling_interp_func = interp1d(Λcumintegrλ_Ξ, tΞ, kind='linear')
+    # (x,y, ...)  y = F(x).  tΞ = F(Λcumintegrλ_Ξ)
     # time_rescaling_interp_func: Λ -> t
     # Hence, the opposiute of Λ(t)
     # t(Λ)  tΛ
@@ -657,17 +657,17 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     # empty_spikes, empty_spiketrain, no_spikes
     no_spikes = Λ_atϟ.shape[0] == 0
     assert no_spikes or \
-        np.max(Λcumintegrλ_arr) >= np.max(Λ_atϟ)
+        np.max(Λcumintegrλ_Ξ) >= np.max(Λ_atϟ)
     assert no_spikes or \
-        np.min(Λcumintegrλ_arr) <= np.min(Λ_atϟ)
+        np.min(Λcumintegrλ_Ξ) <= np.min(Λ_atϟ)
     if no_spikes:
         print("Warning: empty spike train. *****")
 
     spike_times = time_rescaling_interp_func(Λ_atϟ)
     # why changed to this?
-    #spike_times = time_rescaling_interp_func(Λcumintegrλ_arr)
+    #spike_times = time_rescaling_interp_func(Λcumintegrλ_Ξ)
 
-    del maxΛ, Λcumintegrλ_arr
+    del maxΛ, Λcumintegrλ_Ξ
     # del spike_times, Λ_atϟ
     print( spike_times.shape , Λ_atϟ.shape )
     assert spike_times.shape == Λ_atϟ.shape
@@ -693,7 +693,7 @@ print( ϟ_times_ξ[0].shape , Λ_at_spikes_ξ[0].shape )
 assert ϟ_times_ξ[0].shape == Λ_at_spikes_ξ[0].shape
 
 simulation_result = \
-    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_times_ξ, Λ_at_spikes_ξ, fire_probabilityΞΞ, Nc_ΞΞ, I_arr_A2)
+    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_times_ξ, Λ_at_spikes_ξ, fire_probabilityΞΞ, Nᶜ_ΞΞ, I_arr_A2)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')
