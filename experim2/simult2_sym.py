@@ -21,7 +21,7 @@ from operator import xor
 
 
 
-# simargs: SimulatorArgs
+# simargs: SimulatorArgs1
 #         ( .Delta )
 # simulation_result
 
@@ -98,7 +98,7 @@ DELTA0 = 1.0 * MSEC
 # **********************************************************************************
 
 
-class SimulatorArgs(object):
+class SimulatorArgs1(object):
     """
        `.T` Simulation duration (Time length) (all time units in seconds)
        `.K` length (bins/timesteps/intervals): int
@@ -158,7 +158,7 @@ class SimulatorArgs(object):
     # simulate_input()
     # provides: 1. basic simulatin args (part 1), instanciates simargs
     # also user-interface for that. Conventient providing of three items: K/dt/T
-    # Could be a factory method as part of SimulatorArgs!
+    # Could be a factory method as part of SimulatorArgs1!
     def simargs_factory(_K=None, duration=None, deltaT=None):
 
         assert xor(_K is None, duration is None), \
@@ -169,7 +169,7 @@ class SimulatorArgs(object):
         global simargs
         # simargs.T = Simulation Time Length (Sec)
         assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
-        simargs = SimulatorArgs(_K=_K, duration=duration, _deltaT=deltaT)
+        simargs = SimulatorArgs1(_K=_K, duration=duration, _deltaT=deltaT)
         return simargs
 
 global simargs  # simulation args
@@ -235,7 +235,7 @@ Nc = 0
 # `deltaT` was:
 #     1 * MSEC * 0.2 (when duration is specified)
 #     1 * MSEC (when K is specified)
-simargs = SimulatorArgs.simargs_factory(duration=3.0, deltaT=1 * MSEC * 0.2)
+simargs = SimulatorArgs1.simargs_factory(duration=3.0, deltaT=1 * MSEC * 0.2)
 for k, t, I_k in simulate_step2_simulate_input(simargs):
     if k == 0:
         # todo: separate first step outside
