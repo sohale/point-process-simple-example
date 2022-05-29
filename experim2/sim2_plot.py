@@ -135,8 +135,8 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     xlogpr_Ξ = xlogpr_ΞΞ[neuron_id]
     λ_Ξ = λ_ΞΞ[neuron_id]
     spike_timesϟ = spike_timesϟ_Ξ[neuron_id]
-    Λ_at_spikes = Λ_at_spikes_Ξ[neuron_id]
-    fire_probability_arr = fire_probability_arr_A[neuron_id]
+    Λ_at_spikesϟ = Λ_at_spikes_Ξ[neuron_id]
+    fire_probability_Ξ = fire_probability_arr_A[neuron_id]
     Nᶜ_Ξ = Nᶜ_ΞΞ[neuron_id]
     Iₖ_Ξ = Iₖ_ΞΞ[input_id]
 
@@ -191,15 +191,15 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     # third axis
     panels.add_second_y_axis()
     tcolor = 'k'
-    cumintegr_arr = np.cumsum(λ_Ξ)*simargs.Delta
-    plt3 = panels.cax.plot(tΞ, cumintegr_arr, tcolor+'-',
+    cumintegr_Ξ = np.cumsum(λ_Ξ) * simargs.Delta
+    plt3 = panels.cax.plot(tΞ, cumintegr_Ξ, tcolor+'-',
                         alpha=0.6, label='$\\int\\lambda dt$') # a\n $\\int...
     panels.cax.spines['right'].set_position(('data', np.max(tΞ)))
-    plt4 = panels.cax.plot(spike_timesϟ, Λ_at_spikes, 'k.',
+    plt4 = panels.cax.plot(spike_timesϟ, Λ_at_spikesϟ, 'k.',
                         alpha=1.0, label='spikes')
 
 
-    panels.fix_currenty_ylim(cumintegr_arr, 0.1)
+    panels.fix_currenty_ylim(cumintegr_Ξ, 0.1)
     panels.set_currenty_ylabel('Integral $\\lambda$', tcolor)
     panels.apply_common_xlims()
     panels.no_xticks()
@@ -209,8 +209,8 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     # ##########################
     panels.next_panel() # 3
     #plt.plot(tΞ, λ_Ξ, 'r.', label='\lambda')
-    #plt.plot(tΞ, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
-    panels.cax.plot(tΞ, fire_probability_arr, 'r', label='$\\Pr$ / bin')
+    #plt.plot(tΞ, np.log(fire_probability_Ξ), 'r.', label='Log(Pr)')
+    panels.cax.plot(tΞ, fire_probability_Ξ, 'r', label='$\\Pr$ / bin')
     panels.cax.legend()
     panels.apply_common_xlims()
     panels.no_xticks()

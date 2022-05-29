@@ -618,8 +618,8 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     #Λcumintegrλ_Ξ, maxΛ = cumsum0(λ_ΞΞ[neuron_id], cutlast=False)*simargs1.Delta
     #t_arr_aug = np.concatenate(tΞ, np.array([tΞ[-1]+simargs1.Delta]))
     #Λcumintegrλ_Ξ, _ = cumsum0(λ_ΞΞ[neuron_id], cutlast=True)*simargs1.Delta
-    cumintegrλ_arr0, _ignore_max = cumsum0(λ_Ξ, cutlast=True)
-    Λcumintegrλ_Ξ = cumintegrλ_arr0 * ΔT
+    cumintegrλ_Ξξ2, _ignore_max = cumsum0(λ_Ξ, cutlast=True)
+    Λcumintegrλ_Ξ = cumintegrλ_Ξξ2 * ΔT
     # Λcumintegrλ_Ξ = Λ(t) = Λt   Λt_arr
     # todo: find a unicode substitute for `_arr` suffix.
 
