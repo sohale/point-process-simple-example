@@ -715,28 +715,26 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     return Λ_atϟ, spike_timesϟ
 
 
-# for trial in range(TRIALS_NUM):
-trial = 0
+for trial in range(TRIALS_NUM):
+    # Λ_quantiles
+    Λ_atϟ, spike_timesϟ = \
+        generates_time_points(λ_ΞΞ[neuron_id], simargs1.Delta, tΞ)
 
-# Λ_quantiles
-Λ_atϟ, spike_timesϟ = \
-    generates_time_points(λ_ΞΞ[neuron_id], simargs1.Delta, tΞ)
+    # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
+    # spikes = (spike_timesϟ, Λ_atϟ)  # spikes and their accumulated Λ
 
-# based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
-# spikes = (spike_timesϟ, Λ_atϟ)  # spikes and their accumulated Λ
+    # ϟ_times_Ξ <- ϟ_times_ξ = spike_times_Al
+    ϟ_timesϟ_𑴠Ξ[neuron_id][trial] = spike_timesϟ
+    # Λ_at_spikes_ξ = Λ_atϟ_ξ = Λϟ_ξ = Λ_at_spikes_Al
+    Λ_at_spikes_𑴠Ξ[neuron_id][trial] = Λ_atϟ
+    del spike_timesϟ, Λ_atϟ
 
-# ϟ_times_Ξ <- ϟ_times_ξ = spike_times_Al
-ϟ_timesϟ_𑴠Ξ[neuron_id][trial] = spike_timesϟ
-# Λ_at_spikes_ξ = Λ_atϟ_ξ = Λϟ_ξ = Λ_at_spikes_Al
-Λ_at_spikes_𑴠Ξ[neuron_id][trial] = Λ_atϟ
-del spike_timesϟ, Λ_atϟ
-
-# todo: (Λ_at_spikes_ξ) Λ_at_spikes_Ξ -> Λ_atϟξ ? or Λ_atϟ_ξ ?  or Λϟ_ξ ?
-assert len(ϟ_timesϟ_𑴠Ξ) == len(Λ_at_spikes_𑴠Ξ), "number of neurons (PP channels) should match"
-assert len(ϟ_timesϟ_𑴠Ξ[neuron_id]) == len(Λ_at_spikes_𑴠Ξ[neuron_id]), "number of trials should match"
-# remove this line later:
-print( ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape , Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape )
-assert ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape == Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape
+    # todo: (Λ_at_spikes_ξ) Λ_at_spikes_Ξ -> Λ_atϟξ ? or Λ_atϟ_ξ ?  or Λϟ_ξ ?
+    assert len(ϟ_timesϟ_𑴠Ξ) == len(Λ_at_spikes_𑴠Ξ), "number of neurons (PP channels) should match"
+    assert len(ϟ_timesϟ_𑴠Ξ[neuron_id]) == len(Λ_at_spikes_𑴠Ξ[neuron_id]), "number of trials should match"
+    # remove this line later:
+    print( ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape , Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape )
+    assert ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape == Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape
 
 simulation_result = \
     (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_timesϟ_𑴠Ξ, Λ_at_spikes_𑴠Ξ, fire_probabilityΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ)

@@ -215,7 +215,34 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     #plt.plot(tΞ, λ_Ξ, 'r.', label='\lambda')
     #plt.plot(tΞ, np.log(fire_probability_Ξ), 'r.', label='Log(Pr)')
     panels.cax.plot(tΞ, fire_probability_Ξ, 'r', label='$\\Pr$ / bin')
-    panels.cax.legend()
+    #panels.cax.legend()
+    panels.apply_common_xlims()
+    panels.no_xticks()
+
+
+    panels.add_second_y_axis()
+    num_trials = len(Λ_at_spikesϟ𑴠)
+    panels.cax.plot([0,0], [0-5, num_trials+1], 'w.', alpha=0.0) # enough white space
+
+    # 'tab:blue'
+    marker_style = dict(
+                    color='tab:blue', linestyle='',
+                    marker='o',
+                    markerfacecolor='k',
+                    markersize=4,
+                    # markerfacecoloralt='tab:red', fillstyle='left',
+                    markeredgewidth=0,
+                    )
+                    # https://matplotlib.org/3.1.1/gallery/lines_bars_and_markers/marker_fillstyle_reference.html
+                    # markersize=8, markerfacecolor=(r, g, b, 1),             markeredgewidth=.1,  markeredgecolor=(0, 0, 0, .5)
+                    # http://scipy-lectures.org/intro/matplotlib/auto_examples/options/plot_mfc.html
+    for trial in range(num_trials):
+      # how about  Λ_at_spikesϟ𑴠[trial]
+      y0 = trial
+      plt_dots = \
+        panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0 + y0,
+                        **marker_style, alpha=0.2, label='spikes')
+
     panels.apply_common_xlims()
     panels.no_xticks()
 
