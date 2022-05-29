@@ -215,7 +215,8 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     panels.next_panel() # 3
     #plt.plot(tΞ, λ_Ξ, 'r.', label='\lambda')
     #plt.plot(tΞ, np.log(fire_probability_Ξ), 'r.', label='Log(Pr)')
-    panels.cax.plot(tΞ, fire_probability_Ξ, 'r', label='$\\Pr$ / bin')
+    prbin_plot = \
+    panels.cax.plot(tΞ, fire_probability_Ξ, 'r', label='$\\Pr$ / Δt')
     panels.set_currenty_ylabel('$\\Pr$ / Δt', 'r')
     #panels.cax.legend()
     panels.apply_common_xlims()
@@ -245,6 +246,8 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
         panels.cax.plot(spike_timesϟ𑴠[trial], (Λ_at_spikesϟ𑴠[trial]* 0.5  + y0) % 15,
                         **marker_style, alpha=0.2, label='spikes')
     panels.set_currenty_ylabel('trial $+ 0.5Λ(t)$', 'k')
+
+    panels.multi_legend(prbin_plot + plt_dots, 'upper left')
 
     panels.apply_common_xlims()
     panels.no_xticks()
