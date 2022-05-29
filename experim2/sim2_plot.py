@@ -125,14 +125,14 @@ MSEC = 1. / 1000.
 
 def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
-    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2) = \
+    (t_arr, x_ΞΞ, xlogpr_ΞΞ, λ_arr_A, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2) = \
         simulation_result
 
     neuron_id = 0
     input_id = 0
 
-    x_arr = x_arr_A[neuron_id]
-    xlogpr_arr = xlogpr_arr_A[neuron_id]
+    x_Ξ = x_ΞΞ[neuron_id]
+    xlogpr_Ξ = xlogpr_ΞΞ[neuron_id]
     λ_arr = λ_arr_A[neuron_id]
     spike_times = spike_times_Al[neuron_id]
     Λ_at_spikes = Λ_at_spikes_Al[neuron_id]
@@ -151,8 +151,8 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     plt.title("Delta = %1.4f (msec), %s" % (simargs.Delta/MSEC, describe_model_latex(na)))
 
     tcolor = 'b'
-    pl1 = plt.plot(t_arr, x_arr, tcolor+'-', label='$x_k$')
-    panels.fix_currenty_ylim(x_arr, 0.1)
+    pl1 = plt.plot(t_arr, x_Ξ, tcolor+'-', label='$x_k$')
+    panels.fix_currenty_ylim(x_Ξ, 0.1)
     panels.set_currenty_ylabel('$x_k$ State', tcolor)
 
     pl2 = visualise_analytical_relaxation(na[0], DELTA0, t_arr, plt, get_neuron_tau)
@@ -160,10 +160,10 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
     panels.add_second_y_axis()
     tcolor = 'k'
-    pl3 = panels.cax.plot(t_arr, xlogpr_arr, tcolor + '--',
+    pl3 = panels.cax.plot(t_arr, xlogpr_Ξ, tcolor + '--',
                         alpha=1.0, label='$\\mu + \\beta x_k$')
 
-    panels.fix_currenty_ylim(xlogpr_arr, 0.1)
+    panels.fix_currenty_ylim(xlogpr_Ξ, 0.1)
     panels.set_currenty_ylabel('$L(x_k)$ State ($\\log \\Pr$)', tcolor)
 
     panels.multi_legend(pl1 + pl2 + pl3)
