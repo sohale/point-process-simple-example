@@ -57,8 +57,8 @@ def visualise_analytical_relaxation(n, Delta0, tΞ, plt, get_neuron_tau):
     """ For a given neuron, based on its alpha, rho  """
     ht = clamp_numpyarr(tΞ - 1.0, 0, float('inf'))
     tau = get_neuron_tau(n, Delta0)
-    expa = np.exp(- ht / tau) * n['alpha'] * \
-       np.heaviside(tΞ - 1.0, 1.0)
+    expa = np.exp(- ht / tau) * n['alpha'] \
+       * np.heaviside(tΞ - 1.0, 1.0)
     pl = plt.plot(tΞ, expa, 'r', label='$\exp(-t/\\tau)$',
                   alpha=0.2, linewidth=5)
     return pl
@@ -123,7 +123,7 @@ class Panels(object):
 
 MSEC = 1. / 1000.
 
-def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
+def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
 
     (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_timesϟ_𑴠Ξ, Λ_at_spikes_𑴠Ξ, fire_probability_ΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ) = \
         simulation_result
@@ -269,6 +269,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     panels.next_panel() # 4
     plt1_N =\
         panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
+    panels.cax.stairs(values=Nᶜ_Ξ[1:], edges= tΞ+DeltaT, color='b', linestyle='-', label='$N_c$')
     panels.set_currenty_ylabel('$N_c(t)$', 'b')
 
     random_shift_sz = Nᶜ_Ξ[-1]
@@ -278,7 +279,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
         panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0+0.1+randy*0.9, 'k.', alpha=0.1, **marker_style)
     #panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
     plt3_s2 =\
-        panels.cax.plot(spkt, nc, 'k.', label='Spikes', alpha=0.9)
+        panels.cax.plot(spkt, nc+0.1, 'k.', label='Spikes', alpha=0.9)
     plt.xlabel('Time (Sec)')
 
     panels.add_second_y_axis()

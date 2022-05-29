@@ -742,4 +742,4 @@ simulation_result = \
 # sys.path.append('/ufs/guido/lib/python')
 from sim2_plot import *
 
-plot_all(simargs1, full_model.na, Neuron_static.get_neuron_tau, simulation_result, DELTA0)
+plot_all(simargs1, full_model.na, Neuron_static.get_neuron_tau, simulation_result, DELTA0, simargs1.Delta)
