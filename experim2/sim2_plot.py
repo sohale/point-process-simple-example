@@ -125,7 +125,7 @@ MSEC = 1. / 1000.
 
 def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
-    (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, quantiles01_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2) = \
+    (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, Λquantiles_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2) = \
         simulation_result
 
     neuron_id = 0
@@ -135,7 +135,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     xlogpr_arr = xlogpr_arr_A[neuron_id]
     lambda_arr = lambda_arr_A[neuron_id]
     spike_times = spike_times_Al[neuron_id]
-    time_quantiles01 = quantiles01_Al[neuron_id]
+    Λquantiles = Λquantiles_Al[neuron_id]
     fire_probability_arr = fire_probability_arr_A[neuron_id]
     Nc_arr = Nc_arr_A[neuron_id]
     I_arr = I_arr_A2[input_id]
@@ -195,7 +195,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-',
                         alpha=0.6, label='$\\int\\lambda dt$') # a\n $\\int...
     panels.cax.spines['right'].set_position(('data', np.max(t_arr)))
-    plt4 = panels.cax.plot(spike_times, time_quantiles01, 'k.',
+    plt4 = panels.cax.plot(spike_times, Λquantiles, 'k.',
                         alpha=1.0, label='spikes')
 
 
