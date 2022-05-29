@@ -236,24 +236,24 @@ Nc = 0
 #     1 * MSEC * 0.2 (when duration is specified)
 #     1 * MSEC (when K is specified)
 simargs = SimulatorArgs1.simargs_factory(duration=3.0, deltaT=1 * MSEC * 0.2)
-for k, t, I_k in simulate_step2_simulate_input(simargs):
-    if k == 0:
-        # todo: separate first step outside
-        x_arr = np.zeros((simargs.K,))
-        xlogpr_arr = np.zeros((simargs.K,))
-        Nc_arr = np.zeros((simargs.K,))
-        t_arr = np.zeros((simargs.K,))
-        fire_probability_arr = np.zeros((simargs.K,))
-        lambda_arr = np.zeros((simargs.K,))
-        I_arr = np.zeros((simargs.K,))
+if True:
+    x_arr = np.zeros((simargs.K,))
+    xlogpr_arr = np.zeros((simargs.K,))
+    Nc_arr = np.zeros((simargs.K,))
+    t_arr = np.zeros((simargs.K,))
+    fire_probability_arr = np.zeros((simargs.K,))
+    lambda_arr = np.zeros((simargs.K,))
+    I_arr = np.zeros((simargs.K,))
 
-        _tau = get_neuron_tau(na[0], DELTA0)
-        _rho_corrected = get_neuron_rho(_tau, simargs.Delta)
-        _sigma_eps_corrected = na[0]['sigma_eps'] * \
-            math.sqrt(simargs.Delta/DELTA0)
-        print("_rho_corrected = ", _rho_corrected, "rho=", na[0]['rho'])
-        print("_sigma_eps_corrected = ", _sigma_eps_corrected,
-              "sigma_eps=", na[0]['sigma_eps'])
+    _tau = get_neuron_tau(na[0], DELTA0)
+    _rho_corrected = get_neuron_rho(_tau, simargs.Delta)
+    _sigma_eps_corrected = na[0]['sigma_eps'] * \
+        math.sqrt(simargs.Delta/DELTA0)
+    print("_rho_corrected = ", _rho_corrected, "rho=", na[0]['rho'])
+    print("_sigma_eps_corrected = ", _sigma_eps_corrected,
+            "sigma_eps=", na[0]['sigma_eps'])
+
+for k, t, I_k in simulate_step2_simulate_input(simargs):
 
     # print( t, k, I_k )
 
