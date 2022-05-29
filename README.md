@@ -1,6 +1,13 @@
+# Point Process example
+
+A simple straightforward example of a Point Process + State Space with manually set model parameters.
+
 Old name: `smithbrown2003-example1`
 
-# Smith-Brown's example 1
+This implements the forward model (not the estimatiom part) of the following.
+For the reverse (parameter estimation), a separate repo is used (contact author).
+
+## Smith-Brown's example 1
 A quick implementation of: **Smith & Brown, 2003** (See [1] below)
 
 This implements the Example 1, that is the case of "Multiple Neurons Driven by a Common Latent Process", from [1].
