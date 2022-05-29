@@ -565,6 +565,8 @@ def generate_isi_samples_unit_exp1(total_rate):
     was: quantiles01 = generate_unit_isi(maxv)
 
     simply from a mythtake:! st += isi
+
+    isi <-> ΔΛ
     """
     # print( "ISI(%g):"%(total_rate), end='')
     st = 0.0
@@ -572,10 +574,10 @@ def generate_isi_samples_unit_exp1(total_rate):
     while st < total_rate:
         if st > 0.0:
             Λa.append(st)
-        isi = -math.log(np.random.rand())
-        # print( isi, Λa, end='')
-        # Λa.append(isi)
-        st += isi
+        ΔΛ = -math.log(np.random.rand())
+        # print( ΔΛ, Λa, end='')
+        # Λa.append(ΔΛ)
+        st += ΔΛ
         # if st > total_rate:
         #    break
     # print()
