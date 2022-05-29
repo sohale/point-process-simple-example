@@ -422,7 +422,7 @@ def generate_isi_samples_unit_exp1(total_rate):
 
     ISI = TR(R)
 
-    time_quantiles01 -> time_quantiles
+    time_quantiles01 -> Λ_quantiles
     By q01 I meant the ISI in terms of this.
     Max of sum(q01) is Sum(λ) = (disrete)Sum(Λ) = Λ
     Evolution:
@@ -593,8 +593,8 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     # time_reversal_transform
 
     # Time-Rescaling: Quantile ~ (physical) time (of spikes)
-    # todo: rename time_quantiles
-    # time_quantiles is ...
+    # todo: rename Λ_quantiles
+    # Λ_quantiles is ...
     time_rescaling_interp_func = interp1d(Λcumintegrλ_arr, t_arr, kind='linear')
     # (x,y, ...)  y = F(x).  t_arr = F(Λcumintegrλ_arr)
     # time_rescaling_interp_func: Λ -> t
@@ -605,40 +605,40 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     # It is in fact better called Λ_rescaling
 
     # Time-rescaled quantiles:
-    #time_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
-    time_quantiles = generate_isi_samples_unit_exp1(maxΛ)
-    # print( time_quantiles )
+    #Λ_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
+    Λ_quantiles = generate_isi_samples_unit_exp1(maxΛ)
+    # print( Λ_quantiles )
 
     # empty_spikes, empty_spiketrain, no_spikes
-    no_spikes = time_quantiles.shape[0] == 0
+    no_spikes = Λ_quantiles.shape[0] == 0
     assert no_spikes or \
-        np.max(Λcumintegrλ_arr) >= np.max(time_quantiles)
+        np.max(Λcumintegrλ_arr) >= np.max(Λ_quantiles)
     assert no_spikes or \
-        np.min(Λcumintegrλ_arr) <= np.min(time_quantiles)
+        np.min(Λcumintegrλ_arr) <= np.min(Λ_quantiles)
     if no_spikes:
         print("Warning: empty spike train. *****")
 
-    spike_times = time_rescaling_interp_func(time_quantiles)
+    spike_times = time_rescaling_interp_func(Λ_quantiles)
     # why changed to this?
     #spike_times = time_rescaling_interp_func(Λcumintegrλ_arr)
 
     del maxΛ, Λcumintegrλ_arr
-    # del spike_times, time_quantiles
-    print( spike_times.shape , time_quantiles.shape )
-    assert spike_times.shape == time_quantiles.shape
-    return time_quantiles, spike_times
+    # del spike_times, Λ_quantiles
+    print( spike_times.shape , Λ_quantiles.shape )
+    assert spike_times.shape == Λ_quantiles.shape
+    return Λ_quantiles, spike_times
 
 
 
-time_quantiles, spike_times = \
+Λ_quantiles, spike_times = \
     generates_time_points(lambda_arr_A[neuron_id], simargs1.Delta, t_arr)
 
 # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
-# spikes = (spike_times, time_quantiles)  # spikes and their accumulated lambda
+# spikes = (spike_times, Λ_quantiles)  # spikes and their accumulated lambda
 
 spike_times_Al[neuron_id] = spike_times
-quantiles01_Al[neuron_id] = time_quantiles
-del spike_times, time_quantiles
+quantiles01_Al[neuron_id] = Λ_quantiles
+del spike_times, Λ_quantiles
 
 assert len(spike_times_Al) == len(quantiles01_Al)
 print( spike_times_Al[0].shape , quantiles01_Al[0].shape )
