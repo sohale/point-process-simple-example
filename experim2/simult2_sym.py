@@ -1,3 +1,4 @@
+import dataclasses
 import math
 import numpy as np
 from scipy.interpolate import interp1d
@@ -153,6 +154,23 @@ class SimulatorArgs(object):
 
         print("Simulation time-steps: K=%g" % self.K)
 
+    # produces each timestep? no longer.
+    # simulate_input()
+    # provides: 1. basic simulatin args (part 1), instanciates simargs
+    # also user-interface for that. Conventient providing of three items: K/dt/T
+    # Could be a factory method as part of SimulatorArgs!
+    def simargs_factory(_K=None, duration=None, deltaT=None):
+
+        assert xor(_K is None, duration is None), \
+            """ Simulation duration is either based on `_K` or `duration`.
+                duration ~= K * Delta
+            """
+        # todo: remove global
+        global simargs
+        # simargs.T = Simulation Time Length (Sec)
+        assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
+        simargs = SimulatorArgs(_K=_K, duration=duration, _deltaT=deltaT)
+        return simargs
 
 global simargs  # simulation args
 simargs = None
@@ -161,23 +179,7 @@ simargs = None
 # old idea, occluded by the idea of `simulate_step()`:
 # ... = simulate_input()
 
-# produces each timestep? no longer.
-# simulate_input()
-# provides: 1. basic simulatin args (part 1), instanciates simargs
-# also user-interface for that. Conventient providing of three items: K/dt/T
-# Could be a factory method as part of SimulatorArgs!
-def simargs_factory(_K=None, duration=None, deltaT=None):
 
-    assert xor(_K is None, duration is None), \
-        """ Simulation duration is either based on `_K` or `duration`.
-            duration ~= K * Delta
-        """
-    # todo: remove global
-    global simargs
-    # simargs.T = Simulation Time Length (Sec)
-    assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
-    simargs = SimulatorArgs(_K=_K, duration=duration, _deltaT=deltaT)
-    return simargs
 
 # produces each timestep
 # the idea was it actually provided the INPUT signal! (I_k)
@@ -233,7 +235,7 @@ Nc = 0
 # `deltaT` was:
 #     1 * MSEC * 0.2 (when duration is specified)
 #     1 * MSEC (when K is specified)
-simargs = simargs_factory(duration=3.0, deltaT=1 * MSEC * 0.2)
+simargs = SimulatorArgs.simargs_factory(duration=3.0, deltaT=1 * MSEC * 0.2)
 for k, t, I_k in simulate_step2_simulate_input(simargs):
     if k == 0:
         # todo: separate first step outside
