@@ -138,17 +138,19 @@ export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 
+
 echo "Main script"
 
 source ./p3-for-me/bin/activate
 
-
 python --version
-
-python experim2/simult2_sym.py
 
 echo '
 source ./p3-for-me/bin/activate
 python simult1_py3.py
 python experim2/simult2_sym.py
 '
+
+python experim2/simult2_sym.py
+
+

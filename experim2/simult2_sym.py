@@ -1,7 +1,9 @@
 import math
-from operator import xor
 import numpy as np
 from scipy.interpolate import interp1d
+
+# from typing import ...
+from operator import xor
 
 
 """
@@ -97,9 +99,13 @@ DELTA0 = 1.0 * MSEC
 
 class simulator_args(object):
     """
-       `.T` Simulation Time Length (all units in seconds)
+       `.T` Simulation duration (Time length) (all time units in seconds)
+       `.K` length (bins/timesteps/intervals): int
     """
-    # old comment: Simulation Time Length (Intervals)
+    # old incorrect comment: Simulation Time Length (Intervals)
+
+
+    Delta: float
 
     def __init__(self, _K=None, duration=None, _deltaT=None):
         """
@@ -154,8 +160,7 @@ def simulate_input(_K=None, duration=None, deltaT=None):
             duration ~= K * Delta
         """
     global simargs
-    # Simulation Time Length (Intervals)
-    # simargs.T =
+    # simargs.T = Simulation Time Length (Sec)
     assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
     simargs = simulator_args(_K=_K, duration=duration, _deltaT=deltaT)
 
