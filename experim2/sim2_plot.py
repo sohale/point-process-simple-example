@@ -53,13 +53,13 @@ def clamp_numpyarr(narr, a, b=float('inf')):
     rnarr[rnarr > b] = b
     return rnarr
 
-def visualise_analytical_relaxation(n, Delta0, t_arr, plt, get_neuron_tau):
+def visualise_analytical_relaxation(n, Delta0, tΞ, plt, get_neuron_tau):
     """ For a given neuron, based on its alpha, rho  """
-    ht = clamp_numpyarr(t_arr - 1.0, 0, float('inf'))
+    ht = clamp_numpyarr(tΞ - 1.0, 0, float('inf'))
     tau = get_neuron_tau(n, Delta0)
     expa = np.exp(- ht / tau) * n['alpha'] * \
-       np.heaviside(t_arr - 1.0, 1.0)
-    pl = plt.plot(t_arr, expa, 'r', label='$\exp(-t/\\tau)$',
+       np.heaviside(tΞ - 1.0, 1.0)
+    pl = plt.plot(tΞ, expa, 'r', label='$\exp(-t/\\tau)$',
                   alpha=0.2, linewidth=5)
     return pl
 
@@ -125,7 +125,7 @@ MSEC = 1. / 1000.
 
 def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
-    (t_arr, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_ΞΞ, I_arr_A2) = \
+    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_ΞΞ, I_arr_A2) = \
         simulation_result
 
     neuron_id = 0
@@ -151,16 +151,16 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     plt.title("Delta = %1.4f (msec), %s" % (simargs.Delta/MSEC, describe_model_latex(na)))
 
     tcolor = 'b'
-    pl1 = plt.plot(t_arr, x_Ξ, tcolor+'-', label='$x_k$')
+    pl1 = plt.plot(tΞ, x_Ξ, tcolor+'-', label='$x_k$')
     panels.fix_currenty_ylim(x_Ξ, 0.1)
     panels.set_currenty_ylabel('$x_k$ State', tcolor)
 
-    pl2 = visualise_analytical_relaxation(na[0], DELTA0, t_arr, plt, get_neuron_tau)
+    pl2 = visualise_analytical_relaxation(na[0], DELTA0, tΞ, plt, get_neuron_tau)
 
 
     panels.add_second_y_axis()
     tcolor = 'k'
-    pl3 = panels.cax.plot(t_arr, xlogpr_Ξ, tcolor + '--',
+    pl3 = panels.cax.plot(tΞ, xlogpr_Ξ, tcolor + '--',
                         alpha=1.0, label='$\\mu + \\beta x_k$')
 
     panels.fix_currenty_ylim(xlogpr_Ξ, 0.1)
@@ -173,7 +173,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     # ##########################
     panels.next_panel() # 2
     tcolor = 'r'
-    plt1 = panels.cax.plot(t_arr, λ_Ξ, tcolor+'-', alpha=0.5, label='$\\lambda$')
+    plt1 = panels.cax.plot(tΞ, λ_Ξ, tcolor+'-', alpha=0.5, label='$\\lambda$')
     # panels.cax.legend()
     panels.fix_currenty_ylim(λ_Ξ, 0.1)
     panels.set_currenty_ylabel('$\\lambda$ (sec.$^-1$)', tcolor)
@@ -181,7 +181,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     panels.add_second_y_axis()
     tcolor = 'b'
     ISI_arr = 1.0 / λ_Ξ
-    plt2 = panels.cax.plot(t_arr, ISI_arr, tcolor+'-', alpha=0.6, label='ISI')
+    plt2 = panels.cax.plot(tΞ, ISI_arr, tcolor+'-', alpha=0.6, label='ISI')
     panels.fix_currenty_ylim(ISI_arr, 0.1)
     panels.set_currenty_ylabel('ISI (sec.)', tcolor)
     #panels.multi_legend(plt1 + plt2)
@@ -192,9 +192,9 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     panels.add_second_y_axis()
     tcolor = 'k'
     cumintegr_arr = np.cumsum(λ_Ξ)*simargs.Delta
-    plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-',
+    plt3 = panels.cax.plot(tΞ, cumintegr_arr, tcolor+'-',
                         alpha=0.6, label='$\\int\\lambda dt$') # a\n $\\int...
-    panels.cax.spines['right'].set_position(('data', np.max(t_arr)))
+    panels.cax.spines['right'].set_position(('data', np.max(tΞ)))
     plt4 = panels.cax.plot(spike_times, Λ_at_spikes, 'k.',
                         alpha=1.0, label='spikes')
 
@@ -208,9 +208,9 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
     # ##########################
     panels.next_panel() # 3
-    #plt.plot(t_arr, λ_Ξ, 'r.', label='\lambda')
-    #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
-    panels.cax.plot(t_arr, fire_probability_arr, 'r', label='$\\Pr$ / bin')
+    #plt.plot(tΞ, λ_Ξ, 'r.', label='\lambda')
+    #plt.plot(tΞ, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
+    panels.cax.plot(tΞ, fire_probability_arr, 'r', label='$\\Pr$ / bin')
     panels.cax.legend()
     panels.apply_common_xlims()
     panels.no_xticks()
@@ -218,32 +218,32 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     # ##########################
 
 
-    def nc_to_spk(t_arr, nc_arr, shift=+1):
+    def nc_to_spk(tΞ, nc_arr, shift=+1):
         """
         shift=+1 (default) => post-spike Nc
         shift=0  => pre-spikes Nc
         """
         tarr = np.nonzero(np.diff(nc_arr) > 0)[0] + shift
-        return t_arr[tarr], nc_arr[tarr]
+        return tΞ[tarr], nc_arr[tarr]
 
 
-    spkt, nc = nc_to_spk(t_arr, Nc_Ξ)
+    spkt, nc = nc_to_spk(tΞ, Nc_Ξ)
     # ##########################
     panels.next_panel() # 4
     plt1_N =\
-        panels.cax.plot(t_arr, Nc_Ξ, 'b-', label='$N_c$')
+        panels.cax.plot(tΞ, Nc_Ξ, 'b-', label='$N_c$')
     random_shift_sz = Nc_Ξ[-1]
     randy = 0  # np.random.rand(spike_times.shape[0]) * random_shift_sz
 
     panels.cax.plot(spike_times, spike_times*0+0.1+randy*0.9, 'k.')
-    #panels.cax.plot(t_arr, Nc_Ξ, 'b-', label='$N_c$')
+    #panels.cax.plot(tΞ, Nc_Ξ, 'b-', label='$N_c$')
     plt3_s2 =\
         panels.cax.plot(spkt, nc, 'k.', label='Spikes', alpha=0.9)
     plt.xlabel('Time (Sec)')
 
     panels.add_second_y_axis()
     plt4_I =\
-        panels.cax.plot(t_arr, I_arr, 'darkgreen',
+        panels.cax.plot(tΞ, I_arr, 'darkgreen',
                         label='$I_k$ (input)', alpha=0.4)
     panels.set_currenty_ylabel('$I_k$', tcolor)
     panels.multi_legend(plt1_N + plt3_s2 + plt4_I, 'upper left')
