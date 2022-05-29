@@ -184,7 +184,7 @@ simargs1 = None
 # produces each timestep
 # the idea was it actually provided the INPUT signal! (I_k)
 # input also drives the program flow !
-def simulate_step2_simulate_input(simargs1):
+def simulate_input_and_drive_next_step(simargs1):
     last_every_second = -float('inf')
 
     for k in range(simargs1.K):
@@ -254,7 +254,7 @@ if True:
     print("_sigma_eps_corrected = ", _sigma_eps_corrected,
             "sigma_eps=", na[0]['sigma_eps'])
 
-for k, t, I_k in simulate_step2_simulate_input(simargs1):
+for k, t, I_k in simulate_input_and_drive_next_step(simargs1):
 
     # print( t, k, I_k )
 
