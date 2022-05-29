@@ -125,8 +125,20 @@ MSEC = 1. / 1000.
 
 def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
-    (t_arr, x_arr, xlogpr_arr, lambda_arr, spike_times, quantiles01, fire_probability_arr, Nc_arr, I_arr) = \
+    (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_A, quantiles01_A, fire_probability_arr_A, Nc_arr_A, I_arr_A2) = \
         simulation_result
+
+    neuron_id = 0
+    input_id = 0
+
+    x_arr = x_arr_A[neuron_id]
+    xlogpr_arr = xlogpr_arr_A[neuron_id]
+    lambda_arr = lambda_arr_A[neuron_id]
+    spike_times = spike_times_A[neuron_id]
+    quantiles01 = quantiles01_A[neuron_id]
+    fire_probability_arr = fire_probability_arr_A[neuron_id]
+    Nc_arr = Nc_arr_A[neuron_id]
+    I_arr = I_arr_A2[input_id]
 
     # ##########################
 
