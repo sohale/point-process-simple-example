@@ -386,6 +386,7 @@ for neuron_id in range(1):
 
 def cumsum0(x, cutlast=True):
     """
+        Numerical integration.
         generates a cumsum that starts with 0.0,
         of the same size as x
         To maintain the size, it removes the last element,
@@ -581,8 +582,10 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     #cumintegrλ_arr, maxΛ = cumsum0(lambda_arr_A[neuron_id], cutlast=False)*simargs1.Delta
     #t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs1.Delta]))
     #cumintegrλ_arr, _ = cumsum0(lambda_arr_A[neuron_id], cutlast=True)*simargs1.Delta
-    cumintegr_arr0, _ignore_max = cumsum0(λ_arr, cutlast=True)
-    cumintegrλ_arr = cumintegr_arr0 * ΔT
+    cumintegrλ_arr0, _ignore_max = cumsum0(λ_arr, cutlast=True)
+    cumintegrλ_arr = cumintegrλ_arr0 * ΔT
+    # cumintegrλ_arr = Λ(t) = Λt   Λt_arr
+    # todo: find a unicode substitute for `_arr` suffix.
 
     maxΛ = cumintegrλ_arr[-1]
     assert cumintegrλ_arr[-1] == np.max(cumintegrλ_arr), "monotonically increaseing"
@@ -593,6 +596,13 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     # todo: rename time_quantiles
     # time_quantiles is ...
     interp_func = interp1d(cumintegrλ_arr, t_arr, kind='linear')
+    # (x,y, ...)  y = F(x).  t_arr = F(cumintegrλ_arr)
+    # interp_func: Λ -> t
+    # Hence, the opposiute of Λ(t)
+    # t(Λ)  tΛ
+    # => `interp_func` IS the Time-Rescaling transformation function
+    # It is a continuous function
+
     # Time-rescaled quantiles:
     #time_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
     time_quantiles = generate_isi_samples_unit_exp1(maxΛ)
