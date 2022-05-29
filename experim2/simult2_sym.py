@@ -183,6 +183,7 @@ simargs1 = None
 
 # produces each timestep
 # the idea was it actually provided the INPUT signal! (I_k)
+# input also drives the program flow !
 def simulate_step2_simulate_input(simargs1):
     last_every_second = -float('inf')
 

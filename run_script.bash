@@ -13,11 +13,16 @@ source ./temp/my-bash-utils.sh
 
 set -e
 
+# if behind a firewall
 export PIPFLAGS="\
     --trusted-host pypi.python.org \
     --trusted-host files.pythonhosted.org \
     --trusted-host pypi.org"
-echo ">>>>$PIPFLAGS"
+
+# not behind a firewall
+export PIPFLAGS=""
+
+echo "PIPFLAGS>>>> $PIPFLAGS"
 
 
 function chk_venv(){
@@ -50,9 +55,11 @@ function chk_venv(){
 
 }
 
+# to refresh: `rm -rf ./p3-for-me`
 MAKE_HAPPEN "./p3-for-me/bin/activate" || {
     chk_venv
 }
+
 
 source ./p3-for-me/bin/activate
 # export PYTHON_VER="python3.9"
@@ -147,7 +154,7 @@ python --version
 
 echo '
 source ./p3-for-me/bin/activate
-python simult1_py3.py
+python older-versions/simult1_py3.py
 python experim2/simult2_sym.py
 '
 
