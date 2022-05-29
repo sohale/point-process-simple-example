@@ -403,9 +403,15 @@ def generate_isi_samples_unit_exp1(total_rate):
     λ = 1.0
 
     PDF(x) = λ exp(-λx)
-    where x = ISI
 
-    Enough number of samples to fit the whole `total_rate`
+    where x = ISI in temrs of "virtual-time" (Λ)
+    (Not really ISI: but ISI-Λ )
+
+    Enough number of samples to fit the whole `total_rate` (Λ)
+
+    `total_rate` units are in "virtual-time" (rate, λ, intensity-integrated, capital Lambda: Λ )
+    ISIΛ: Inter-spike inter-val -> inter-Λ-val
+    interval implies physical "time". But this is virtual-time (Λ)
     """
     # print( "ISI(%g):"%(total_rate), end='')
     st = 0.0
@@ -424,18 +430,19 @@ def generate_isi_samples_unit_exp1(total_rate):
 
 
 # t_arr
-#cumintegr_arr, maxv = cumsum0(lambda_arr_A[neuron_id], cutlast=False)*simargs1.Delta
+#cumintegr_arr, maxΛ = cumsum0(lambda_arr_A[neuron_id], cutlast=False)*simargs1.Delta
 #t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs1.Delta]))
 cumintegr_arr = cumsum0(lambda_arr_A[neuron_id], cutlast=True)*simargs1.Delta
-maxv = np.max(cumintegr_arr)
+maxΛ = cumintegr_arr[-1]
+assert cumintegr_arr[-1] == np.max(cumintegr_arr), "monotonically increaseing"
 
 # Time-Rescaling: Quantile ~ (physical) time (of spikes)
 # todo: rename time_quantiles
 # time_quantiles is ...
 interp_func = interp1d(cumintegr_arr, t_arr, kind='linear')
 # Time-rescaled quantiles:
-#time_quantiles = np.arange(0,maxv,maxv/10.0 * 10000)
-time_quantiles = generate_isi_samples_unit_exp1(maxv)
+#time_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
+time_quantiles = generate_isi_samples_unit_exp1(maxΛ)
 # print( time_quantiles )
 
 assert time_quantiles.shape[0] == 0 or np.max(
@@ -452,7 +459,7 @@ spike_times = interp_func(time_quantiles)
 
 spike_times_Al[neuron_id] = spike_times
 quantiles01_Al[neuron_id] = time_quantiles
-del spike_times, time_quantiles, maxv, cumintegr_arr
+del spike_times, time_quantiles, maxΛ, cumintegr_arr
 
 simulation_result = \
     (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, quantiles01_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
