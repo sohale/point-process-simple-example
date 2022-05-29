@@ -174,6 +174,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     panels.next_panel() # 2
     tcolor = 'r'
     plt1 = panels.cax.plot(tΞ, λ_Ξ, tcolor+'-', alpha=0.5, label='$\\lambda$')
+    #panels.cax.fill_between(tΞ, λ_Ξ, λ_Ξ * 0.0 , color='r', alpha=0.3)
     # panels.cax.legend()
     panels.fix_currenty_ylim(λ_Ξ, 0.1)
     panels.set_currenty_ylabel('$\\lambda$ (sec.$^-1$)', tcolor)
@@ -215,8 +216,14 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     panels.next_panel() # 3
     #plt.plot(tΞ, λ_Ξ, 'r.', label='\lambda')
     #plt.plot(tΞ, np.log(fire_probability_Ξ), 'r.', label='Log(Pr)')
+    #prbin_plot = \
+    #panels.cax.plot(tΞ, fire_probability_Ξ, 'r', label='$\\Pr$ / Δt')
     prbin_plot = \
-    panels.cax.plot(tΞ, fire_probability_Ξ, 'r', label='$\\Pr$ / Δt')
+      panels.cax.fill_between(tΞ, fire_probability_Ξ, fire_probability_Ξ * 0.0,
+        color='r', alpha=0.3, label='$\\Pr$ / Δt')
+    # no-edge:
+    # panels.cax.fill_between(tΞ, fire_probability_Ξ, fire_probability_Ξ * 0.0, facecolor='r', alpha=1.0,  edgecolor=(1,0,0,0), linewidth=0, label='$\\Pr$ / Δt')
+    prbin_plot = [prbin_plot]
     panels.set_currenty_ylabel('$\\Pr$ / Δt', 'r')
     #panels.cax.legend()
     panels.apply_common_xlims()
@@ -269,7 +276,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     panels.next_panel() # 4
     plt1_N =\
         panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
-    panels.cax.stairs(values=Nᶜ_Ξ[1:], edges= tΞ+DeltaT, color='b', linestyle='-', label='$N_c$')
+    panels.cax.stairs(values=Nᶜ_Ξ[1:], edges= tΞ+DeltaT, fill=True, alpha=0.2, color='b', linestyle='-', label='$N_c$')
     panels.set_currenty_ylabel('$N_c(t)$', 'b')
 
     random_shift_sz = Nᶜ_Ξ[-1]
