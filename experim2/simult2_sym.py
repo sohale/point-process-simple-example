@@ -177,7 +177,8 @@ def simulate_step1(_K=None, duration=None, deltaT=None):
     return simargs
 
 # produces each timestep
-def simulate_step2(simargs):
+# the idea was it actually provided the INPUT signal! (I_k)
+def simulate_step2_simulate_input(simargs):
     last_every_second = -float('inf')
 
     for k in range(simargs.K):
@@ -230,7 +231,7 @@ Nc = 0
 #     1 * MSEC * 0.2 (when duration is specified)
 #     1 * MSEC (when K is specified)
 simargs = simulate_step1(duration=3.0, deltaT=1 * MSEC * 0.2)
-for k, t, I_k in simulate_step2(simargs):
+for k, t, I_k in simulate_step2_simulate_input(simargs):
     if k == 0:
         # todo: separate first step outside
         x_arr = np.zeros((simargs.K,))
