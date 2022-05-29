@@ -1,4 +1,8 @@
 
+Old name: `smithbrown2003-example1` At:
+`https://github.com/sohale/smithbrown2003-example1`
+
+The actual project development was done later on [here](https://bitbucket.org/sohailsiadat/smithbrown2003-ppss/src/master/)
 
 ### Screenshot
 Statistical modelling of Spike Trains as Point Processes

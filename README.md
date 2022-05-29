@@ -1,3 +1,5 @@
+Old name: `smithbrown2003-example1`
+
 # Smith-Brown's example 1
 A quick implementation of: **Smith & Brown, 2003** (See [1] below)
 
