@@ -281,13 +281,13 @@ if True:
     Nᶜ_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), 99999, dtype=int)
     fire_probabilityΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan)
     λ_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan, dtype=float)
-    I_arr_A2 = np.full((NEURONS_NUM, simargs1.K,), np.nan)
+    Iₖ_ΞΞ = np.full((NEURONS_NUM, simargs1.K,), np.nan)
 
     # output.
     # Non-square. Hence, list of nparrays
     ϟ_times_ξ = [None] * NEURONS_NUM
     # todo: rename
-    Λ_at_spikes_ξ = [None] * NEURONS_NUM
+    Λ_at_spikes_Ξ = [None] * NEURONS_NUM
 
     # local loop-updating variable(s)
     Nᶜ_ξ = np.zeros((NEURONS_NUM,))
@@ -364,7 +364,7 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
 
     x_ΞΞ[neuron_id][k] = xₖ
     Nᶜ_ΞΞ[neuron_id][k] = Nᶜ_ξ[neuron_id]
-    I_arr_A2[inp_id][k] = Iₖ_Ξ[inp_id]
+    Iₖ_ΞΞ[inp_id][k] = Iₖ_Ξ[inp_id]
     del xₖ, Iₖ_Ξ
 
     xlogpr_ΞΞ[neuron_id][k] = xlp
@@ -588,7 +588,7 @@ def generate_Λ_samples_unit_exp1(total_rate):
 
     spike_times_Al -> ϟ_times_ξ
 
-    Λ_at_spikes_Al -> Λϟ_ξ -> Λ_atϟ_ξ  -> Λ_at_spikes_ξ
+    Λ_at_spikes_Al -> Λϟ_ξ -> Λ_atϟ_ξ  -> Λ_at_spikes_ξ -> Λ_at_spikes_Ξ
 
     Λ_quantiles -> Λ_atϟ ->? Λ_at_spikes
 
@@ -684,16 +684,16 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
 # ϟ_times_ξ = spike_times_Al
 ϟ_times_ξ[neuron_id] = spike_times
 # Λ_at_spikes_ξ = Λ_atϟ_ξ = Λϟ_ξ = Λ_at_spikes_Al
-Λ_at_spikes_ξ[neuron_id] = Λ_atϟ
+Λ_at_spikes_Ξ[neuron_id] = Λ_atϟ
 del spike_times, Λ_atϟ
 
-# todo: Λ_at_spikes_ξ -> Λ_atϟξ ? or Λ_atϟ_ξ ?  or Λϟ_ξ ?
-assert len(ϟ_times_ξ) == len(Λ_at_spikes_ξ)
-print( ϟ_times_ξ[0].shape , Λ_at_spikes_ξ[0].shape )
-assert ϟ_times_ξ[0].shape == Λ_at_spikes_ξ[0].shape
+# todo: (Λ_at_spikes_ξ) Λ_at_spikes_Ξ -> Λ_atϟξ ? or Λ_atϟ_ξ ?  or Λϟ_ξ ?
+assert len(ϟ_times_ξ) == len(Λ_at_spikes_Ξ)
+print( ϟ_times_ξ[0].shape , Λ_at_spikes_Ξ[0].shape )
+assert ϟ_times_ξ[0].shape == Λ_at_spikes_Ξ[0].shape
 
 simulation_result = \
-    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_times_ξ, Λ_at_spikes_ξ, fire_probabilityΞΞ, Nᶜ_ΞΞ, I_arr_A2)
+    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_times_ξ, Λ_at_spikes_Ξ, fire_probabilityΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')

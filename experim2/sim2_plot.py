@@ -125,7 +125,7 @@ MSEC = 1. / 1000.
 
 def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
-    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nᶜ_ΞΞ, I_arr_A2) = \
+    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_times_ξ, Λ_at_spikes_Ξ, fire_probability_arr_A, Nᶜ_ΞΞ, Iₖ_ΞΞ) = \
         simulation_result
 
     neuron_id = 0
@@ -134,11 +134,11 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     x_Ξ = x_ΞΞ[neuron_id]
     xlogpr_Ξ = xlogpr_ΞΞ[neuron_id]
     λ_Ξ = λ_ΞΞ[neuron_id]
-    spike_times = spike_times_Al[neuron_id]
-    Λ_at_spikes = Λ_at_spikes_Al[neuron_id]
+    spike_times = spike_times_ξ[neuron_id]
+    Λ_at_spikes = Λ_at_spikes_Ξ[neuron_id]
     fire_probability_arr = fire_probability_arr_A[neuron_id]
     Nᶜ_Ξ = Nᶜ_ΞΞ[neuron_id]
-    I_arr = I_arr_A2[input_id]
+    Iₖ_Ξ = Iₖ_ΞΞ[input_id]
 
     # ##########################
 
@@ -243,7 +243,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
     panels.add_second_y_axis()
     plt4_I =\
-        panels.cax.plot(tΞ, I_arr, 'darkgreen',
+        panels.cax.plot(tΞ, Iₖ_Ξ, 'darkgreen',
                         label='$I_k$ (input)', alpha=0.4)
     panels.set_currenty_ylabel('$I_k$', tcolor)
     panels.multi_legend(plt1_N + plt3_s2 + plt4_I, 'upper left')
