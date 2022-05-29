@@ -292,9 +292,24 @@ class Neuron:
         self._sigma_eps_corrected = _sigma_eps_corrected
         self._rho_corrected = _rho_corrected
 
+def new_list_1d(size1):
+    return [None] * size1
+
+def new_list_2d(size1, size2):
+    # rows x columns
+    out = []
+    for i1 in range(size1):
+        row = []
+        for i2 in range(size2):
+            row.append(None)
+        out.append(row)
+        assert len(row) == size2
+    assert len(out) == size1
+    return out
 
 # [neuron_id]
 NEURONS_NUM = 1
+TRIALS_NUM = 10
 if True:
     tΞ = np.full((simargs1.K,), np.nan)
 
@@ -307,9 +322,11 @@ if True:
 
     # output.
     # Non-square. Hence, list of nparrays
-    ϟ_timesϟ_Ξ = [None] * NEURONS_NUM
-    # todo: rename
-    Λ_at_spikes_Ξ = [None] * NEURONS_NUM
+    # ϟ_timesϟ_Ξ = new_list_1d(NEURONS_NUM)
+    ϟ_timesϟ_𑴠Ξ = new_list_2d(NEURONS_NUM, TRIALS_NUM)
+
+    # Λ_at_spikes_Ξ = new_list_1d(NEURONS_NUM)
+    Λ_at_spikes_𑴠Ξ = new_list_2d(NEURONS_NUM, TRIALS_NUM)
 
     # local loop-updating variable(s)
     Nᶜ_ξ = np.zeros((NEURONS_NUM,))
@@ -698,6 +715,9 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     return Λ_atϟ, spike_timesϟ
 
 
+# for trial in range(TRIALS_NUM):
+trial = 0
+
 # Λ_quantiles
 Λ_atϟ, spike_timesϟ = \
     generates_time_points(λ_ΞΞ[neuron_id], simargs1.Delta, tΞ)
@@ -706,18 +726,20 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
 # spikes = (spike_timesϟ, Λ_atϟ)  # spikes and their accumulated Λ
 
 # ϟ_times_Ξ <- ϟ_times_ξ = spike_times_Al
-ϟ_timesϟ_Ξ[neuron_id] = spike_timesϟ
+ϟ_timesϟ_𑴠Ξ[neuron_id][trial] = spike_timesϟ
 # Λ_at_spikes_ξ = Λ_atϟ_ξ = Λϟ_ξ = Λ_at_spikes_Al
-Λ_at_spikes_Ξ[neuron_id] = Λ_atϟ
+Λ_at_spikes_𑴠Ξ[neuron_id][trial] = Λ_atϟ
 del spike_timesϟ, Λ_atϟ
 
 # todo: (Λ_at_spikes_ξ) Λ_at_spikes_Ξ -> Λ_atϟξ ? or Λ_atϟ_ξ ?  or Λϟ_ξ ?
-assert len(ϟ_timesϟ_Ξ) == len(Λ_at_spikes_Ξ)
-print( ϟ_timesϟ_Ξ[0].shape , Λ_at_spikes_Ξ[0].shape )
-assert ϟ_timesϟ_Ξ[0].shape == Λ_at_spikes_Ξ[0].shape
+assert len(ϟ_timesϟ_𑴠Ξ) == len(Λ_at_spikes_𑴠Ξ), "number of neurons (PP channels) should match"
+assert len(ϟ_timesϟ_𑴠Ξ[neuron_id]) == len(Λ_at_spikes_𑴠Ξ[neuron_id]), "number of trials should match"
+# remove this line later:
+print( ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape , Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape )
+assert ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape == Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape
 
 simulation_result = \
-    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_timesϟ_Ξ, Λ_at_spikes_Ξ, fire_probabilityΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ)
+    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_timesϟ_𑴠Ξ, Λ_at_spikes_𑴠Ξ, fire_probabilityΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')

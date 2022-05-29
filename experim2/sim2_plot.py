@@ -125,7 +125,7 @@ MSEC = 1. / 1000.
 
 def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
-    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_timesϟ_Ξ, Λ_at_spikes_Ξ, fire_probability_ΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ) = \
+    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, spike_timesϟ_𑴠Ξ, Λ_at_spikes_𑴠Ξ, fire_probability_ΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ) = \
         simulation_result
 
     neuron_id = 0
@@ -134,8 +134,8 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     x_Ξ = x_ΞΞ[neuron_id]
     xlogpr_Ξ = xlogpr_ΞΞ[neuron_id]
     λ_Ξ = λ_ΞΞ[neuron_id]
-    spike_timesϟ = spike_timesϟ_Ξ[neuron_id]
-    Λ_at_spikesϟ = Λ_at_spikes_Ξ[neuron_id]
+    spike_timesϟ𑴠 = spike_timesϟ_𑴠Ξ[neuron_id]
+    Λ_at_spikesϟ𑴠 = Λ_at_spikes_𑴠Ξ[neuron_id]
     fire_probability_Ξ = fire_probability_ΞΞ[neuron_id]
     Nᶜ_Ξ = Nᶜ_ΞΞ[neuron_id]
     Iₖ_Ξ = Iₖ_ΞΞ[input_id]
@@ -195,7 +195,11 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     plt3 = panels.cax.plot(tΞ, cumintegr_Ξ, tcolor+'-',
                         alpha=0.6, label='$\\int\\lambda dt$') # a\n $\\int...
     panels.cax.spines['right'].set_position(('data', np.max(tΞ)))
-    plt4 = panels.cax.plot(spike_timesϟ, Λ_at_spikesϟ, 'k.',
+    num_trials = len(Λ_at_spikesϟ𑴠)
+    #for trial in range(num_trials):
+    trial = 0
+    plt4 = \
+        panels.cax.plot(spike_timesϟ𑴠[trial], Λ_at_spikesϟ𑴠[trial], 'k.',
                         alpha=1.0, label='spikes')
 
 
@@ -233,9 +237,9 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     plt1_N =\
         panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
     random_shift_sz = Nᶜ_Ξ[-1]
-    randy = 0  # np.random.rand(spike_timesϟ.shape[0]) * random_shift_sz
-
-    panels.cax.plot(spike_timesϟ, spike_timesϟ*0+0.1+randy*0.9, 'k.')
+    trial = 0
+    randy = 0  # np.random.rand(spike_timesϟ𑴠[trial].shape[0]) * random_shift_sz
+    panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0+0.1+randy*0.9, 'k.')
     #panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
     plt3_s2 =\
         panels.cax.plot(spkt, nc, 'k.', label='Spikes', alpha=0.9)
