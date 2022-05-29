@@ -21,7 +21,7 @@ from operator import xor
 
 
 
-# simargs: SimulatorArgs1
+# simargs1: SimulatorArgs1
 #         ( .Delta )
 # simulation_result
 
@@ -156,7 +156,7 @@ class SimulatorArgs1(object):
 
     # produces each timestep? no longer.
     # simulate_input()
-    # provides: 1. basic simulatin args (part 1), instanciates simargs
+    # provides: 1. basic simulatin args (part 1), instantiates simargs1
     # also user-interface for that. Conventient providing of three items: K/dt/T
     # Could be a factory method as part of SimulatorArgs1!
     def simargs_factory(_K=None, duration=None, deltaT=None):
@@ -166,14 +166,14 @@ class SimulatorArgs1(object):
                 duration ~= K * Delta
             """
         # todo: remove global
-        global simargs
-        # simargs.T = Simulation Time Length (Sec)
+        global simargs1
+        # simargs1.T = Simulation Time Length (Sec)
         assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
-        simargs = SimulatorArgs1(_K=_K, duration=duration, _deltaT=deltaT)
-        return simargs
+        simargs1 = SimulatorArgs1(_K=_K, duration=duration, _deltaT=deltaT)
+        return simargs1
 
-global simargs  # simulation args
-simargs = None
+global simargs1  # simulation args
+simargs1 = None
 # simulator.K
 
 # old idea, occluded by the idea of `simulate_step()`:
@@ -183,11 +183,11 @@ simargs = None
 
 # produces each timestep
 # the idea was it actually provided the INPUT signal! (I_k)
-def simulate_step2_simulate_input(simargs):
+def simulate_step2_simulate_input(simargs1):
     last_every_second = -float('inf')
 
-    for k in range(simargs.K):
-        t = k * simargs.Delta
+    for k in range(simargs1.K):
+        t = k * simargs1.Delta
         every_second = (t) % 1.0
         fire = every_second < last_every_second
         #duration = 0.01
@@ -200,7 +200,7 @@ def simulate_step2_simulate_input(simargs):
         # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
 
         last_every_second = every_second
-        # yield k, t, I_k, simargs
+        # yield k, t, I_k, simargs1
         yield k, t, I_k
 
 
@@ -219,13 +219,13 @@ for i in range(NEURONS):
 #    print( n['beta'], end = '')
 # print()
 
-# simargs.K = 3000
-# simargs.T = 3.0; simargs.Delta =  # sec
-# simargs.K = int(simargs.T / simargs.Delta + 1)
+# simargs1.K = 3000
+# simargs1.T = 3.0; simargs1.Delta =  # sec
+# simargs1.K = int(simargs1.T / simargs1.Delta + 1)
 
-#assert simargs.K
-#assert simargs.Delta
-#assert simargs.T
+#assert simargs1.K
+#assert simargs1.Delta
+#assert simargs1.T
 
 
 last_x_k = 0.0
@@ -235,25 +235,25 @@ Nc = 0
 # `deltaT` was:
 #     1 * MSEC * 0.2 (when duration is specified)
 #     1 * MSEC (when K is specified)
-simargs = SimulatorArgs1.simargs_factory(duration=3.0, deltaT=1 * MSEC * 0.2)
+simargs1 = SimulatorArgs1.simargs_factory(duration=3.0, deltaT=1 * MSEC * 0.2)
 if True:
-    x_arr = np.zeros((simargs.K,))
-    xlogpr_arr = np.zeros((simargs.K,))
-    Nc_arr = np.zeros((simargs.K,))
-    t_arr = np.zeros((simargs.K,))
-    fire_probability_arr = np.zeros((simargs.K,))
-    lambda_arr = np.zeros((simargs.K,))
-    I_arr = np.zeros((simargs.K,))
+    x_arr = np.zeros((simargs1.K,))
+    xlogpr_arr = np.zeros((simargs1.K,))
+    Nc_arr = np.zeros((simargs1.K,))
+    t_arr = np.zeros((simargs1.K,))
+    fire_probability_arr = np.zeros((simargs1.K,))
+    lambda_arr = np.zeros((simargs1.K,))
+    I_arr = np.zeros((simargs1.K,))
 
     _tau = get_neuron_tau(na[0], DELTA0)
-    _rho_corrected = get_neuron_rho(_tau, simargs.Delta)
+    _rho_corrected = get_neuron_rho(_tau, simargs1.Delta)
     _sigma_eps_corrected = na[0]['sigma_eps'] * \
-        math.sqrt(simargs.Delta/DELTA0)
+        math.sqrt(simargs1.Delta/DELTA0)
     print("_rho_corrected = ", _rho_corrected, "rho=", na[0]['rho'])
     print("_sigma_eps_corrected = ", _sigma_eps_corrected,
             "sigma_eps=", na[0]['sigma_eps'])
 
-for k, t, I_k in simulate_step2_simulate_input(simargs):
+for k, t, I_k in simulate_step2_simulate_input(simargs1):
 
     # print( t, k, I_k )
 
@@ -269,7 +269,7 @@ for k, t, I_k in simulate_step2_simulate_input(simargs):
         # dirac_factor = 7.0  # terrible. Why no refactory period?
         dirac_factor = 1.0
 
-        #dirac_factor = 1.0 / simargs.Delta
+        #dirac_factor = 1.0 / simargs1.Delta
         # print( "dirac_factor,",dirac_factor )
         x_k = n['rho'] * last_x_k + n['alpha'] * \
             I_k * dirac_factor + eps_k  # Eq.1
@@ -291,10 +291,10 @@ for k, t, I_k in simulate_step2_simulate_input(simargs):
     # * Point process simulation
     # *****************************
 
-    fire_probability = lambda_k * simargs.Delta  # * 100
+    fire_probability = lambda_k * simargs1.Delta  # * 100
     fire = fire_probability > np.random.rand()
 
-    #output = (x_k * simargs.Delta) > np.random.rand()
+    #output = (x_k * simargs1.Delta) > np.random.rand()
     #Nc += output
 
     Nc += fire
@@ -310,12 +310,12 @@ for k, t, I_k in simulate_step2_simulate_input(simargs):
     lambda_arr[k] = lambda_k
 
     if k == 0:
-        report_neuron(n, simargs.Delta)
+        report_neuron(n, simargs1.Delta)
 
-print("Simulation time = T =", simargs.T, ". Mean rate = ",
-      float(Nc)/simargs.T, "(spikes/sec)")
-print("Integral of lambda = ", np.sum(lambda_arr) * simargs.Delta)
-print("Mean lambda = ", np.sum(lambda_arr) * simargs.Delta / simargs.T)
+print("Simulation time = T =", simargs1.T, ". Mean rate = ",
+      float(Nc)/simargs1.T, "(spikes/sec)")
+print("Integral of lambda = ", np.sum(lambda_arr) * simargs1.Delta)
+print("Mean lambda = ", np.sum(lambda_arr) * simargs1.Delta / simargs1.T)
 
 
 def cumsum0(x, cutlast=True):
@@ -348,9 +348,9 @@ def generate_unit_isi(total_rate):
 
 
 # t_arr
-#cumintegr_arr, maxv = cumsum0(lambda_arr, cutlast=False)*simargs.Delta
-#t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs.Delta]))
-cumintegr_arr = cumsum0(lambda_arr, cutlast=True)*simargs.Delta
+#cumintegr_arr, maxv = cumsum0(lambda_arr, cutlast=False)*simargs1.Delta
+#t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs1.Delta]))
+cumintegr_arr = cumsum0(lambda_arr, cutlast=True)*simargs1.Delta
 maxv = np.max(cumintegr_arr)
 
 interp_func = interp1d(cumintegr_arr, t_arr, kind='linear')
@@ -380,4 +380,4 @@ simulation_result = \
 # sys.path.append('/ufs/guido/lib/python')
 from sim2_plot import *
 
-plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0)
+plot_all(simargs1, na, get_neuron_tau, simulation_result, DELTA0)
