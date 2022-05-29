@@ -710,7 +710,6 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
 
     del maxΛ, Λcumintegrλ_Ξ
     # del spike_timesϟ, Λ_atϟ
-    print( spike_timesϟ.shape , Λ_atϟ.shape )
     assert spike_timesϟ.shape == Λ_atϟ.shape
     return Λ_atϟ, spike_timesϟ
 
@@ -733,7 +732,7 @@ for trial in range(TRIALS_NUM):
     assert len(ϟ_timesϟ_𑴠Ξ) == len(Λ_at_spikes_𑴠Ξ), "number of neurons (PP channels) should match"
     assert len(ϟ_timesϟ_𑴠Ξ[neuron_id]) == len(Λ_at_spikes_𑴠Ξ[neuron_id]), "number of trials should match"
     # remove this line later:
-    print( ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape , Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape )
+    #print( ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape , Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape )
     assert ϟ_timesϟ_𑴠Ξ[neuron_id][trial].shape == Λ_at_spikes_𑴠Ξ[neuron_id][trial].shape
 
 simulation_result = \

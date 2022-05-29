@@ -27,7 +27,7 @@ def describe_model_latex(neuron_array):
         s1 = "%g" % x
         s2 = "%.2f" % x
         s3 = "%g" % round(x, 2)
-        print('sss>', s1, s2, s3)
+        print('Trying shortest float>', s1, s2, s3)
         s23 = s2 if len(s2) < len(s3) else s3
         s123 = s1 if len(s1) < len(s23) else s23
         return s123
@@ -199,8 +199,9 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     #for trial in range(num_trials):
     trial = 0
     plt4 = \
-        panels.cax.plot(spike_timesϟ𑴠[trial], Λ_at_spikesϟ𑴠[trial], 'k.',
-                        alpha=1.0, label='spikes')
+        panels.cax.plot(spike_timesϟ𑴠[trial], Λ_at_spikesϟ𑴠[trial],
+                        'ks', markersize=4,
+                        alpha=.2, label='spikes')
 
 
     panels.fix_currenty_ylim(cumintegr_Ξ, 0.1)
@@ -215,6 +216,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     #plt.plot(tΞ, λ_Ξ, 'r.', label='\lambda')
     #plt.plot(tΞ, np.log(fire_probability_Ξ), 'r.', label='Log(Pr)')
     panels.cax.plot(tΞ, fire_probability_Ξ, 'r', label='$\\Pr$ / bin')
+    panels.set_currenty_ylabel('$\\Pr$ / Δt', 'r')
     #panels.cax.legend()
     panels.apply_common_xlims()
     panels.no_xticks()
@@ -240,8 +242,9 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
       # how about  Λ_at_spikesϟ𑴠[trial]
       y0 = trial
       plt_dots = \
-        panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0 + y0,
+        panels.cax.plot(spike_timesϟ𑴠[trial], (Λ_at_spikesϟ𑴠[trial]* 0.5  + y0) % 15,
                         **marker_style, alpha=0.2, label='spikes')
+    panels.set_currenty_ylabel('trial $+ 0.5Λ(t)$', 'k')
 
     panels.apply_common_xlims()
     panels.no_xticks()
