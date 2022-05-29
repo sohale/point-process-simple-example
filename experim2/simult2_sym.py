@@ -9,10 +9,14 @@ from scipy.interpolate import interp1d
     [1]. Smith and Brown 2003. "Estimating a State-Space Model from Point Process Observations".
 """
 
+# -------------------------------
+# * epxeriment
+#    * simulation
+#       * simulation inputs
+#       * simulation results
+# -------------------------------
+
 MSEC = 1. / 1000.
-
-# some utility functions
-
 
 
 # **********************************************************************************
@@ -70,7 +74,7 @@ descriptions = {
     'beta': ["", ""]
 }
 
-# Part of the problem spects, not the Delta used in the simulation.
+# Part of the problem specs, but not the Delta used in the simulation.
 DELTA0 = 1.0 * MSEC
 
 # **********************************************************************************
@@ -303,8 +307,12 @@ spike_times = interp_func(quantiles01)
 # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
 # spikes = (spike_times, quantiles01)  # spikes and their accumulated lambda
 
+
+simulation_result = \
+    (t_arr, x_arr, xlogpr_arr, lambda_arr, spike_times, quantiles01, fire_probability_arr, Nc_arr, I_arr)
+
 # import sys
 # sys.path.append('/ufs/guido/lib/python')
 from sim2_plot import *
 
-plot_all(simargs, na, get_neuron_tau, t_arr, x_arr, xlogpr_arr, lambda_arr, spike_times, quantiles01, fire_probability_arr, Nc_arr, I_arr, DELTA0, MSEC)
+plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, MSEC)

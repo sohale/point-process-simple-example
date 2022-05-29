@@ -16,6 +16,9 @@ import matplotlib.pyplot as plt
 
 # https://matplotlib.org/3.4.0/thirdpartypackages/index.html
 
+# **********************************************************************************
+# * some utility functions:
+# **********************************************************************************
 
 def describe_model_latex(neuron_array):
     def cut_sigbits(x):
@@ -118,7 +121,11 @@ class Panels(object):
     def no_xticks(self):
         self.cax.set_xticklabels([])
 
-def plot_all(simargs, na, get_neuron_tau, t_arr, x_arr, xlogpr_arr, lambda_arr, spike_times, quantiles01, fire_probability_arr, Nc_arr, I_arr, DELTA0, MSEC):
+def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, MSEC):
+
+    (t_arr, x_arr, xlogpr_arr, lambda_arr, spike_times, quantiles01, fire_probability_arr, Nc_arr, I_arr) = \
+        simulation_result
+
     # ##########################
 
     panels = Panels(4)
