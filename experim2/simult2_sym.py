@@ -412,6 +412,60 @@ def generate_isi_samples_unit_exp1(total_rate):
     `total_rate` units are in "virtual-time" (rate, λ, intensity-integrated, capital Lambda: Λ )
     ISIΛ: Inter-spike inter-val -> inter-Λ-val
     interval implies physical "time". But this is virtual-time (Λ)
+
+    True-time (internal, canonical, natural!)
+
+    ISI = TR(R)
+
+    time_quantiles01 -> time_quantiles
+    By q01 I meant the ISI in terms of this.
+    Max of sum(q01) is Sum(λ) = (disrete)Sum(Λ) = Λ
+    Evolution:
+        Sum(λ) = Λ
+        (disrete)Sum(λ) = Λ
+        Sum(λ) = (disrete)Sum(Λ) = Λ
+        ∫λ = (disrete)Sum(ΔΛ) = Λ
+        ∫λ = Σ(ΔΛ) = Λ
+        ∫λ dt = Σ(ΔΛ) = Λ
+
+    But here:
+        Λ = Σ (isi?)
+        Λ = Σ(ΔΛ)
+
+        isi? = ΔΛ
+    On the other hands, the units of λ are 1/time?
+
+    No, in fact, the time is added to it by the integration:
+        ∫λ dt  is unit-less
+        Hence, λ is 1/t or better to say: 1/Δt?
+    I am adding back:
+        1. physical Dim
+        2. Δ or whole (Σ). ΣΔ = whole. ΣΔ = id
+            Δ = Σ^{-1} * id ?!
+            Δ = 1/Σ * id
+            Δ = id/Σ (but in opposite order)
+
+        3. Adding back the natures other than time. e.g. Λ-ness.
+
+        4. Maybe: DIM of `rand()`. (?)
+
+        5. log-ness as DIM. log-ness is important.
+            log-transforms changre DIM. (BEcause they are in sa differnt space!)
+
+            Σ,Δ are kind of transformations:    the results are relative/absolute (to reference points).
+            jens (material) is different.
+            This is a very fundamental quality.
+
+            Σ ( seq1 ) = cusum
+            Δ (seq2) = diff
+            Σ(Δ) is obviously are transfomrations.
+
+        6. Nature of space (of transformation)
+            eg rand is in its own "space".
+
+
+    The `rand()` itself has some DIM (?)
+
     """
     # print( "ISI(%g):"%(total_rate), end='')
     st = 0.0
