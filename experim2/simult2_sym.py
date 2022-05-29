@@ -401,13 +401,18 @@ def cumsum0(x, cutlast=True):
     return c, maxval
 
 
-def generate_isi_samples_unit_exp1(total_rate):
+def generate_Λ_samples_unit_exp1(total_rate):
     """
     Generates samples from
     Exponential distribution
     λ = 1.0
 
     PDF(x) = λ exp(-λx)
+
+    Name evolution: Old names:
+        generate_unit_isi
+        generate_isi_samples_unit_exp1
+        generate_Λ_samples_unit_exp1
 
     where x = ISI in temrs of "virtual-time" (Λ)
     (Not really ISI: but ISI-Λ )
@@ -608,6 +613,7 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     # Time-Rescaling: Quantile ~ (physical) time (of spikes)
     # todo: rename Λ_quantiles
     # Λ_quantiles is ...
+    # Converts Λ -> time. time(Λ)
     time_rescaling_interp_func = interp1d(Λcumintegrλ_arr, t_arr, kind='linear')
     # (x,y, ...)  y = F(x).  t_arr = F(Λcumintegrλ_arr)
     # time_rescaling_interp_func: Λ -> t
@@ -616,10 +622,13 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     # => `time_rescaling_interp_func` IS the Time-Rescaling transformation function
     # It is a continuous function
     # It is in fact better called Λ_rescaling
+    #     But its standard Mathematical name is Λ_rescaling
+    #     It is about Time-rescaling "Theorem"
+    # Converts Λ -> time. time(Λ)
 
     # Time-rescaled quantiles:
     #Λ_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
-    Λ_quantiles = generate_isi_samples_unit_exp1(maxΛ)
+    Λ_quantiles = generate_Λ_samples_unit_exp1(maxΛ)
     # print( Λ_quantiles )
 
     # empty_spikes, empty_spiketrain, no_spikes
