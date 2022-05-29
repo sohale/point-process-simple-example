@@ -283,7 +283,8 @@ if True:
     lambda_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan)
     I_arr_A2 = np.full((NEURONS_NUM, simargs1.K,), np.nan)
 
-    # output
+    # output.
+    # Non-square. Hence, list of nparrays
     spike_times_Al = [None] * NEURONS_NUM
     # todo: rename
     quantiles01_Al = [None] * NEURONS_NUM
@@ -395,7 +396,17 @@ def cumsum0(x, cutlast=True):
     return c
 
 
-def generate_unit_isi(total_rate):
+def generate_isi_samples_unit_exp1(total_rate):
+    """
+    Generates samples from
+    Exponential distribution
+    λ = 1.0
+
+    PDF(x) = λ exp(-λx)
+    where x = ISI
+
+    Enough number of samples to fit the whole `total_rate`
+    """
     # print( "ISI(%g):"%(total_rate), end='')
     st = 0.0
     l = []
@@ -419,29 +430,29 @@ cumintegr_arr = cumsum0(lambda_arr_A[neuron_id], cutlast=True)*simargs1.Delta
 maxv = np.max(cumintegr_arr)
 
 # Time-Rescaling: Quantile ~ (physical) time (of spikes)
-# todo: rename quantiles01
-# quantiles01 is ...
+# todo: rename time_quantiles
+# time_quantiles is ...
 interp_func = interp1d(cumintegr_arr, t_arr, kind='linear')
 # Time-rescaled quantiles:
-#quantiles01 = np.arange(0,maxv,maxv/10.0 * 10000)
-quantiles01 = generate_unit_isi(maxv)
-# print( quantiles01 )
+#time_quantiles = np.arange(0,maxv,maxv/10.0 * 10000)
+time_quantiles = generate_isi_samples_unit_exp1(maxv)
+# print( time_quantiles )
 
-assert quantiles01.shape[0] == 0 or np.max(
-    cumintegr_arr) >= np.max(quantiles01)
-assert quantiles01.shape[0] == 0 or np.min(
-    cumintegr_arr) <= np.min(quantiles01)
-if quantiles01.shape == (0,):
+assert time_quantiles.shape[0] == 0 or np.max(
+    cumintegr_arr) >= np.max(time_quantiles)
+assert time_quantiles.shape[0] == 0 or np.min(
+    cumintegr_arr) <= np.min(time_quantiles)
+if time_quantiles.shape == (0,):
     print("Warning: empty spike train. *****")
 
-spike_times = interp_func(quantiles01)
+spike_times = interp_func(time_quantiles)
 
 # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
-# spikes = (spike_times, quantiles01)  # spikes and their accumulated lambda
+# spikes = (spike_times, time_quantiles)  # spikes and their accumulated lambda
 
 spike_times_Al[neuron_id] = spike_times
-quantiles01_Al[neuron_id] = quantiles01
-del spike_times, quantiles01, maxv, cumintegr_arr
+quantiles01_Al[neuron_id] = time_quantiles
+del spike_times, time_quantiles, maxv, cumintegr_arr
 
 simulation_result = \
     (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, quantiles01_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
