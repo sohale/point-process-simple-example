@@ -285,9 +285,9 @@ if True:
 
     # output.
     # Non-square. Hence, list of nparrays
-    spike_times_Al = [None] * NEURONS_NUM
+    ϟ_times_ξ = [None] * NEURONS_NUM
     # todo: rename
-    Λ_at_spikes_Al = [None] * NEURONS_NUM
+    Λϟ_ξ = [None] * NEURONS_NUM
 
     # local loop-updating variable(s)
     Nc_A = np.zeros((NEURONS_NUM,))
@@ -668,16 +668,18 @@ def generates_time_points(λ_arr, ΔT, t_arr):
 # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
 # spikes = (spike_times, Λ_quantiles)  # spikes and their accumulated Λ
 
-spike_times_Al[neuron_id] = spike_times
-Λ_at_spikes_Al[neuron_id] = Λ_quantiles
+# ϟ_times_ξ = spike_times_Al
+ϟ_times_ξ[neuron_id] = spike_times
+# Λϟ_ξ = Λ_at_spikes_Al
+Λϟ_ξ[neuron_id] = Λ_quantiles
 del spike_times, Λ_quantiles
 
-assert len(spike_times_Al) == len(Λ_at_spikes_Al)
-print( spike_times_Al[0].shape , Λ_at_spikes_Al[0].shape )
-assert spike_times_Al[0].shape == Λ_at_spikes_Al[0].shape
+assert len(ϟ_times_ξ) == len(Λϟ_ξ)
+print( ϟ_times_ξ[0].shape , Λϟ_ξ[0].shape )
+assert ϟ_times_ξ[0].shape == Λϟ_ξ[0].shape
 
 simulation_result = \
-    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
+    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, ϟ_times_ξ, Λϟ_ξ, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')
