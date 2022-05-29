@@ -287,7 +287,7 @@ if True:
     # Non-square. Hence, list of nparrays
     ϟ_times_ξ = [None] * NEURONS_NUM
     # todo: rename
-    Λ_atϟ_ξ = [None] * NEURONS_NUM
+    Λ_at_spikes_ξ = [None] * NEURONS_NUM
 
     # local loop-updating variable(s)
     Nc_A = np.zeros((NEURONS_NUM,))
@@ -583,7 +583,7 @@ def generate_Λ_samples_unit_exp1(total_rate):
 
     spike_times_Al -> ϟ_times_ξ
 
-    Λ_at_spikes_Al -> Λ_atϟ_ξ = Λϟ_ξ
+    Λ_at_spikes_Al -> Λϟ_ξ -> Λ_atϟ_ξ  -> Λ_at_spikes_ξ
 
     Λ_quantiles -> Λ_atϟ
     """
@@ -676,16 +676,16 @@ def generates_time_points(λ_arr, ΔT, t_arr):
 
 # ϟ_times_ξ = spike_times_Al
 ϟ_times_ξ[neuron_id] = spike_times
-# Λ_atϟ_ξ = Λϟ_ξ = Λ_at_spikes_Al
-Λ_atϟ_ξ[neuron_id] = Λ_atϟ
+# Λ_at_spikes_ξ = Λ_atϟ_ξ = Λϟ_ξ = Λ_at_spikes_Al
+Λ_at_spikes_ξ[neuron_id] = Λ_atϟ
 del spike_times, Λ_atϟ
 
-assert len(ϟ_times_ξ) == len(Λ_atϟ_ξ)
-print( ϟ_times_ξ[0].shape , Λ_atϟ_ξ[0].shape )
-assert ϟ_times_ξ[0].shape == Λ_atϟ_ξ[0].shape
+assert len(ϟ_times_ξ) == len(Λ_at_spikes_ξ)
+print( ϟ_times_ξ[0].shape , Λ_at_spikes_ξ[0].shape )
+assert ϟ_times_ξ[0].shape == Λ_at_spikes_ξ[0].shape
 
 simulation_result = \
-    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, ϟ_times_ξ, Λ_atϟ_ξ, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
+    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, ϟ_times_ξ, Λ_at_spikes_ξ, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')
