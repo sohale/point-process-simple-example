@@ -285,7 +285,7 @@ if True:
 
     # output.
     # Non-square. Hence, list of nparrays
-    ϟ_times_ξ = [None] * NEURONS_NUM
+    ϟ_timesϟ_Ξ = [None] * NEURONS_NUM
     # todo: rename
     Λ_at_spikes_Ξ = [None] * NEURONS_NUM
 
@@ -584,9 +584,9 @@ def generate_Λ_samples_unit_exp1(total_rate):
     quantiles01 <-> Λ
     aks: time_quantiles01 (which is totally wrong!)
 
-    Correspondance: Λquantiles <-> spike_times
+    Correspondance: Λquantiles <-> spike_timesϟ
 
-    spike_times_Al -> ϟ_times_ξ
+    spike_times_Al -> ϟ_times_ξ -> ϟ_times_Ξ -> ϟ_timesξ_Ξ? -> ϟ_timesϟ_Ξ (good: ϟ indicates some kind of array suffix (redunndancy in the name that specifies the type)). Also it is not soft (list)
 
     Λ_at_spikes_Al -> Λϟ_ξ -> Λ_atϟ_ξ  -> Λ_at_spikes_ξ -> Λ_at_spikes_Ξ
 
@@ -643,7 +643,7 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     #     But its standard Mathematical name is Λ_rescaling
     #     It is about Time-rescaling "Theorem"
     # Converts Λ -> time. time(Λ)
-    # In a sense, rescaling means calculating "quantile"s. Hence the name: Λquantiles (spike_times), spike_Λs
+    # In a sense, rescaling means calculating "quantile"s. Hence the name: Λquantiles (spike_timesϟ), spike_Λs
     #    Λquantiles, spike_Λs, Λ_at_spikes, Λ_at_points, Λ_points (time_points)
     #   time_of_spikes, Λ_of_spikes
     # Λquantiles -> Λ_at_spikes
@@ -663,37 +663,37 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     if no_spikes:
         print("Warning: empty spike train. *****")
 
-    spike_times = time_rescaling_interp_func(Λ_atϟ)
+    spike_timesϟ = time_rescaling_interp_func(Λ_atϟ)
     # why changed to this?
-    #spike_times = time_rescaling_interp_func(Λcumintegrλ_Ξ)
+    #spike_timesϟ = time_rescaling_interp_func(Λcumintegrλ_Ξ)
 
     del maxΛ, Λcumintegrλ_Ξ
-    # del spike_times, Λ_atϟ
-    print( spike_times.shape , Λ_atϟ.shape )
-    assert spike_times.shape == Λ_atϟ.shape
-    return Λ_atϟ, spike_times
+    # del spike_timesϟ, Λ_atϟ
+    print( spike_timesϟ.shape , Λ_atϟ.shape )
+    assert spike_timesϟ.shape == Λ_atϟ.shape
+    return Λ_atϟ, spike_timesϟ
 
 
 # Λ_quantiles
-Λ_atϟ, spike_times = \
+Λ_atϟ, spike_timesϟ = \
     generates_time_points(λ_ΞΞ[neuron_id], simargs1.Delta, tΞ)
 
 # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
-# spikes = (spike_times, Λ_atϟ)  # spikes and their accumulated Λ
+# spikes = (spike_timesϟ, Λ_atϟ)  # spikes and their accumulated Λ
 
-# ϟ_times_ξ = spike_times_Al
-ϟ_times_ξ[neuron_id] = spike_times
+# ϟ_times_Ξ <- ϟ_times_ξ = spike_times_Al
+ϟ_timesϟ_Ξ[neuron_id] = spike_timesϟ
 # Λ_at_spikes_ξ = Λ_atϟ_ξ = Λϟ_ξ = Λ_at_spikes_Al
 Λ_at_spikes_Ξ[neuron_id] = Λ_atϟ
-del spike_times, Λ_atϟ
+del spike_timesϟ, Λ_atϟ
 
 # todo: (Λ_at_spikes_ξ) Λ_at_spikes_Ξ -> Λ_atϟξ ? or Λ_atϟ_ξ ?  or Λϟ_ξ ?
-assert len(ϟ_times_ξ) == len(Λ_at_spikes_Ξ)
-print( ϟ_times_ξ[0].shape , Λ_at_spikes_Ξ[0].shape )
-assert ϟ_times_ξ[0].shape == Λ_at_spikes_Ξ[0].shape
+assert len(ϟ_timesϟ_Ξ) == len(Λ_at_spikes_Ξ)
+print( ϟ_timesϟ_Ξ[0].shape , Λ_at_spikes_Ξ[0].shape )
+assert ϟ_timesϟ_Ξ[0].shape == Λ_at_spikes_Ξ[0].shape
 
 simulation_result = \
-    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_times_ξ, Λ_at_spikes_Ξ, fire_probabilityΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ)
+    (tΞ, x_ΞΞ, xlogpr_ΞΞ, λ_ΞΞ, ϟ_timesϟ_Ξ, Λ_at_spikes_Ξ, fire_probabilityΞΞ, Nᶜ_ΞΞ, Iₖ_ΞΞ)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')
