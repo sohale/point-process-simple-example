@@ -280,7 +280,7 @@ if True:
     xlogpr_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan)
     Nc_arr_A = np.full((NEURONS_NUM, simargs1.K,), 99999, dtype=int)
     fire_probability_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan)
-    lambda_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan)
+    lambda_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan, dtype=float)
     I_arr_A2 = np.full((NEURONS_NUM, simargs1.K,), np.nan)
 
     # output.
@@ -373,7 +373,7 @@ for k, t, I_k_A2 in InputDriver_static.simulate_input_and_drive_next_step(simarg
     if is_first_step:
         Neuron_static.report_neuron(n, simargs1.Delta)
 
-    # del x_arr,     xlogpr_arr,    Nc_arr,    fire_probability_arr,    lambda_arr,    I_arr,
+    # del x_arr,     xlogpr_arr,    Nc_arr,    fire_probability_arr,    λ_arr,    I_arr,
     del lambda_k, fire_probability, t, x_k, fire
 
 print("Simulation time = T =", simargs1.T, ". Mean rate = ",
@@ -385,15 +385,19 @@ for neuron_id in range(1):
 
 
 def cumsum0(x, cutlast=True):
-    """ generates a cumsum starting with 0.0, of the same size as x, i.e. removes the last element, and returning it separately. """
+    """
+        generates a cumsum that starts with 0.0,
+        of the same size as x
+        To maintain the size, it removes the last element,
+        and returns it separately.
+        """
     c = np.cumsum(x)
     maxval = c[-1]
     c = np.concatenate((np.array([0.0]), c))
     if cutlast:
         c = c[:-1]
 
-    # return c, maxval
-    return c
+    return c, maxval
 
 
 def generate_isi_samples_unit_exp1(total_rate):
@@ -569,37 +573,65 @@ def generate_isi_samples_unit_exp1(total_rate):
     return np.array(l)
 
 
-# t_arr
-#cumintegr_arr, maxΛ = cumsum0(lambda_arr_A[neuron_id], cutlast=False)*simargs1.Delta
-#t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs1.Delta]))
-cumintegr_arr = cumsum0(lambda_arr_A[neuron_id], cutlast=True)*simargs1.Delta
-maxΛ = cumintegr_arr[-1]
-assert cumintegr_arr[-1] == np.max(cumintegr_arr), "monotonically increaseing"
 
-# Time-Rescaling: Quantile ~ (physical) time (of spikes)
-# todo: rename time_quantiles
-# time_quantiles is ...
-interp_func = interp1d(cumintegr_arr, t_arr, kind='linear')
-# Time-rescaled quantiles:
-#time_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
-time_quantiles = generate_isi_samples_unit_exp1(maxΛ)
-# print( time_quantiles )
+# Generates a Point Process
 
-assert time_quantiles.shape[0] == 0 or np.max(
-    cumintegr_arr) >= np.max(time_quantiles)
-assert time_quantiles.shape[0] == 0 or np.min(
-    cumintegr_arr) <= np.min(time_quantiles)
-if time_quantiles.shape == (0,):
-    print("Warning: empty spike train. *****")
+def generates_time_points(λ_arr, ΔT, t_arr):
+    # t_arr
+    #cumintegrλ_arr, maxΛ = cumsum0(lambda_arr_A[neuron_id], cutlast=False)*simargs1.Delta
+    #t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs1.Delta]))
+    #cumintegrλ_arr, _ = cumsum0(lambda_arr_A[neuron_id], cutlast=True)*simargs1.Delta
+    cumintegr_arr0, _ignore_max = cumsum0(λ_arr, cutlast=True)
+    cumintegrλ_arr = cumintegr_arr0 * ΔT
 
-spike_times = interp_func(time_quantiles)
+    maxΛ = cumintegrλ_arr[-1]
+    assert cumintegrλ_arr[-1] == np.max(cumintegrλ_arr), "monotonically increaseing"
+
+    # time_reversal_transform
+
+    # Time-Rescaling: Quantile ~ (physical) time (of spikes)
+    # todo: rename time_quantiles
+    # time_quantiles is ...
+    interp_func = interp1d(cumintegrλ_arr, t_arr, kind='linear')
+    # Time-rescaled quantiles:
+    #time_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
+    time_quantiles = generate_isi_samples_unit_exp1(maxΛ)
+    # print( time_quantiles )
+
+    # empty_spikes, empty_spiketrain, no_spikes
+    no_spikes = time_quantiles.shape[0] == 0
+    assert no_spikes or \
+        np.max(cumintegrλ_arr) >= np.max(time_quantiles)
+    assert no_spikes or \
+        np.min(cumintegrλ_arr) <= np.min(time_quantiles)
+    if no_spikes:
+        print("Warning: empty spike train. *****")
+
+    spike_times = interp_func(time_quantiles)
+    # why changed to this?
+    #spike_times = interp_func(cumintegrλ_arr)
+
+    del maxΛ, cumintegrλ_arr
+    # del spike_times, time_quantiles
+    print( spike_times.shape , time_quantiles.shape )
+    assert spike_times.shape == time_quantiles.shape
+    return time_quantiles, spike_times
+
+
+
+time_quantiles, spike_times = \
+    generates_time_points(lambda_arr_A[neuron_id], simargs1.Delta, t_arr)
 
 # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
 # spikes = (spike_times, time_quantiles)  # spikes and their accumulated lambda
 
 spike_times_Al[neuron_id] = spike_times
 quantiles01_Al[neuron_id] = time_quantiles
-del spike_times, time_quantiles, maxΛ, cumintegr_arr
+del spike_times, time_quantiles
+
+assert len(spike_times_Al) == len(quantiles01_Al)
+print( spike_times_Al[0].shape , quantiles01_Al[0].shape )
+assert spike_times_Al[0].shape == quantiles01_Al[0].shape
 
 simulation_result = \
     (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, quantiles01_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
