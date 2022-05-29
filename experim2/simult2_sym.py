@@ -287,7 +287,7 @@ if True:
     # Non-square. Hence, list of nparrays
     ϟ_times_ξ = [None] * NEURONS_NUM
     # todo: rename
-    Λϟ_ξ = [None] * NEURONS_NUM
+    Λ_atϟ_ξ = [None] * NEURONS_NUM
 
     # local loop-updating variable(s)
     Nc_A = np.zeros((NEURONS_NUM,))
@@ -580,6 +580,12 @@ def generate_Λ_samples_unit_exp1(total_rate):
     aks: time_quantiles01 (which is totally wrong!)
 
     Correspondance: Λquantiles <-> spike_times
+
+    spike_times_Al -> ϟ_times_ξ
+
+    Λ_at_spikes_Al -> Λ_atϟ_ξ = Λϟ_ξ
+
+    Λ_quantiles -> Λ_atϟ
     """
     # print( "ISI(%g):"%(total_rate), end='')
     Λ = 0.0
@@ -638,48 +644,48 @@ def generates_time_points(λ_arr, ΔT, t_arr):
 
     # Time-rescaled quantiles:
     #Λ_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
-    Λ_quantiles = generate_Λ_samples_unit_exp1(maxΛ)
-    # print( Λ_quantiles )
+    Λ_atϟ = generate_Λ_samples_unit_exp1(maxΛ)
+    # print( Λ_atϟ )
 
     # empty_spikes, empty_spiketrain, no_spikes
-    no_spikes = Λ_quantiles.shape[0] == 0
+    no_spikes = Λ_atϟ.shape[0] == 0
     assert no_spikes or \
-        np.max(Λcumintegrλ_arr) >= np.max(Λ_quantiles)
+        np.max(Λcumintegrλ_arr) >= np.max(Λ_atϟ)
     assert no_spikes or \
-        np.min(Λcumintegrλ_arr) <= np.min(Λ_quantiles)
+        np.min(Λcumintegrλ_arr) <= np.min(Λ_atϟ)
     if no_spikes:
         print("Warning: empty spike train. *****")
 
-    spike_times = time_rescaling_interp_func(Λ_quantiles)
+    spike_times = time_rescaling_interp_func(Λ_atϟ)
     # why changed to this?
     #spike_times = time_rescaling_interp_func(Λcumintegrλ_arr)
 
     del maxΛ, Λcumintegrλ_arr
-    # del spike_times, Λ_quantiles
-    print( spike_times.shape , Λ_quantiles.shape )
-    assert spike_times.shape == Λ_quantiles.shape
-    return Λ_quantiles, spike_times
+    # del spike_times, Λ_atϟ
+    print( spike_times.shape , Λ_atϟ.shape )
+    assert spike_times.shape == Λ_atϟ.shape
+    return Λ_atϟ, spike_times
 
 
-
-Λ_quantiles, spike_times = \
+# Λ_quantiles
+Λ_atϟ, spike_times = \
     generates_time_points(λ_arr_A[neuron_id], simargs1.Delta, t_arr)
 
 # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
-# spikes = (spike_times, Λ_quantiles)  # spikes and their accumulated Λ
+# spikes = (spike_times, Λ_atϟ)  # spikes and their accumulated Λ
 
 # ϟ_times_ξ = spike_times_Al
 ϟ_times_ξ[neuron_id] = spike_times
-# Λϟ_ξ = Λ_at_spikes_Al
-Λϟ_ξ[neuron_id] = Λ_quantiles
-del spike_times, Λ_quantiles
+# Λ_atϟ_ξ = Λϟ_ξ = Λ_at_spikes_Al
+Λ_atϟ_ξ[neuron_id] = Λ_atϟ
+del spike_times, Λ_atϟ
 
-assert len(ϟ_times_ξ) == len(Λϟ_ξ)
-print( ϟ_times_ξ[0].shape , Λϟ_ξ[0].shape )
-assert ϟ_times_ξ[0].shape == Λϟ_ξ[0].shape
+assert len(ϟ_times_ξ) == len(Λ_atϟ_ξ)
+print( ϟ_times_ξ[0].shape , Λ_atϟ_ξ[0].shape )
+assert ϟ_times_ξ[0].shape == Λ_atϟ_ξ[0].shape
 
 simulation_result = \
-    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, ϟ_times_ξ, Λϟ_ξ, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
+    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, ϟ_times_ξ, Λ_atϟ_ξ, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')
