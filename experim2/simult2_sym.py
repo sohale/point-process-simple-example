@@ -633,6 +633,7 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     # Λ_quantiles is ...
     # Converts Λ -> time. time(Λ)
     time_rescaling_interp_func = interp1d(Λcumintegrλ_Ξ, tΞ, kind='linear')
+    Λⁱⁿᵛ = time_rescaling_interp_func
     # (x,y, ...)  y = F(x).  tΞ = F(Λcumintegrλ_Ξ)
     # time_rescaling_interp_func: Λ -> t
     # Hence, the opposiute of Λ(t)
@@ -664,6 +665,7 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
         print("Warning: empty spike train. *****")
 
     spike_timesϟ = time_rescaling_interp_func(Λ_atϟ)
+    spike_timesϟ = Λⁱⁿᵛ(Λ_atϟ)
     # why changed to this?
     #spike_timesϟ = time_rescaling_interp_func(Λcumintegrλ_Ξ)
 
