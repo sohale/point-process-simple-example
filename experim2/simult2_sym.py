@@ -16,6 +16,19 @@ from scipy.interpolate import interp1d
 #       * simulation results
 # -------------------------------
 
+
+
+# simargs: simulator_args
+#         ( .Delta )
+# simulation_result
+
+# na
+# get_neuron_tau
+
+# DELTA0  ??
+
+
+
 MSEC = 1. / 1000.
 
 
@@ -315,4 +328,4 @@ simulation_result = \
 # sys.path.append('/ufs/guido/lib/python')
 from sim2_plot import *
 
-plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, MSEC)
+plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0)

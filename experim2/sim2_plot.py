@@ -121,7 +121,9 @@ class Panels(object):
     def no_xticks(self):
         self.cax.set_xticklabels([])
 
-def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, MSEC):
+MSEC = 1. / 1000.
+
+def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
     (t_arr, x_arr, xlogpr_arr, lambda_arr, spike_times, quantiles01, fire_probability_arr, Nc_arr, I_arr) = \
         simulation_result
