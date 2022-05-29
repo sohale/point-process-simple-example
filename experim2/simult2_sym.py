@@ -579,24 +579,24 @@ def generate_isi_samples_unit_exp1(total_rate):
 
 def generates_time_points(λ_arr, ΔT, t_arr):
     # t_arr
-    #cumintegrλ_arr, maxΛ = cumsum0(lambda_arr_A[neuron_id], cutlast=False)*simargs1.Delta
+    #Λcumintegrλ_arr, maxΛ = cumsum0(lambda_arr_A[neuron_id], cutlast=False)*simargs1.Delta
     #t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs1.Delta]))
-    #cumintegrλ_arr, _ = cumsum0(lambda_arr_A[neuron_id], cutlast=True)*simargs1.Delta
+    #Λcumintegrλ_arr, _ = cumsum0(lambda_arr_A[neuron_id], cutlast=True)*simargs1.Delta
     cumintegrλ_arr0, _ignore_max = cumsum0(λ_arr, cutlast=True)
-    cumintegrλ_arr = cumintegrλ_arr0 * ΔT
-    # cumintegrλ_arr = Λ(t) = Λt   Λt_arr
+    Λcumintegrλ_arr = cumintegrλ_arr0 * ΔT
+    # Λcumintegrλ_arr = Λ(t) = Λt   Λt_arr
     # todo: find a unicode substitute for `_arr` suffix.
 
-    maxΛ = cumintegrλ_arr[-1]
-    assert cumintegrλ_arr[-1] == np.max(cumintegrλ_arr), "monotonically increaseing"
+    maxΛ = Λcumintegrλ_arr[-1]
+    assert Λcumintegrλ_arr[-1] == np.max(Λcumintegrλ_arr), "monotonically increaseing"
 
     # time_reversal_transform
 
     # Time-Rescaling: Quantile ~ (physical) time (of spikes)
     # todo: rename time_quantiles
     # time_quantiles is ...
-    time_rescaling_interp_func = interp1d(cumintegrλ_arr, t_arr, kind='linear')
-    # (x,y, ...)  y = F(x).  t_arr = F(cumintegrλ_arr)
+    time_rescaling_interp_func = interp1d(Λcumintegrλ_arr, t_arr, kind='linear')
+    # (x,y, ...)  y = F(x).  t_arr = F(Λcumintegrλ_arr)
     # time_rescaling_interp_func: Λ -> t
     # Hence, the opposiute of Λ(t)
     # t(Λ)  tΛ
@@ -612,17 +612,17 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     # empty_spikes, empty_spiketrain, no_spikes
     no_spikes = time_quantiles.shape[0] == 0
     assert no_spikes or \
-        np.max(cumintegrλ_arr) >= np.max(time_quantiles)
+        np.max(Λcumintegrλ_arr) >= np.max(time_quantiles)
     assert no_spikes or \
-        np.min(cumintegrλ_arr) <= np.min(time_quantiles)
+        np.min(Λcumintegrλ_arr) <= np.min(time_quantiles)
     if no_spikes:
         print("Warning: empty spike train. *****")
 
     spike_times = time_rescaling_interp_func(time_quantiles)
     # why changed to this?
-    #spike_times = time_rescaling_interp_func(cumintegrλ_arr)
+    #spike_times = time_rescaling_interp_func(Λcumintegrλ_arr)
 
-    del maxΛ, cumintegrλ_arr
+    del maxΛ, Λcumintegrλ_arr
     # del spike_times, time_quantiles
     print( spike_times.shape , time_quantiles.shape )
     assert spike_times.shape == time_quantiles.shape
