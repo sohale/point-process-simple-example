@@ -466,6 +466,92 @@ def generate_isi_samples_unit_exp1(total_rate):
 
     The `rand()` itself has some DIM (?)
 
+    The idea is to keep track of the dimentionality, so that you dont need to remember what transformations are done inside.
+    So the output "type" is about interface: to avoid the inside.
+    But to give sufficient info about inside.
+
+    The language of input/output needs "type".
+
+    So what is the type of output here?
+
+    Σ
+    (
+        desribe type in terms of the transfomrations. a "composition" of them.
+        A composition is an architecture. I the shape of the circuit.
+        DIMension is about the general shape of ciruit - in that sense.
+        A homeomorphism of the circuit itself?
+        The black box has in its outputs a homemorphism of inside?
+        (But hiding certain aspects of inside. Not all)
+    )
+    Σ(x)
+    Σ(Δ)
+    Σ(x = Δ(.)) =  // not to be confuse with a function x=>
+    Σ(x = (Δ=(∫λ dt))) =
+    Σ(Δ=(∫λ dt))
+    // ^ This also confirms that what is inside the Σ is a Δ. Hence, we end of having a Σ(Δ) or ΣΔ.
+    Σ(Δ: ∫λ dt)
+    Σ(Δ: ∫λ dt st. input = Δ)
+    By input I mean rand !
+    But "Σ(Δ: ∫λ dt)" is the charactger ofd the type.
+        It is a whole picture. And you mark the inpt and output there.
+    "output" Σ("input" Δ: ∫λ dt)
+    Then attach: (Occam: IO language: a? a!)
+    "input"! = `rand()`   # attach
+    Occam language:
+    "output!" Σ("input?" Δ: ∫λ dt)
+    In fact !? already sa it is output or input. ut we still use "" (verbal) labels.
+    "output!" Σ("input?" Δ: ∫λ dt)
+
+    "output"! Σ("input"? Δ: ∫λ dt)  "input"! `rand`
+    "output"! Σ("input"? Δ: ∫λ dt)  "input"!: `rand`
+    *  "input"!: `rand` <---- simlar pattern to: (Δ: ...)
+    *  `rand` "input"!  <--- input outputs the previous expression
+    label, after or before?
+    "After-" notation:
+        Σ("input"? Δ: ∫λ dt) "output"! ;  `rand` "input"!
+        Σ("input"? Δ: ∫λ dt) -> "output"! ;  `rand` -> "input"!
+
+    "After-" notation: for bother direcitons of input/output?
+        Σ("input"? <- Δ: ∫λ dt) -> "output"! ;  `rand` -> "input"!
+        Σ("input"? -> Δ: ∫λ dt) -> "output"! ;  `rand` -> "input"!
+
+        (Σ( Δ: ∫λ dt) -> "output"! , "input"? ->Δ) ;  `rand` -> "input"!
+
+    Full picture:
+        Σ( Δ: ∫λ dt)
+        Σ( Δ: (∫λ dt) = "input": `rand`)
+        Σ( Δ? (∫λ dt) = input? `rand`)
+        Σ( Δ?! (∫λ dt) = input?! = `rand`)
+        Σ( (∫λ dt)  =  Δ?! = input?! = `rand`)
+        Σ( Δ?!  = (∫λ dt) = input?! = `rand`)
+
+    How time is eliminated?
+            Σ( Δ?!  = (∫ (λ?) dt) = input?! = `rand`)
+    λ? ---> λ is not geivern here
+    :  -----> as
+    =  -----> as
+    ?!  -----> as, attached immediately.
+
+    Σ( Δ  = (∫ (λ= 1/ISI) dt) = input = `rand`)
+    not sure about ISI here
+    Where is ISI? In fact:
+    ISI is closely related to Δ.
+    ISI = time-quantile (Δ)?
+    NO, we need the map of almbda.
+    Yes we do have it.
+
+    time = inv(Λ(·))
+
+    I didn't utilise ∘ !
+
+    Σ ∘ Δ = (∫dt) ∘ (λ(·)?),  ... = `rand` := input
+    aha:
+    Σ ∘ (Δ = (∫dt) ∘ (λ(·)?)),  ... = `rand` = input
+    ∘ means apply.
+    Σ ∘ (Δ = (∫dt) ∘ (λ?∘(·)))
+
+    Σ ∘ (Δ := (∫dt) ∘ (λ?∘(·)))
+
     """
     # print( "ISI(%g):"%(total_rate), end='')
     st = 0.0
