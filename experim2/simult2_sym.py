@@ -19,7 +19,29 @@ from operator import xor
 #       * simulation results
 # -------------------------------
 
+"""
+Symbols legend:
 
+    _Ξ : numpy arrays of 1 dim
+    _ΞΞ : numpy arrays of 2 dims
+    _ξ  : list, or variable length
+
+    _𑴠 : trials. Indexed by trial number.
+
+    _Ξ[neuron_id] : any array that is indexed by [neuron_id]
+    _Ξ[inp_id] : .... input_id
+
+    ϟ : any array that is indexed by spike number (spike times, Λ at timepoints) will be suffix-ed by ϟ for clarity.
+    ϟ : Sometimes this is read as "spike". Also point (time-point) or moment in a point process (discrete-indexes list or array)
+
+    xₖ : scalar
+    [ₖ] : Any subscript []ₖ is a scalar value or element (not the array). It can be wrapped in an array. eg xₖ_Ξ
+
+    Nᶜ, Λ, Δ: λ : As used in the Mathematical notation in standard of formulation of Point Process, etc
+    [ⁱⁿᵛ] Λⁱⁿᵛ : Any (inverse) function
+
+    The idea of using unicodes for readability of indices, etc is mine. It is really helps in readbiltiy.
+"""
 
 # simargs1: SimulatorArgs1
 #         ( .Delta )
