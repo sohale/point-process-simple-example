@@ -287,7 +287,7 @@ if True:
     # Non-square. Hence, list of nparrays
     spike_times_Al = [None] * NEURONS_NUM
     # todo: rename
-    Λquantiles_Al = [None] * NEURONS_NUM
+    Λ_at_spikes_Al = [None] * NEURONS_NUM
 
     # local loop-updating variable(s)
     Nc_A = np.zeros((NEURONS_NUM,))
@@ -631,8 +631,10 @@ def generates_time_points(λ_arr, ΔT, t_arr):
     #     It is about Time-rescaling "Theorem"
     # Converts Λ -> time. time(Λ)
     # In a sense, rescaling means calculating "quantile"s. Hence the name: Λquantiles (spike_times), spike_Λs
-    #    Λquantiles, spike_Λs, Λ_at_apikes, Λ_at_points, Λ_points (time_points)
+    #    Λquantiles, spike_Λs, Λ_at_spikes, Λ_at_points, Λ_points (time_points)
     #   time_of_spikes, Λ_of_spikes
+    # Λquantiles -> Λ_at_spikes
+    # However, note that it is about uotput spikes
 
     # Time-rescaled quantiles:
     #Λ_quantiles = np.arange(0,maxΛ,maxΛ/10.0 * 10000)
@@ -667,15 +669,15 @@ def generates_time_points(λ_arr, ΔT, t_arr):
 # spikes = (spike_times, Λ_quantiles)  # spikes and their accumulated lambda
 
 spike_times_Al[neuron_id] = spike_times
-Λquantiles_Al[neuron_id] = Λ_quantiles
+Λ_at_spikes_Al[neuron_id] = Λ_quantiles
 del spike_times, Λ_quantiles
 
-assert len(spike_times_Al) == len(Λquantiles_Al)
-print( spike_times_Al[0].shape , Λquantiles_Al[0].shape )
-assert spike_times_Al[0].shape == Λquantiles_Al[0].shape
+assert len(spike_times_Al) == len(Λ_at_spikes_Al)
+print( spike_times_Al[0].shape , Λ_at_spikes_Al[0].shape )
+assert spike_times_Al[0].shape == Λ_at_spikes_Al[0].shape
 
 simulation_result = \
-    (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, Λquantiles_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
+    (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')
