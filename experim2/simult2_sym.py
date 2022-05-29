@@ -46,49 +46,51 @@ Ref. equations #Eq.1 and #Eq.2
 """
 
 
-def report_neuron(n, Delta):
-    tau = get_neuron_tau(n, Delta)
-    print('Tau=', tau * 1000.0, ' (msec)')
-    print('Noisiness:  sigma_eps = ',
-          n['sigma_eps'] * 1000.0, ' (milli Volts per sample)')
+class Neuron_static:
+    def report_neuron(n, Delta):
+        tau = Neuron_static.get_neuron_tau(n, Delta)
+        print('Tau=', tau * 1000.0, ' (msec)')
+        print('Noisiness:  sigma_eps = ',
+            n['sigma_eps'] * 1000.0, ' (milli Volts per sample)')
 
 
-def get_neuron_tau(n, Delta):
-    # todo: def get_ER_tau(n, Delta, rho)  # ER: Exponential Relaxation
-    tau = - Delta / math.log(n['rho'])
-    return tau
+    def get_neuron_tau(n, Delta):
+        # todo: def get_ER_tau(n, Delta, rho)  # ER: Exponential Relaxation
+        tau = - Delta / math.log(n['rho'])
+        return tau
 
 
-def get_neuron_rho(tau, Delta):
-    rho = math.exp(- Delta / tau)
-    return rho
+    def get_neuron_rho(tau, Delta):
+        rho = math.exp(- Delta / tau)
+        return rho
+
+    def n0_prot():
+        CORRECT_IT = 1.0
+
+        n0 = {
+            # Latent process model
+            'rho': 0.99,
+            'alpha': 3.0,
+            'sigma_eps': math.sqrt(0.001),  # noisiness
+
+            # Latent-to-observable (gain), or, state-to-Lprobability
+            'mu': -4.9 + CORRECT_IT*math.log(1000),
+            'beta': 0.0
+        }
+        print(repr(n0))
+        return n0
+
+        # see describe_model_latex()
 
 
-CORRECT_IT = 1.0
+        descriptions = {
+            'rho': ["", ""],
+            'alpha': ["input gain", "volts per amps"],
+            'sigma_eps': ["noisiness: noise amplitude", ""],
 
-n0 = {
-    # Latent process model
-    'rho': 0.99,
-    'alpha': 3.0,
-    'sigma_eps': math.sqrt(0.001),  # noisiness
-
-    # Latent-to-observable (gain), or, state-to-Lprobability
-    'mu': -4.9 + CORRECT_IT*math.log(1000),
-    'beta': 0.0
-}
-print(repr(n0))
-
-# see describe_model_latex()
-
-
-descriptions = {
-    'rho': ["", ""],
-    'alpha': ["input gain", "volts per amps"],
-    'sigma_eps': ["noisiness: noise amplitude", ""],
-
-    'mu': ["", ""],
-    'beta': ["", ""]
-}
+            'mu': ["", ""],
+            'beta': ["", ""]
+        }
 
 # Part of the problem specs, but not the Delta used in the simulation.
 DELTA0 = 1.0 * MSEC
@@ -97,6 +99,9 @@ DELTA0 = 1.0 * MSEC
 # *                                  simulation
 # **********************************************************************************
 
+#simargs1  # simulation args
+#simargs1.K
+# simulator.K
 
 class SimulatorArgs1(object):
     """
@@ -154,6 +159,15 @@ class SimulatorArgs1(object):
 
         print("Simulation time-steps: K=%g" % self.K)
 
+    def invar(self):
+        # simargs1.K = 3000
+        # simargs1.T = 3.0; simargs1.Delta =  # sec
+        # simargs1.K = int(simargs1.T / simargs1.Delta + 1)
+
+        assert simargs1.K
+        assert simargs1.Delta
+        assert simargs1.T
+
     # produces each timestep? no longer.
     # simulate_input()
     # provides: 1. basic simulatin args (part 1), instantiates simargs1
@@ -172,61 +186,56 @@ class SimulatorArgs1(object):
         simargs1 = SimulatorArgs1(_K=_K, duration=duration, _deltaT=deltaT)
         return simargs1
 
-global simargs1  # simulation args
-simargs1 = None
-# simulator.K
 
 # old idea, occluded by the idea of `simulate_step()`:
 # ... = simulate_input()
 
+class InputDriver_static:
+    # produces each timestep
+    # the idea was it actually provided the INPUT signal! (I_k)
+    # input also drives the program flow !
+    def simulate_input_and_drive_next_step(simargs1):
+        last_every_second = -float('inf')
+
+        for k in range(simargs1.K):
+            t = k * simargs1.Delta
+            every_second = (t) % 1.0
+            fire = every_second < last_every_second
+            #duration = 0.01
+            #fire = every_second < duration
+            if fire:
+                I_k = 1.0
+            else:
+                I_k = 0.0
+
+            # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
+
+            last_every_second = every_second
+            # yield k, t, I_k, simargs1
+            yield k, t, I_k
 
 
-# produces each timestep
-# the idea was it actually provided the INPUT signal! (I_k)
-# input also drives the program flow !
-def simulate_input_and_drive_next_step(simargs1):
-    last_every_second = -float('inf')
+# comprised of multiple neurons
+class FullModel:
 
-    for k in range(simargs1.K):
-        t = k * simargs1.Delta
-        every_second = (t) % 1.0
-        fire = every_second < last_every_second
-        #duration = 0.01
-        #fire = every_second < duration
-        if fire:
-            I_k = 1.0
-        else:
-            I_k = 0.0
+    def __init__(self) -> None:
+        BETA_RANGE = [0.9, 1.1]
+        NEURONS = 20
 
-        # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
+        na = []
+        for i in range(NEURONS):
+            n = Neuron_static.n0_prot().copy()
+            d = BETA_RANGE[1] - BETA_RANGE[0]
+            n['beta'] = 1.1  # (np.random.rand() * d) + BETA_RANGE[0]
+            na.append(n)
 
-        last_every_second = every_second
-        # yield k, t, I_k, simargs1
-        yield k, t, I_k
+        # print( "Beta: ", end = '')
+        #for n in na:eps_k
+        #    print( n['beta'], end = '')
+        # print()
 
+        self.na = na
 
-BETA_RANGE = [0.9, 1.1]
-NEURONS = 20
-
-na = []
-for i in range(NEURONS):
-    n = n0.copy()
-    d = BETA_RANGE[1] - BETA_RANGE[0]
-    n['beta'] = 1.1  # (np.random.rand() * d) + BETA_RANGE[0]
-    na.append(n)
-
-# print( "Beta: ", end = '')
-#for n in na:eps_k
-#    print( n['beta'], end = '')
-# print()
-
-# simargs1.K = 3000
-# simargs1.T = 3.0; simargs1.Delta =  # sec
-# simargs1.K = int(simargs1.T / simargs1.Delta + 1)
-
-#assert simargs1.K
-#assert simargs1.Delta
-#assert simargs1.T
 
 
 last_x_k = 0.0
@@ -237,6 +246,9 @@ Nc = 0
 #     1 * MSEC * 0.2 (when duration is specified)
 #     1 * MSEC (when K is specified)
 simargs1 = SimulatorArgs1.simargs_factory(duration=3.0, deltaT=1 * MSEC * 0.2)
+
+full_model = FullModel()
+
 if True:
     x_arr = np.zeros((simargs1.K,))
     xlogpr_arr = np.zeros((simargs1.K,))
@@ -246,19 +258,19 @@ if True:
     lambda_arr = np.zeros((simargs1.K,))
     I_arr = np.zeros((simargs1.K,))
 
-    _tau = get_neuron_tau(na[0], DELTA0)
-    _rho_corrected = get_neuron_rho(_tau, simargs1.Delta)
-    _sigma_eps_corrected = na[0]['sigma_eps'] * \
+    _tau = Neuron_static.get_neuron_tau(full_model.na[0], DELTA0)
+    _rho_corrected = Neuron_static.get_neuron_rho(_tau, simargs1.Delta)
+    _sigma_eps_corrected = full_model.na[0]['sigma_eps'] * \
         math.sqrt(simargs1.Delta/DELTA0)
-    print("_rho_corrected = ", _rho_corrected, "rho=", na[0]['rho'])
+    print("_rho_corrected = ", _rho_corrected, "rho=", full_model.na[0]['rho'])
     print("_sigma_eps_corrected = ", _sigma_eps_corrected,
-            "sigma_eps=", na[0]['sigma_eps'])
+            "sigma_eps=", full_model.na[0]['sigma_eps'])
 
-for k, t, I_k in simulate_input_and_drive_next_step(simargs1):
+for k, t, I_k in InputDriver_static.simulate_input_and_drive_next_step(simargs1):
 
     # print( t, k, I_k )
 
-    n = na[0]
+    n = full_model.na[0]
 
     # *************************
     # *  Neuron model
@@ -311,7 +323,7 @@ for k, t, I_k in simulate_input_and_drive_next_step(simargs1):
     lambda_arr[k] = lambda_k
 
     if k == 0:
-        report_neuron(n, simargs1.Delta)
+        Neuron_static.report_neuron(n, simargs1.Delta)
 
 print("Simulation time = T =", simargs1.T, ". Mean rate = ",
       float(Nc)/simargs1.T, "(spikes/sec)")
@@ -381,4 +393,4 @@ simulation_result = \
 # sys.path.append('/ufs/guido/lib/python')
 from sim2_plot import *
 
-plot_all(simargs1, na, get_neuron_tau, simulation_result, DELTA0)
+plot_all(simargs1, full_model.na, Neuron_static.get_neuron_tau, simulation_result, DELTA0)
