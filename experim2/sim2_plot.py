@@ -266,10 +266,13 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     panels.next_panel() # 4
     plt1_N =\
         panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
+    panels.set_currenty_ylabel('$N_c(t)$', 'b')
+
     random_shift_sz = Nᶜ_Ξ[-1]
-    trial = 0
-    randy = 0  # np.random.rand(spike_timesϟ𑴠[trial].shape[0]) * random_shift_sz
-    panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0+0.1+randy*0.9, 'k.')
+    num_trials = len(Λ_at_spikesϟ𑴠)
+    for trial in range(num_trials):
+        randy = np.random.rand(spike_timesϟ𑴠[trial].shape[0]) * random_shift_sz
+        panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0+0.1+randy*0.9, 'k.', alpha=0.1, **marker_style)
     #panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
     plt3_s2 =\
         panels.cax.plot(spkt, nc, 'k.', label='Spikes', alpha=0.9)
@@ -278,7 +281,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     panels.add_second_y_axis()
     plt4_I =\
         panels.cax.plot(tΞ, Iₖ_Ξ, 'darkgreen',
-                        label='$I_k$ (input)', alpha=0.4)
+                        label='$I_k$ (input)', alpha=0.8)
     panels.set_currenty_ylabel('$I_k$', tcolor)
     panels.multi_legend(plt1_N + plt3_s2 + plt4_I, 'upper left')
     panels.apply_common_xlims()
