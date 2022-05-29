@@ -129,6 +129,10 @@ For compilers to find llvm you may need to set:
 
 }
 
+MAKE_HAPPEN "$VENV_PACKAGES/mpl_interactions/__init__.py" || {
+  pip install mpl_interactions
+}
+
 # for llvm (failed attempt)
 export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
@@ -137,6 +141,7 @@ export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 echo "Main script"
 
 source ./p3-for-me/bin/activate
+
 
 python --version
 

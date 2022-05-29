@@ -526,6 +526,7 @@ panels.apply_common_xlims()
 
 plt.tight_layout()
 plt.subplots_adjust(hspace=0) # 0.04
+
 plt.show()
 
 assert panels.panel_id == panels.PANELS, str(
