@@ -387,7 +387,7 @@ for neuron_id in range(1):
     print("Mean λ = ", np.sum(λ_ΞΞ[neuron_id]) * simargs1.Delta / simargs1.T)
 
 
-def cumsum0(x, cutlast=True):
+def cumsum0(x, startv=0.0,  cutlast=True):
     """
         Numerical integration.
         generates a cumsum that starts with 0.0,
@@ -397,7 +397,7 @@ def cumsum0(x, cutlast=True):
         """
     c = np.cumsum(x)
     maxval = c[-1]
-    c = np.concatenate((np.array([0.0]), c))
+    c = np.concatenate((np.array([startv]), c))
     if cutlast:
         c = c[:-1]
 
@@ -618,7 +618,7 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
     #Λcumintegrλ_Ξ, maxΛ = cumsum0(λ_ΞΞ[neuron_id], cutlast=False)*simargs1.Delta
     #t_arr_aug = np.concatenate(tΞ, np.array([tΞ[-1]+simargs1.Delta]))
     #Λcumintegrλ_Ξ, _ = cumsum0(λ_ΞΞ[neuron_id], cutlast=True)*simargs1.Delta
-    cumintegrλ_Ξξ2, _ignore_max = cumsum0(λ_Ξ, cutlast=True)
+    cumintegrλ_Ξξ2, _ignore_max = cumsum0(λ_Ξ, startv=0.0, cutlast=True)
     Λcumintegrλ_Ξ = cumintegrλ_Ξξ2 * ΔT
     # Λcumintegrλ_Ξ = Λ(t) = Λt   Λt_arr
     # todo: find a unicode substitute for `_arr` suffix.
