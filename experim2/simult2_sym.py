@@ -101,17 +101,23 @@ class SimulatorArgs(object):
     """
        `.T` Simulation duration (Time length) (all time units in seconds)
        `.K` length (bins/timesteps/intervals): int
+       `.Delta`: (seconds)
+
+       invariants:
+            duration ~= K * Delta
+
     """
     # old incorrect comment: Simulation Time Length (Intervals)
 
 
     Delta: float
+    K: int
+    T: float
 
     def __init__(self, _K=None, duration=None, _deltaT=None):
         """
             Either based on `_K` or `duration`
             They specify the duration of simulation.
-            duration ~= K * Delta
         """
         #self.Delta = 0.000
         #self.K = -1
@@ -152,13 +158,14 @@ global simargs  # simulation args
 simargs = None
 # simulator.K
 
-
-def simulate_input(_K=None, duration=None, deltaT=None):
+# produces each timestep
+def simulate_step(_K=None, duration=None, deltaT=None):
 
     assert xor(_K is None, duration is None), \
         """ Simulation duration is either based on `_K` or `duration`.
             duration ~= K * Delta
         """
+    # todo: remove global
     global simargs
     # simargs.T = Simulation Time Length (Sec)
     assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
@@ -180,6 +187,7 @@ def simulate_input(_K=None, duration=None, deltaT=None):
         # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
 
         last_every_second = every_second
+        # yield k, t, I_k, simargs
         yield k, t, I_k
 
 
@@ -206,13 +214,15 @@ for i in range(NEURONS):
 #assert simargs.Delta
 #assert simargs.T
 
+# old idea, occluded by the idea of `simulate_step()`:
+# ... = simulate_input()
 
 last_x_k = 0.0
 Nc = 0
 # `deltaT` was:
 #     1 * MSEC * 0.2 (when duration is specified)
 #     1 * MSEC (when K is specified)
-for k, t, I_k in simulate_input(duration=3.0, deltaT=1 * MSEC * 0.2):
+for k, t, I_k in simulate_step(duration=3.0, deltaT=1 * MSEC * 0.2):
     if k == 0:
         x_arr = np.zeros((simargs.K,))
         xlogpr_arr = np.zeros((simargs.K,))
