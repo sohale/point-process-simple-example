@@ -158,8 +158,12 @@ global simargs  # simulation args
 simargs = None
 # simulator.K
 
-# produces each timestep
-def simulate_step(_K=None, duration=None, deltaT=None):
+# old idea, occluded by the idea of `simulate_step()`:
+# ... = simulate_input()
+
+# produces each timestep? no longer.
+# simulate_input()
+def simulate_step1(_K=None, duration=None, deltaT=None):
 
     assert xor(_K is None, duration is None), \
         """ Simulation duration is either based on `_K` or `duration`.
@@ -170,7 +174,10 @@ def simulate_step(_K=None, duration=None, deltaT=None):
     # simargs.T = Simulation Time Length (Sec)
     assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
     simargs = SimulatorArgs(_K=_K, duration=duration, _deltaT=deltaT)
+    return simargs
 
+# produces each timestep
+def simulate_step2(simargs):
     last_every_second = -float('inf')
 
     for k in range(simargs.K):
@@ -214,16 +221,18 @@ for i in range(NEURONS):
 #assert simargs.Delta
 #assert simargs.T
 
-# old idea, occluded by the idea of `simulate_step()`:
-# ... = simulate_input()
 
 last_x_k = 0.0
 Nc = 0
+
+
 # `deltaT` was:
 #     1 * MSEC * 0.2 (when duration is specified)
 #     1 * MSEC (when K is specified)
-for k, t, I_k in simulate_step(duration=3.0, deltaT=1 * MSEC * 0.2):
+simargs = simulate_step1(duration=3.0, deltaT=1 * MSEC * 0.2)
+for k, t, I_k in simulate_step2(simargs):
     if k == 0:
+        # todo: separate first step outside
         x_arr = np.zeros((simargs.K,))
         xlogpr_arr = np.zeros((simargs.K,))
         Nc_arr = np.zeros((simargs.K,))
