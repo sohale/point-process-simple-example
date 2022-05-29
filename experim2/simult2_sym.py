@@ -280,7 +280,7 @@ if True:
     xlogpr_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan)
     Nc_arr_A = np.full((NEURONS_NUM, simargs1.K,), 99999, dtype=int)
     fire_probability_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan)
-    lambda_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan, dtype=float)
+    λ_arr_A = np.full((NEURONS_NUM, simargs1.K,), np.nan, dtype=float)
     I_arr_A2 = np.full((NEURONS_NUM, simargs1.K,), np.nan)
 
     # output.
@@ -368,7 +368,7 @@ for k, t, I_k_A2 in InputDriver_static.simulate_input_and_drive_next_step(simarg
     del xlp
 
     fire_probability_arr_A[neuron_id][k] = fire_probability
-    lambda_arr_A[neuron_id][k] = lambda_k
+    λ_arr_A[neuron_id][k] = lambda_k
 
     if is_first_step:
         Neuron_static.report_neuron(n, simargs1.Delta)
@@ -380,8 +380,8 @@ print("Simulation time = T =", simargs1.T, ". Mean rate = ",
       Nc_arr_A[:][-1].astype(float)/simargs1.T, "(spikes/sec)")
 
 for neuron_id in range(1):
-    print("Integral of lambda = ", np.sum(lambda_arr_A[neuron_id]) * simargs1.Delta)
-    print("Mean lambda = ", np.sum(lambda_arr_A[neuron_id]) * simargs1.Delta / simargs1.T)
+    print("Integral of λ = ", np.sum(λ_arr_A[neuron_id]) * simargs1.Delta)
+    print("Mean λ = ", np.sum(λ_arr_A[neuron_id]) * simargs1.Delta / simargs1.T)
 
 
 def cumsum0(x, cutlast=True):
@@ -602,9 +602,9 @@ def generate_Λ_samples_unit_exp1(total_rate):
 
 def generates_time_points(λ_arr, ΔT, t_arr):
     # t_arr
-    #Λcumintegrλ_arr, maxΛ = cumsum0(lambda_arr_A[neuron_id], cutlast=False)*simargs1.Delta
+    #Λcumintegrλ_arr, maxΛ = cumsum0(λ_arr_A[neuron_id], cutlast=False)*simargs1.Delta
     #t_arr_aug = np.concatenate(t_arr, np.array([t_arr[-1]+simargs1.Delta]))
-    #Λcumintegrλ_arr, _ = cumsum0(lambda_arr_A[neuron_id], cutlast=True)*simargs1.Delta
+    #Λcumintegrλ_arr, _ = cumsum0(λ_arr_A[neuron_id], cutlast=True)*simargs1.Delta
     cumintegrλ_arr0, _ignore_max = cumsum0(λ_arr, cutlast=True)
     Λcumintegrλ_arr = cumintegrλ_arr0 * ΔT
     # Λcumintegrλ_arr = Λ(t) = Λt   Λt_arr
@@ -663,10 +663,10 @@ def generates_time_points(λ_arr, ΔT, t_arr):
 
 
 Λ_quantiles, spike_times = \
-    generates_time_points(lambda_arr_A[neuron_id], simargs1.Delta, t_arr)
+    generates_time_points(λ_arr_A[neuron_id], simargs1.Delta, t_arr)
 
 # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
-# spikes = (spike_times, Λ_quantiles)  # spikes and their accumulated lambda
+# spikes = (spike_times, Λ_quantiles)  # spikes and their accumulated Λ
 
 spike_times_Al[neuron_id] = spike_times
 Λ_at_spikes_Al[neuron_id] = Λ_quantiles
@@ -677,7 +677,7 @@ print( spike_times_Al[0].shape , Λ_at_spikes_Al[0].shape )
 assert spike_times_Al[0].shape == Λ_at_spikes_Al[0].shape
 
 simulation_result = \
-    (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
+    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2)
 
 # import sys
 # sys.path.append('/ufs/guido/lib/python')

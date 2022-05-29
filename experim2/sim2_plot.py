@@ -125,7 +125,7 @@ MSEC = 1. / 1000.
 
 def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
-    (t_arr, x_arr_A, xlogpr_arr_A, lambda_arr_A, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2) = \
+    (t_arr, x_arr_A, xlogpr_arr_A, λ_arr_A, spike_times_Al, Λ_at_spikes_Al, fire_probability_arr_A, Nc_arr_A, I_arr_A2) = \
         simulation_result
 
     neuron_id = 0
@@ -133,7 +133,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
     x_arr = x_arr_A[neuron_id]
     xlogpr_arr = xlogpr_arr_A[neuron_id]
-    lambda_arr = lambda_arr_A[neuron_id]
+    λ_arr = λ_arr_A[neuron_id]
     spike_times = spike_times_Al[neuron_id]
     Λ_at_spikes = Λ_at_spikes_Al[neuron_id]
     fire_probability_arr = fire_probability_arr_A[neuron_id]
@@ -173,14 +173,14 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     # ##########################
     panels.next_panel() # 2
     tcolor = 'r'
-    plt1 = panels.cax.plot(t_arr, lambda_arr, tcolor+'-', alpha=0.5, label='$\\lambda$')
+    plt1 = panels.cax.plot(t_arr, λ_arr, tcolor+'-', alpha=0.5, label='$\\lambda$')
     # panels.cax.legend()
-    panels.fix_currenty_ylim(lambda_arr, 0.1)
+    panels.fix_currenty_ylim(λ_arr, 0.1)
     panels.set_currenty_ylabel('$\\lambda$ (sec.$^-1$)', tcolor)
 
     panels.add_second_y_axis()
     tcolor = 'b'
-    ISI_arr = 1.0 / lambda_arr
+    ISI_arr = 1.0 / λ_arr
     plt2 = panels.cax.plot(t_arr, ISI_arr, tcolor+'-', alpha=0.6, label='ISI')
     panels.fix_currenty_ylim(ISI_arr, 0.1)
     panels.set_currenty_ylabel('ISI (sec.)', tcolor)
@@ -191,7 +191,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
     # third axis
     panels.add_second_y_axis()
     tcolor = 'k'
-    cumintegr_arr = np.cumsum(lambda_arr)*simargs.Delta
+    cumintegr_arr = np.cumsum(λ_arr)*simargs.Delta
     plt3 = panels.cax.plot(t_arr, cumintegr_arr, tcolor+'-',
                         alpha=0.6, label='$\\int\\lambda dt$') # a\n $\\int...
     panels.cax.spines['right'].set_position(('data', np.max(t_arr)))
@@ -208,7 +208,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0):
 
     # ##########################
     panels.next_panel() # 3
-    #plt.plot(t_arr, lambda_arr, 'r.', label='\lambda')
+    #plt.plot(t_arr, λ_arr, 'r.', label='\lambda')
     #plt.plot(t_arr, np.log(fire_probability_arr), 'r.', label='Log(Pr)')
     panels.cax.plot(t_arr, fire_probability_arr, 'r', label='$\\Pr$ / bin')
     panels.cax.legend()
