@@ -20,7 +20,7 @@ from operator import xor
 
 
 
-# simargs: simulator_args
+# simargs: SimulatorArgs
 #         ( .Delta )
 # simulation_result
 
@@ -97,7 +97,7 @@ DELTA0 = 1.0 * MSEC
 # **********************************************************************************
 
 
-class simulator_args(object):
+class SimulatorArgs(object):
     """
        `.T` Simulation duration (Time length) (all time units in seconds)
        `.K` length (bins/timesteps/intervals): int
@@ -162,7 +162,7 @@ def simulate_input(_K=None, duration=None, deltaT=None):
     global simargs
     # simargs.T = Simulation Time Length (Sec)
     assert deltaT is not None, 'deltaT: time-step (bin) size in seconds'
-    simargs = simulator_args(_K=_K, duration=duration, _deltaT=deltaT)
+    simargs = SimulatorArgs(_K=_K, duration=duration, _deltaT=deltaT)
 
     last_every_second = -float('inf')
 
