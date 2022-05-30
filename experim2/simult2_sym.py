@@ -214,9 +214,9 @@ class SimulatorArgs1(object):
 
 
 
-def input_Iₖ(recurrent_state, input_to_this):
+def input_Iₖ(recurrent_state, aux_input):
     (last_every_second,) = recurrent_state
-    (t,) = input_to_this
+    (t,) = aux_input
     isfirst = last_every_second is None
 
     if isfirst:
@@ -224,17 +224,16 @@ def input_Iₖ(recurrent_state, input_to_this):
 
     every_second = (t) % 1.0
     fire = every_second < last_every_second
-    #duration = 0.01
-    #fire = every_second < duration
     if fire:
         Iₖ = 1.0
     else:
         Iₖ = 0.0
+
     # What is this? Is it Dirac? If so, why not multiplied by 1/Delta?
     last_every_second = every_second
 
-    output, recurrent_state, input = (Iₖ,), (last_every_second,), (t,)
-    return output, recurrent_state, input
+    output, recurrent_state, aux_input = (Iₖ,), (last_every_second,), (t,)
+    return output, recurrent_state, aux_input
 
 class InputDriver_static:
     # produces each timestep
@@ -245,14 +244,10 @@ class InputDriver_static:
         last_every_second = None
         for k in range(simargs1.K):
             t = k * simargs1.Delta
-            #Iₖ = input_Iₖ(... t)
-            (Iₖ,), (last_every_second,), (t,) = input_Iₖ((last_every_second,), (t,))
-            #(Iₖ,) = next(g)
-            #(last_every_second,), (t,) = next(g)
-            #(Iₖ,), (last_every_second,), (t,) = next(g)
 
-            # yield k, t, Iₖ, simargs1
-            yield k, t, [Iₖ]
+            (Iₖ,), (last_every_second,), (t,) = input_Iₖ((last_every_second,), (t,))
+
+            yield k, t, [Iₖ,]
 
 
 # comprised of multiple neurons
