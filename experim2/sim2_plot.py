@@ -181,10 +181,11 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
 
     panels.add_second_y_axis()
     tcolor = 'b'
-    ISI_arr = 1.0 / λ_Ξ
-    plt2 = panels.cax.plot(tΞ, ISI_arr, tcolor+'-', alpha=0.6, label='ISI')
-    panels.fix_currenty_ylim(ISI_arr, 0.1)
-    panels.set_currenty_ylabel('ISI (sec.)', tcolor)
+    # Why did I call λinv_Ξ, ISI_Ξ ?
+    λinv_Ξ = 1.0 / λ_Ξ
+    plt2 = panels.cax.plot(tΞ, λinv_Ξ, tcolor+'-', alpha=0.6, label='λ^{-1}')
+    panels.fix_currenty_ylim(λinv_Ξ, 0.1)
+    panels.set_currenty_ylabel('λ^{-1} (sec.)', tcolor)
     #panels.multi_legend(plt1 + plt2)
     panels.apply_common_xlims()
     #panels.cax.set_ylim(-0.1, 15.0)

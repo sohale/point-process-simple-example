@@ -266,11 +266,6 @@ class FullModel:
             n['beta'] = 1.1  # (np.random.rand() * d) + BETA_RANGE[0]
             na.append(n)
 
-        # print( "Beta: ", end = '')
-        #for n in na:epsₖ
-        #    print( n['beta'], end = '')
-        # print()
-
         self.na = na
 
 
@@ -339,7 +334,7 @@ if True:
     # Λ_at_spikes_Ξ = new_list_1d(NEURONS_NUM)
     Λ_at_spikes_𑴠Ξ = new_list_2d(NEURONS_NUM, TRIALS_NUM)
 
-    # local loop-updating variable(s)
+    # local loop-updating variable(s) / the recurrent state
     Nᶜ_ξ = np.zeros((NEURONS_NUM,))
     last_xₖ_ξ = np.zeros((NEURONS_NUM,))
     # last_xₖ = 0.0
@@ -351,6 +346,10 @@ if True:
     neur_instance[neuron_id].init_slow_cache(full_model.na[neuron_id])
 
 for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simargs1):
+
+    # the recurrent state: (last_xₖ_ξ, Nᶜ_ξ,)
+    # aka. the local loop-updating variables
+
 
     # print( t, k, Iₖ_Ξ )
 
@@ -428,6 +427,9 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
 
     # del x_arr,     xlogpr_arr,    Nc_arr,    fire_probability_arr,    λ_arr,    I_arr,
     del λₖ, fire_probability, t, fire
+
+    # keep the recurrent state: (aka. the local loop-updating variables)
+    # del last_xₖ_ξ, Nᶜ_ξ
 
 print("Simulation time = T =", simargs1.T, ". Mean rate = ",
       Nᶜ_ΞΞ[:][-1].astype(float)/simargs1.T, "(spikes/sec)")
