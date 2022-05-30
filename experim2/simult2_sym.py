@@ -234,7 +234,7 @@ def input_Iₖ(recurrent_state, input_to_this):
     last_every_second = every_second
 
     # output, recurrent_state, input
-    yield (Iₖ,), (last_every_second,), (t,)
+    return (Iₖ,), (last_every_second,), (t,)
 
 class InputDriver_static:
     # produces each timestep
@@ -246,10 +246,10 @@ class InputDriver_static:
         for k in range(simargs1.K):
             t = k * simargs1.Delta
             #Iₖ = input_Iₖ(... t)
-            g = input_Iₖ((last_every_second,), (t,))
+            (Iₖ,), (last_every_second,), (t,) = input_Iₖ((last_every_second,), (t,))
             #(Iₖ,) = next(g)
             #(last_every_second,), (t,) = next(g)
-            (Iₖ,), (last_every_second,), (t,) = next(g)
+            #(Iₖ,), (last_every_second,), (t,) = next(g)
 
             # yield k, t, Iₖ, simargs1
             yield k, t, [Iₖ]
