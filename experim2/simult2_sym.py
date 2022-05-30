@@ -212,9 +212,12 @@ class SimulatorArgs1(object):
 # old idea, occluded by the idea of `simulate_step()`:
 # ... = simulate_input()
 
-def input_Iₖ(isfirst, state_of_this, input_to_this):
+
+
+def input_Iₖ(state_of_this, input_to_this):
     (last_every_second,) = state_of_this # recurrent
     (t,) = input_to_this
+    isfirst = last_every_second is None
 
     if isfirst:
         last_every_second = -float('inf')
@@ -245,7 +248,7 @@ class InputDriver_static:
         for k in range(simargs1.K):
             t = k * simargs1.Delta
             #Iₖ = input_Iₖ(... t)
-            g = input_Iₖ(k==0, (last_every_second,), (t,))
+            g = input_Iₖ((last_every_second,), (t,))
             (Iₖ,) = next(g)
             (last_every_second,), (t,) = next(g)
 
