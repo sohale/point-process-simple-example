@@ -212,7 +212,7 @@ class SimulatorArgs1(object):
 # old idea, occluded by the idea of `simulate_step()`:
 # ... = simulate_input()
 
-def input_Iₖ(isfirst, (last_every_second, t):
+def input_Iₖ(isfirst, (last_every_second, t)):
     if isfirst:
         last_every_second = -float('inf')
 
@@ -230,7 +230,7 @@ def input_Iₖ(isfirst, (last_every_second, t):
     # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
 
     last_every_second = every_second
-    yield (last_every_second,t,)
+    yield ((last_every_second,) (t,))
 
 class InputDriver_static:
     # produces each timestep
