@@ -212,27 +212,40 @@ class SimulatorArgs1(object):
 # old idea, occluded by the idea of `simulate_step()`:
 # ... = simulate_input()
 
+def input_Iₖ(isfirst, (last_every_second, t):
+    if isfirst:
+        last_every_second = -float('inf')
+
+    every_second = (t) % 1.0
+    fire = every_second < last_every_second
+    #duration = 0.01
+    #fire = every_second < duration
+    if fire:
+        Iₖ = 1.0
+    else:
+        Iₖ = 0.0
+
+    yield Iₖ
+
+    # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
+
+    last_every_second = every_second
+    yield (last_every_second,t,)
+
 class InputDriver_static:
     # produces each timestep
     # the idea was it actually provided the INPUT signal! (Iₖ)
     # input also drives the program flow !
     def simulate_input_and_drive_next_step(simargs1):
-        last_every_second = -float('inf')
 
+        last_every_second = None
         for k in range(simargs1.K):
             t = k * simargs1.Delta
-            every_second = (t) % 1.0
-            fire = every_second < last_every_second
-            #duration = 0.01
-            #fire = every_second < duration
-            if fire:
-                Iₖ = 1.0
-            else:
-                Iₖ = 0.0
+            #Iₖ = input_Iₖ(... t)
+            g = input_Iₖ(k==0, (last_every_second,) (t,))
+            Iₖ = next(g)
+            ((last_every_second,) (t,)) = next(g)
 
-            # What is this? Is it Dirac? Then why not multiplied by 1/Delta?
-
-            last_every_second = every_second
             # yield k, t, Iₖ, simargs1
             yield k, t, [Iₖ]
 
