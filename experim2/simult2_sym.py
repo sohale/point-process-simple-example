@@ -233,8 +233,8 @@ def input_Iₖ(recurrent_state, input_to_this):
     # What is this? Is it Dirac? If so, why not multiplied by 1/Delta?
     last_every_second = every_second
 
-    # output, recurrent_state, input
-    return (Iₖ,), (last_every_second,), (t,)
+    output, recurrent_state, input = (Iₖ,), (last_every_second,), (t,)
+    return output, recurrent_state, input
 
 class InputDriver_static:
     # produces each timestep
