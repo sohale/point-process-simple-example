@@ -213,6 +213,32 @@ class SimulatorArgs1(object):
 # ... = simulate_input()
 
 
+# I use the following pattern to avoid the need to use "coroutine""s:
+#
+#    func2( `recurrent_state, aux_input` ) -> (`output, recurrent_state, aux_input`)
+#
+#    Using tuples for params & return
+#    The `recurrent_state` hsa the same structure
+#    The `aux_input` is reallly not necessary to be returned in the return tuple. If it is one-way (from func1 to func2).
+# This pattern is pervasive, for loops, etc.
+#  The recurrent_state can have an invaariant.
+# The caller (`func1`)  does this:
+#
+#    def func1(....):
+#        state2 = None
+#        for k in range(...):
+#            aux_out = ...
+#            meat, state2, aux_out_ignore = input_Iₖ((last_every_second,), aux_out)
+#            yield ..., any_g(meat)
+#
+# The essence of this pattern is:
+#     func2 `(aux_input, recurrent_state,)` -> `(recurrent_state, output,)`
+# What should we call it? "recurrent (local loop-updating variable(s) / the recurrent state)"
+# Let's call it: externalised/interoperatable/pluggable-recurrent-state
+# Combining it with `func1` being a generator, it will a "ping-pong--double-iterator".
+# See more interpretations in `InputDriver_static`.
+# Alt names: two-tier input provider. (A state that has two parts).
+# A lang should formalise it.
 
 def input_Iₖ(recurrent_state, aux_input):
     (last_every_second,) = recurrent_state
@@ -244,7 +270,7 @@ class InputDriver_static:
         last_every_second = None
         for k in range(simargs1.K):
             t = k * simargs1.Delta
-            (Iₖ,), (last_every_second,), (t,) = input_Iₖ((last_every_second,), (t, simargs1.Delta,))
+            (Iₖ,), (last_every_second,), (t,simargs1.Delta,) = input_Iₖ((last_every_second,), (t, simargs1.Delta,))
             yield k, t, [Iₖ,]
 
 
