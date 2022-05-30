@@ -216,7 +216,7 @@ class SimulatorArgs1(object):
 
 def input_Iₖ(recurrent_state, aux_input):
     (last_every_second,) = recurrent_state
-    (t,) = aux_input
+    (t, Δt,) = aux_input
     isfirst = last_every_second is None
 
     if isfirst:
@@ -244,9 +244,7 @@ class InputDriver_static:
         last_every_second = None
         for k in range(simargs1.K):
             t = k * simargs1.Delta
-
-            (Iₖ,), (last_every_second,), (t,) = input_Iₖ((last_every_second,), (t,))
-
+            (Iₖ,), (last_every_second,), (t,) = input_Iₖ((last_every_second,), (t, simargs1.Delta,))
             yield k, t, [Iₖ,]
 
 
