@@ -456,7 +456,7 @@ def cumsum0(x, startv=0.0,  cutlast=True):
     return c, maxval
 
 
-def generate_Λ_samples_unit_exp1(total_rate):
+def generate_Λ_samples_unit_exp1(total_Λ):
     """
     Generates samples from
     Exponential distribution
@@ -472,9 +472,9 @@ def generate_Λ_samples_unit_exp1(total_rate):
     where x = ISI in temrs of "virtual-time" (Λ)
     (Not really ISI: but ISI-Λ )
 
-    Enough number of samples to fit the whole `total_rate` (Λ)
+    Enough number of samples to fit the whole `total_rate` (Λ) (total_Λ)
 
-    `total_rate` units are in "virtual-time" (rate, λ, intensity-integrated, capital Lambda: Λ )
+    `total_rate` = `total_Λ` units are in "virtual-time" (rate, λ, intensity-integrated, capital Lambda: Λ )
     ISIΛ: Inter-spike inter-val -> inter-Λ-val
     interval implies physical "time". But this is virtual-time (Λ)
 
@@ -647,16 +647,32 @@ def generate_Λ_samples_unit_exp1(total_rate):
     t_arr -> tΞ  (should I use t_Ξ instead?)
     """
     # print( "ISI(%g):"%(total_rate), end='')
+    """
+    Apparently I thought ISI = Λⁱⁿᵛ(Λ). And momentary: ISI = λ⁻¹ (somehow).
+    ISI =? Λⁱⁿᵛ(Λ).
+      -> ISI =? Λⁱⁿᵛ((∫dt)λ)
+      -> lim.  ISI =? Λⁱⁿᵛ((dt)λ) -> (
+          Λⁱⁿᵛ((dt)λ)=y => Λ(Λⁱⁿᵛ((dt)λ))=Λ(y) => λdt =Λ(y)
+          =>  λ =Λ(y)/dt =>  λ⁻¹=dt/Λ(y)
+      ). ->  λ⁻¹=dt/Λ(y) & y=?ISI & in-limit ->
+      (  Λ(y) =   (∫^(t=y) dt)λ  (^ y=dt?!)  =>  Λ(y) =(∫^(t=y) dt)λ = λdt ! )
+      => λ⁻¹=dt/Λ(y) = λ⁻¹=dt/λdt = 1/λ !! = λ⁻¹ =>
+      Λⁱⁿᵛ((∫dt)λ) === λ⁻¹ =>(?) Λⁱⁿᵛ(Λ(dt=y)) === λ⁻¹ => y=(dt?!) = λ⁻¹
+      => in lim: y=λ⁻¹
+      => but it is not. IT is correct only if ISI is very small => λ is very high !
+      => if λ >> 0 => ISI=λ⁻¹ (not proportional!, actually equal. But how about a coefficient like 0.5?)
+    """
+    # total_rate -> total_Λ
     Λ = 0.0
     Λa = []
-    while Λ < total_rate:
+    while Λ < total_Λ:
         if Λ > 0.0:
             Λa.append(Λ)
         ΔΛ = -math.log(np.random.rand())
         # print( ΔΛ, Λa, end='')
         # Λa.append(ΔΛ)
         Λ += ΔΛ
-        # if Λ > total_rate:
+        # if Λ > total_Λ:
         #    break
     # print()
     return np.array(Λa)
