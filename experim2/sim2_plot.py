@@ -283,7 +283,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     num_trials = len(Λ_at_spikesϟ𑴠)
     for trial in range(num_trials):
         randy = np.random.rand(spike_timesϟ𑴠[trial].shape[0]) * random_shift_sz
-        panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0+0.1+randy*0.9, 'k.', alpha=0.1, **marker_style)
+        panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0+0.1+randy*0.9, alpha=0.1, **marker_style)
     #panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
     plt3_s2 =\
         panels.cax.plot(spkt, nc+0.1, 'k.', label='Spikes', alpha=0.9)
