@@ -219,9 +219,12 @@ class SimulatorArgs1(object):
 #
 #    Using tuples for params & return
 #    The `recurrent_state` hsa the same structure
-#    The `aux_input` is reallly not necessary to be returned in the return tuple. If it is one-way (from func1 to func2).
+#    The `aux_input` is really not necessary to be returned in the return tuple. If it is one-way (from func1 to func2).
+#       But in general, it can be also mutated by the func2, and we still have this pattern.
+#           Each pattern has a best practice. In this case, it is better not to mutate that. (separation of concern? separation of loop-braid-s, and no-fanout)
 # This pattern is pervasive, for loops, etc.
-#  The recurrent_state can have an invaariant.
+#  The recurrent_state can have an invariant.
+#
 # The caller (`func1`)  does this:
 #
 #    def func1(....):
@@ -233,6 +236,9 @@ class SimulatorArgs1(object):
 #
 # The essence of this pattern is:
 #     func2 `(aux_input, recurrent_state,)` -> `(recurrent_state, output,)`
+# Ironically, it will look better like this: (if the `output` is the first element in the returned tuple).
+#     func2 `( aux_input, recurrent_state,)` -> `( output, recurrent_state,)`
+#
 # What should we call it? "recurrent (local loop-updating variable(s) / the recurrent state)"
 # Let's call it: externalised/interoperatable/pluggable-recurrent-state
 # Combining it with `func1` being a generator, it will a "ping-pong--double-iterator".
