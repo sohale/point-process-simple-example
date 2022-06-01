@@ -148,7 +148,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     panels.next_panel() # 1
 
 
-    plt.title("Delta = %1.4f (msec), %s" % (simargs.Delta/MSEC, describe_model_latex(na)))
+    plt.title("Δt = %1.4f (μsec), %s" % (simargs.Δt/MSEC, describe_model_latex(na)))
 
     tcolor = 'b'
     pl1 = plt.plot(tΞ, x_Ξ, tcolor+'-', label='$x_k$')
@@ -177,15 +177,15 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     #panels.cax.fill_between(tΞ, λ_Ξ, λ_Ξ * 0.0 , color='r', alpha=0.3)
     # panels.cax.legend()
     panels.fix_currenty_ylim(λ_Ξ, 0.1)
-    panels.set_currenty_ylabel('$\\lambda$ (sec.$^-1$)', tcolor)
+    panels.set_currenty_ylabel('$\\lambda$ (sec$^{-1}$)', tcolor)
 
     panels.add_second_y_axis()
     tcolor = 'b'
     # Why did I call λinv_Ξ, ISI_Ξ ?
     λinv_Ξ = 1.0 / λ_Ξ
-    plt2 = panels.cax.plot(tΞ, λinv_Ξ, tcolor+'-', alpha=0.6, label='λ^{-1}')
+    plt2 = panels.cax.plot(tΞ, λinv_Ξ, tcolor+'-', alpha=0.6, label='$λ^{-1}$')
     panels.fix_currenty_ylim(λinv_Ξ, 0.1)
-    panels.set_currenty_ylabel('λ^{-1} (sec.)', tcolor)
+    panels.set_currenty_ylabel('$λ^{-1}$ (sec)', tcolor)
     #panels.multi_legend(plt1 + plt2)
     panels.apply_common_xlims()
     #panels.cax.set_ylim(-0.1, 15.0)
@@ -193,7 +193,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     # third axis
     panels.add_second_y_axis()
     tcolor = 'k'
-    cumintegr_Ξ = np.cumsum(λ_Ξ) * simargs.Delta
+    cumintegr_Ξ = np.cumsum(λ_Ξ) * simargs.Δt
     plt3 = panels.cax.plot(tΞ, cumintegr_Ξ, tcolor+'-',
                         alpha=0.6, label='$\\int\\lambda dt$') # a\n $\\int...
     panels.cax.spines['right'].set_position(('data', np.max(tΞ)))
@@ -297,7 +297,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
         panels.cax.plot(spike_timesϟ𑴠[trial], spike_timesϟ𑴠[trial]*0+0.1+randy*0.9, alpha=0.1, **marker_style)
     #panels.cax.plot(tΞ, Nᶜ_Ξ, 'b-', label='$N_c$')
     plt3_s2 =\
-        panels.cax.plot(spkt, nc+0.1, 'k.', label='Spikes', alpha=0.9)
+        panels.cax.plot(spkt, nc+0.1, 'k.', label='spikes', alpha=0.9)
     plt.xlabel('Time (Sec)')
 
     panels.add_second_y_axis()

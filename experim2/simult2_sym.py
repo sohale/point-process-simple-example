@@ -44,7 +44,7 @@ Symbols legend:
 """
 
 # simargs1: SimulatorArgs1
-#         ( .Delta )
+#         ( .Δt )
 # simulation_result
 
 # na
@@ -71,7 +71,7 @@ Ref. equations #Eq.1 and #Eq.2
 class Neuron_static:
     def report_neuron(n, Delta):
         tau = Neuron_static.get_neuron_tau(n, Delta)
-        print('Tau=', tau * 1000.0, ' (msec)')
+        print('Tau=', tau * 1000.0, ' (μsec)')
         print('Noisiness:  sigma_eps = ',
             n['sigma_eps'] * 1000.0, ' (milli Volts per sample)')
 
@@ -114,7 +114,7 @@ class Neuron_static:
             'beta': ["", ""]
         }
 
-# Part of the problem specs, but not the Delta used in the simulation.
+# Part of the problem specs, but not the Δt used in the simulation.
 DELTA0 = 1.0 * MSEC
 
 # **********************************************************************************
@@ -129,16 +129,16 @@ class SimulatorArgs1(object):
     """
        `.T` Simulation duration (Time length) (all time units in seconds)
        `.K` length (bins/timesteps/intervals): int
-       `.Delta`: (seconds)
+       `.Δt`: (seconds)
 
        invariants:
-            duration ~= K * Delta
+            duration ~= K * Δt
 
     """
     # old incorrect comment: Simulation Time Length (Intervals)
 
 
-    Delta: float
+    Δt: float
     K: int
     T: float
 
@@ -147,7 +147,7 @@ class SimulatorArgs1(object):
             Either based on `_K` or `duration`
             They specify the duration of simulation.
         """
-        #self.Delta = 0.000
+        #self.Δt = 0.000
         #self.K = -1
         #self.T = 0.0000
         assert _deltaT is not None, '_deltaT: time-step (bin) size in seconds'
@@ -155,26 +155,26 @@ class SimulatorArgs1(object):
         if _K is not None:
             assert duration is None
             self.K = _K
-            #self.Delta = self.T / float(self.K)
-            #self.Delta = 1 * MSEC
-            self.Delta = _deltaT
-            self.T = self.K * self.Delta
+            #self.Δt = self.T / float(self.K)
+            #self.Δt = 1 * MSEC
+            self.Δt = _deltaT
+            self.T = self.K * self.Δt
 
             """
             elif duration is not None:
                 # self.K = 3000
-                # self.T = 3.0; self.Delta =  # sec
+                # self.T = 3.0; self.Δt =  # sec
                 self.T = duration
-                self.Delta = 1 * MSEC  * 0.01
-                self.K = int(self.T / self.Delta + 1 - 0.00001)
+                self.Δt = 1 * MSEC  * 0.01
+                self.K = int(self.T / self.Δt + 1 - 0.00001)
                 print( "K=", self.K )
             """
         elif duration is not None:
             assert _K is None
             self.T = duration
-            #self.Delta = 1 * MSEC * 0.2
-            self.Delta = _deltaT
-            self.K = int(self.T / self.Delta + 1 - 0.00001)
+            #self.Δt = 1 * MSEC * 0.2
+            self.Δt = _deltaT
+            self.K = int(self.T / self.Δt + 1 - 0.00001)
 
         else:
             assert False, "Either `_K` or `duration` needs be specified"
@@ -183,11 +183,11 @@ class SimulatorArgs1(object):
 
     def invar(self):
         # simargs1.K = 3000
-        # simargs1.T = 3.0; simargs1.Delta =  # sec
-        # simargs1.K = int(simargs1.T / simargs1.Delta + 1)
+        # simargs1.T = 3.0; simargs1.Δt =  # sec
+        # simargs1.K = int(simargs1.T / simargs1.Δt + 1)
 
         assert simargs1.K
-        assert simargs1.Delta
+        assert simargs1.Δt
         assert simargs1.T
 
     # produces each timestep? no longer.
@@ -199,7 +199,7 @@ class SimulatorArgs1(object):
 
         assert xor(_K is None, duration is None), \
             """ Simulation duration is either based on `_K` or `duration`.
-                duration ~= K * Delta
+                duration ~= K * Δt
             """
         # todo: remove global
         global simargs1
@@ -262,7 +262,7 @@ def input_Iₖ(recurrent_state, aux_input):
     else:
         Iₖ = 0.0
 
-    # What is this? Is it Dirac? If so, why not multiplied by 1/Delta?
+    # What is this? Is it Dirac? If so, why not multiplied by 1/Δt?
     last_every_second = every_second
 
     output, recurrent_state, aux_input = (Iₖ,), (last_every_second,), (t,)
@@ -276,8 +276,8 @@ class InputDriver_static:
 
         last_every_second = None
         for k in range(simargs1.K):
-            t = k * simargs1.Delta
-            (Iₖ,), (last_every_second,), = input_Iₖ((last_every_second,), (t, simargs1.Delta,))
+            t = k * simargs1.Δt
+            (Iₖ,), (last_every_second,), = input_Iₖ((last_every_second,), (t, simargs1.Δt,))
             yield k, t, [Iₖ,]
 
 
@@ -321,9 +321,9 @@ full_model = FullModel()
 class Neuron:
     def init_slow_cache(self, n_obj):
         _tau = Neuron_static.get_neuron_tau(n_obj, DELTA0)
-        _rho_corrected = Neuron_static.get_neuron_rho(_tau, simargs1.Delta)
+        _rho_corrected = Neuron_static.get_neuron_rho(_tau, simargs1.Δt)
         _sigma_eps_corrected = full_model.na[0]['sigma_eps'] * \
-            math.sqrt(simargs1.Delta/DELTA0)
+            math.sqrt(simargs1.Δt/DELTA0)
         print("_rho_corrected = ", _rho_corrected, "rho=", full_model.na[0]['rho'])
         print("_sigma_eps_corrected = ", _sigma_eps_corrected,
                 "sigma_eps=", full_model.na[0]['sigma_eps'])
@@ -404,7 +404,7 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
         # dirac_factor = 7.0  # terrible. Why no refactory period?
         dirac_factor = 1.0
 
-        #dirac_factor = 1.0 / simargs1.Delta
+        #dirac_factor = 1.0 / simargs1.Δt
         # print( "dirac_factor,",dirac_factor )
         xₖ = n['rho'] * last_xₖ_ξ[neuron_id] + n['alpha'] * \
             Iₖ_Ξ[inp_id] * dirac_factor + epsₖ  # Eq.1
@@ -430,10 +430,10 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
     # * Point process simulation
     # *****************************
 
-    fire_probability = λₖ * simargs1.Delta  # * 100
+    fire_probability = λₖ * simargs1.Δt  # * 100
     fire = fire_probability > np.random.rand()
 
-    #output = (xₖ * simargs1.Delta) > np.random.rand()
+    #output = (xₖ * simargs1.Δt) > np.random.rand()
     #Nc += output
 
     # total count
@@ -456,7 +456,7 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
     λ_ΞΞ[neuron_id][k] = λₖ
 
     if is_first_step:
-        Neuron_static.report_neuron(n, simargs1.Delta)
+        Neuron_static.report_neuron(n, simargs1.Δt)
 
     # del x_arr,     xlogpr_arr,    Nc_arr,    fire_probability_arr,    λ_arr,    I_arr,
     del λₖ, fire_probability, t, fire
@@ -468,8 +468,8 @@ print("Simulation time = T =", simargs1.T, ". Mean rate = ",
       Nᶜ_ΞΞ[:][-1].astype(float)/simargs1.T, "(spikes/sec)")
 
 for neuron_id in range(1):
-    print("Integral of λ = ", np.sum(λ_ΞΞ[neuron_id]) * simargs1.Delta)
-    print("Mean λ = ", np.sum(λ_ΞΞ[neuron_id]) * simargs1.Delta / simargs1.T)
+    print("Integral of λ = ", np.sum(λ_ΞΞ[neuron_id]) * simargs1.Δt)
+    print("Mean λ = ", np.sum(λ_ΞΞ[neuron_id]) * simargs1.Δt / simargs1.T)
 
 
 def cumsum0(x, startv=0.0,  cutlast=True):
@@ -716,9 +716,9 @@ def generate_Λ_samples_unit_exp1(total_Λ):
 
 def generates_time_points(λ_Ξ, ΔT, tΞ):
     # tΞ
-    #Λcumintegrλ_Ξ, maxΛ = cumsum0(λ_ΞΞ[neuron_id], cutlast=False)*simargs1.Delta
-    #t_arr_aug = np.concatenate(tΞ, np.array([tΞ[-1]+simargs1.Delta]))
-    #Λcumintegrλ_Ξ, _ = cumsum0(λ_ΞΞ[neuron_id], cutlast=True)*simargs1.Delta
+    #Λcumintegrλ_Ξ, maxΛ = cumsum0(λ_ΞΞ[neuron_id], cutlast=False)*simargs1.Δt
+    #t_arr_aug = np.concatenate(tΞ, np.array([tΞ[-1]+simargs1.Δt]))
+    #Λcumintegrλ_Ξ, _ = cumsum0(λ_ΞΞ[neuron_id], cutlast=True)*simargs1.Δt
     cumintegrλ_Ξξ2, _ignore_max = cumsum0(λ_Ξ, startv=0.0, cutlast=True)
     Λcumintegrλ_Ξ = cumintegrλ_Ξξ2 * ΔT
     # Λcumintegrλ_Ξ = Λ(t) = Λt   Λt_arr
@@ -779,7 +779,7 @@ def generates_time_points(λ_Ξ, ΔT, tΞ):
 for trial in range(TRIALS_NUM):
     # Λ_quantiles
     Λ_atϟ, spike_timesϟ = \
-        generates_time_points(λ_ΞΞ[neuron_id], simargs1.Delta, tΞ)
+        generates_time_points(λ_ΞΞ[neuron_id], simargs1.Δt, tΞ)
 
     # based on stackoverflow.com/questions/19956388/scipy-interp1d-and-matlab-interp1
     # spikes = (spike_timesϟ, Λ_atϟ)  # spikes and their accumulated Λ
@@ -804,4 +804,4 @@ simulation_result = \
 # sys.path.append('/ufs/guido/lib/python')
 from sim2_plot import *
 
-plot_all(simargs1, full_model.na, Neuron_static.get_neuron_tau, simulation_result, DELTA0, simargs1.Delta)
+plot_all(simargs1, full_model.na, Neuron_static.get_neuron_tau, simulation_result, DELTA0, simargs1.Δt)
