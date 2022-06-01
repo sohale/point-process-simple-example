@@ -246,6 +246,7 @@ class SimulatorArgs1(object):
 # Alt names: two-tier input provider. (A state that has two parts).
 # A lang should formalise it.
 
+# Input provider: Iₖ
 def input_Iₖ(recurrent_state, aux_input):
     (last_every_second,) = recurrent_state
     (t, Δt,) = aux_input
@@ -265,7 +266,7 @@ def input_Iₖ(recurrent_state, aux_input):
     last_every_second = every_second
 
     output, recurrent_state, aux_input = (Iₖ,), (last_every_second,), (t,)
-    return output, recurrent_state, aux_input
+    return output, recurrent_state
 
 class InputDriver_static:
     # produces each timestep
@@ -276,7 +277,7 @@ class InputDriver_static:
         last_every_second = None
         for k in range(simargs1.K):
             t = k * simargs1.Delta
-            (Iₖ,), (last_every_second,), (t,simargs1.Delta,) = input_Iₖ((last_every_second,), (t, simargs1.Delta,))
+            (Iₖ,), (last_every_second,), = input_Iₖ((last_every_second,), (t, simargs1.Delta,))
             yield k, t, [Iₖ,]
 
 
