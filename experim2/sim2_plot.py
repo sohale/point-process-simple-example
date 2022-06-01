@@ -233,14 +233,17 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
 
     panels.add_second_y_axis()
     num_trials = len(Λ_at_spikesϟ𑴠)
-    panels.cax.plot([0,0], [0-5, num_trials+1], 'w.', alpha=0.0) # enough white space
+    TRMOD = 15
+    # [0-5, num_trials+1]
+    panels.cax.plot([0,0], [0-5, TRMOD+1], 'w.', alpha=0.0) # enough white space
+
 
     # 'tab:blue'
     marker_style = dict(
                     color='tab:blue', linestyle='',
                     marker='o',
                     markerfacecolor='k',
-                    markersize=4,
+                    markersize=1,
                     # markerfacecoloralt='tab:red', fillstyle='left',
                     markeredgewidth=0,
                     )
@@ -249,10 +252,17 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
                     # http://scipy-lectures.org/intro/matplotlib/auto_examples/options/plot_mfc.html
     for trial in range(num_trials):
       # how about  Λ_at_spikesϟ𑴠[trial]
+      ϟt = spike_timesϟ𑴠[trial]
+
       y0 = trial
+      # ϟy = (Λ_at_spikesϟ𑴠[trial]* 0.5  + y0)
+      # ϟy = (Λ_at_spikesϟ𑴠[trial]* 0.5  + y0) % TRMOD + trial*0.001 #zebra
+      # ϟy = (Λ_at_spikesϟ𑴠[trial]* 0.5  + y0) % (TRMOD + 0.001), # TRMOD + trial*0.001*2
+      ϟy = (Λ_at_spikesϟ𑴠[trial]* 0.5  + y0 - ϟt*5 ) % TRMOD + trial*0.001
+
       plt_dots = \
-        panels.cax.plot(spike_timesϟ𑴠[trial], (Λ_at_spikesϟ𑴠[trial]* 0.5  + y0) % 15,
-                        **marker_style, alpha=0.2, label='spikes')
+        panels.cax.plot( ϟt, ϟy,
+                        **marker_style, alpha=0.4, label='spikes')
     panels.set_currenty_ylabel('trial $+ 0.5Λ(t)$', 'k')
 
     panels.multi_legend(prbin_plot + plt_dots, 'upper left')
@@ -310,7 +320,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
         #plt.savefig('my-eps.eps', format='eps', dpi=1000, rasterized=True)
         #plt.savefig('my-eps.svg', format='svg')
         #import time; time.sleep(0.5)
-        #plt.savefig('my-eps.png', format='png', dpi=1000, bbox_inches='tight')
+        plt.savefig('my-eps3.png', format='png', dpi=2000, bbox_inches='tight')
         #plt.savefig('my-eps.png', format='png', dpi=1000, bbox_inches='standard', transparent=False)
         #plt.savefig('my-eps.png', format='png', dpi=1000, transparent=False)
         # plt.savefig('my-eps.eps', format='eps', dpi=500, transparent=False, rasterized=True)

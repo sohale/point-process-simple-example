@@ -347,7 +347,7 @@ def new_list_2d(size1, size2):
 
 # [neuron_id]
 NEURONS_NUM = 1
-TRIALS_NUM = 10
+TRIALS_NUM = 10*40
 if True:
     tΞ = np.full((simargs1.K,), np.nan)
 
