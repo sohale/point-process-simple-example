@@ -301,6 +301,25 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     plt.tight_layout()
     plt.subplots_adjust(hspace=0) # 0.04
 
+    if False:
+        # attempts to save figure
+        # plt.draw()
+        #ax.set_rasterized(True)
+        #plt.savefig('my-eps.eps', format='eps', dpi=1000)
+        #plt.savefig('my-eps.png', format='png', dpi=1000)
+        #plt.savefig('my-eps.eps', format='eps', dpi=1000, rasterized=True)
+        #plt.savefig('my-eps.svg', format='svg')
+        #import time; time.sleep(0.5)
+        #plt.savefig('my-eps.png', format='png', dpi=1000, bbox_inches='tight')
+        #plt.savefig('my-eps.png', format='png', dpi=1000, bbox_inches='standard', transparent=False)
+        #plt.savefig('my-eps.png', format='png', dpi=1000, transparent=False)
+        # plt.savefig('my-eps.eps', format='eps', dpi=500, transparent=False, rasterized=True)
+
+        #import time; time.sleep(0.5)
+        #plt.savefig('my-eps2.png', format='png', dpi=1000)
+        #import time; time.sleep(0.5)
+        pass
+
     plt.show()
 
     assert panels.panel_id == panels.PANELS, str(
