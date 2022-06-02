@@ -270,14 +270,14 @@ def input_Iₖ(recurrent_state, aux_input):
 
 class InputDriver_static:
     # produces each timestep
-    # the idea was it actually provided the INPUT signal! (Iₖ)
-    # input also drives the program flow !
+    # the idea was it actually provided the INPUT signal! (Iₖ) But it is extracted to `input_Iₖ()`
+    # input also drives the program's control flow.
     def simulate_input_and_drive_next_step(simargs1):
 
         last_every_second = None
         for k in range(simargs1.K):
             t = k * simargs1.Δt
-            (Iₖ,), (last_every_second,), = input_Iₖ((last_every_second,), (t, simargs1.Δt,))
+            (Iₖ,), (last_every_second,), = input_Iₖ ((last_every_second,), (t, simargs1.Δt,))
             yield k, t, [Iₖ,]
 
 
@@ -378,13 +378,12 @@ if True:
     neur_instance = [Neuron()]
     neur_instance[neuron_id].init_slow_cache(full_model.na[neuron_id])
 
+# Drive t and Iₖ
 for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simargs1):
 
     # the recurrent state: (last_xₖ_ξ, Nᶜ_ξ,)
     # aka. the local loop-updating variables
 
-
-    # print( t, k, Iₖ_Ξ )
 
     neuron_id = 0
     n = full_model.na[neuron_id]
@@ -420,7 +419,7 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
     # last_xₖ = xₖ
     last_xₖ_ξ[neuron_id] = xₖ
 
-    # xlp is x at ?
+    # xlp is x*log(Pr) ?
     xlp = n['mu'] + n['beta'] * xₖ
     λₖ = math.exp(xlp)  # Eq.2
     # What will guarantee that xlp < 0 ? i.e. probability < 1
@@ -430,18 +429,14 @@ for k, t, Iₖ_Ξ in InputDriver_static.simulate_input_and_drive_next_step(simar
     # * Point process simulation
     # *****************************
 
+    # (xₖ * simargs1.Δt)
     fire_probability = λₖ * simargs1.Δt  # * 100
     fire = fire_probability > np.random.rand()
-
-    #output = (xₖ * simargs1.Δt) > np.random.rand()
-    #Nc += output
 
     # total count
     Nᶜ_ξ[neuron_id] += fire
 
     # set all (xₖ, Nc, xlp),
-    # not: ?( t, Iₖ)
-    # t_arr:
     tΞ[k] = t
 
     x_ΞΞ[neuron_id][k] = xₖ
