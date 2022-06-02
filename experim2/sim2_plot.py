@@ -141,6 +141,16 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     Iₖ_Ξ = Iₖ_ΞΞ[input_id]
 
     # ##########################
+    # figure save options
+    figopts = dict(
+        dpi_save=150*5, #2000,
+        dpi_show=150,
+        bbox_inches='tight',
+        transparent=False, # True,
+        figsize = (2.0*4, 1.2*4) #show
+        #figsize = (2.0*2, 1.5*2) #show
+    )
+    plt.figure(figsize=figopts['figsize'], dpi=figopts['dpi_show'])
 
     panels = Panels(4)
     #panels.set_common_xlims(1.00 - 0.01, 1.00 + 0.01)
@@ -311,7 +321,7 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
     plt.tight_layout()
     plt.subplots_adjust(hspace=0) # 0.04
 
-    if False:
+    if True:
         # attempts to save figure
         # plt.draw()
         #ax.set_rasterized(True)
@@ -320,7 +330,8 @@ def plot_all(simargs, na, get_neuron_tau, simulation_result, DELTA0, DeltaT):
         #plt.savefig('my-eps.eps', format='eps', dpi=1000, rasterized=True)
         #plt.savefig('my-eps.svg', format='svg')
         #import time; time.sleep(0.5)
-        plt.savefig('my-eps3.png', format='png', dpi=2000, bbox_inches='tight')
+        #plt.savefig('my-eps3b.png', format='png', dpi=2000, bbox_inches='tight', transparent=True)
+        plt.savefig('my-eps3b.png', format='png', dpi=figopts['dpi_save'], bbox_inches=figopts['bbox_inches'], transparent=figopts['transparent'])
         #plt.savefig('my-eps.png', format='png', dpi=1000, bbox_inches='standard', transparent=False)
         #plt.savefig('my-eps.png', format='png', dpi=1000, transparent=False)
         # plt.savefig('my-eps.eps', format='eps', dpi=500, transparent=False, rasterized=True)
