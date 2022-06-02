@@ -37,7 +37,7 @@ My code has implementations the following concepts:
 
 EM Algorithm, Kalman filter, Estimation, Maximum Likelihood, Point Processes, Time-Rescaling Theorem.
 
-### Screenshot
+### Screenshot 1
 Statistical modelling of Spike Trains as Point Processes
 ![Spike Trains as Point Processes](https://repository-images.githubusercontent.com/80567584/04691a80-5aa6-11eb-863e-9f2bab06be1b "Statisticall modelling of Spike Trains as Point Processes")
 Note Λ(t) = ∫ λ(t) dt is the times-rescaling function. x[k] is the input (i.e. the "state"). In physiological terms, the input signal is the EPSP/IPSP.
@@ -49,3 +49,6 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
 * `x(t+δt) = A x(t) + αI + ε`
 * `λ = exp(βx + μ)`
  
+### Screenshot 2
+Multiple trials, better formulas
+![Spike Trains as Point Processes]([https://repository-images.githubusercontent.com/80567584/04691a80-5aa6-11eb-863e-9f2bab06be1b](https://github.com/sohale/point-process-simple-example/releases/download/v0.4.0/my-eps3.png) "Statisticall modelling of Spike Trains as Point Processes")
