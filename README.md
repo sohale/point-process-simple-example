@@ -51,4 +51,4 @@ The estimations are based on EM (Expectation Maximisation) (the procedure devise
  
 ### Screenshot 2
 Multiple trials, better formulas
-![Spike Trains as Point Processes]([https://repository-images.githubusercontent.com/80567584/04691a80-5aa6-11eb-863e-9f2bab06be1b](https://github.com/sohale/point-process-simple-example/releases/download/v0.4.0/my-eps3.png) "Statisticall modelling of Spike Trains as Point Processes")
+![Spike Trains as Point Processes](https://github.com/sohale/point-process-simple-example/releases/download/v0.4.0/my-eps3.png "Statisticall modelling of Spike Trains as Point Processes")
